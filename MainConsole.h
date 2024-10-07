@@ -2,11 +2,11 @@
 #include <string>
 #include "AConsole.h"
 
-class MarqueeConsole : public AConsole
+class MainConsole : public AConsole
 {
 public:
 
 private:
-	MarqueeConsole();
-	~MarqueeConsole() = default;
+	MainConsole();
+	~MainConsole() = default;
 };

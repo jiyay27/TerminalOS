@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 #include <unordered_map>
 #include "MainConsole.h"
 #include "MarqueeConsole.h"
@@ -35,8 +36,6 @@ void ConsoleManager::drawConsole() const
         std::cerr << "There is no assigned console." << std::endl;
     }
 }
-
-// TODO:
 
 ConsoleManager::ConsoleManager()
 {
