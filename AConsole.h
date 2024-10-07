@@ -1,10 +1,11 @@
+#pragma once
 #include <string>
 
 class AConsole
 {
 public:
     typedef std::string String;
-    AConsole(String name);
+    AConsole(String name = "placeholderName");
     ~AConsole() = default;
 
     String getName() const;

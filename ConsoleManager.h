@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AConsole.h"
-#include "Screen.h"
+#include "BaseScreen.h"
 
 #include <memory>
 #include <unordered_map>
@@ -31,7 +31,7 @@ public:
     void exitConsole();
     bool isRunning() const;
 
-    void registerScreen(std::shared_ptr<Screen> screenRef);
+    void registerScreen(std::shared_ptr<BaseScreen> screenRef);
     void switchToScreen(String screenName);
     void unregisterScreen(String screenName);
 

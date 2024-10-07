@@ -99,6 +99,18 @@ void ConsoleManager::unregisterScreen(String screenName)
     }
 }
 
+bool ConsoleManager::isRunning() const
+{
+    if (sharedInstance->currentConsole != nullptr)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 ConsoleManager::ConsoleManager()
 {
     this->running = true;

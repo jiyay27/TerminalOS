@@ -18,5 +18,5 @@ public:
     static void header();
     static void asciiart();
 
-    static std::map<String, String> parseCommandWithArgs(const String& input)
+    static std::map<String, String> parseCommandWithArgs(const String& input);
 };

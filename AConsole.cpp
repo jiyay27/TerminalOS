@@ -9,5 +9,10 @@ AConsole::AConsole(String name)
 
 std::string AConsole::getName() const
 {
-	return name;
+	return this->name;
+}
+
+void AConsole::onEnabled()
+{
+
 }
