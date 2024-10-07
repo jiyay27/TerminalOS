@@ -1,17 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Main">
+      <UniqueIdentifier>{699f7ff5-cefa-4e78-ab85-7402ee450473}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Keyboard">
+      <UniqueIdentifier>{4b0dbbef-2d1a-475b-aa15-216fa7772106}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Scheduler">
+      <UniqueIdentifier>{e6cdbf00-1370-4dd3-ac20-df23f72ce364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{f51c9314-0a7c-4c23-ab83-2e00da97dc4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AbstractScreen">
+      <UniqueIdentifier>{b3efccb4-e2c5-4f5a-b680-e05c2b6611f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ConsoleScreen">
+      <UniqueIdentifier>{52d61b31-171c-4ac6-a6ca-3ae8ae71c2f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleManager.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="AConsole.cpp">
+      <Filter>AbstractScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="Screen.cpp">
+      <Filter>AbstractScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="MainConsole.cpp">
+      <Filter>ConsoleScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="MarqueeConsole.cpp">
+      <Filter>ConsoleScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Keyboard</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleManager.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AConsole.h">
+      <Filter>AbstractScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="Screen.h">
+      <Filter>AbstractScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="MainConsole.h">
+      <Filter>ConsoleScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="MarqueeConsole.h">
+      <Filter>ConsoleScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Keyboard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
