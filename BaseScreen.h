@@ -9,7 +9,7 @@ public:
     BaseScreen(std::shared_ptr<Process> process, String processName);
     void onEnabled() override;
     void process() override;
-    void display() override;s
+    void display() override;
 
 private:
     void printProcessInfo() const;

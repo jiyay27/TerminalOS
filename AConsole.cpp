@@ -4,7 +4,7 @@
 
 AConsole::AConsole(String name)
 {
-
+	this->name = name;
 }
 
 std::string AConsole::getName() const
