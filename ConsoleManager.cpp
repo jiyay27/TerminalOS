@@ -1,13 +1,10 @@
 #include "ConsoleManager.h"
 
 #include <iostream>
-#include <string>
-#include <memory>
-#include <unordered_map>
+
 #include "MainConsole.h"
 #include "MarqueeConsole.h"
 
-typedef std::string String;
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
 ConsoleManager* ConsoleManager::getInstance()
@@ -37,25 +34,6 @@ void ConsoleManager::drawConsole() const
     }
 }
 
-ConsoleManager::ConsoleManager()
-{
-    this->running = true;
-
-    this->consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    const std::shared_ptr<MainConsole> mainConsole = std::make_shared<MainConsole>();
-    const std::shared_ptr<MarqueeConsole> marqueeConsole = std::make_shared<MarqueeConsole>();
-    //const std::shared_ptr<SchedulingConsole> schedulingConsole = std::make_shared<SchedulingConsole>();
-    //const std::shared_ptr<MemoryConsole> memoryConsole = std::make_shared<MemoryConsole>();
-
-    this->consoleTable[MAIN_CONSOLE] = mainConsole;
-    this->consoleTable[MARQUEE_CONSOLE] = marqueeConsole;
-    //this->consoleTable[SCHEDULING_CONSOLE] = schedulingConsole;
-    //this->consoleTable[MEMORY_CONSOLE] = memoryConsole;
-
-    this->switchConsole(MAIN_CONSOLE);
-}
-
 void ConsoleManager::process() const
 {
     if (this->currentConsole != nullptr)
@@ -83,7 +61,7 @@ void ConsoleManager::switchConsole(String consoleName)
     }
 }
 
-void ConsoleManager::registerScreen(std::shared_ptr<Screen> screenRef)
+void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
 {
     if (this->consoleTable.contains(screenRef->getName()))
     {
@@ -107,6 +85,37 @@ void ConsoleManager::switchToScreen(String screenName)
     {
         std::cerr << "Screen name " << screenName << " not found." << std::endl;
     }
+}
+
+void ConsoleManager::unregisterScreen(String screenName)
+{
+    if (this->consoleTable.contains(screenName))
+    {
+        this->consoleTable.erase(screenName);
+    }
+    else
+    {
+        std::cerr << "Unable to unregister " << screenName << std::endl;
+    }
+}
+
+ConsoleManager::ConsoleManager()
+{
+    this->running = true;
+
+    this->consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    const std::shared_ptr<MainConsole> mainConsole = std::make_shared<MainConsole>();
+    const std::shared_ptr<MarqueeConsole> marqueeConsole = std::make_shared<MarqueeConsole>();
+    //const std::shared_ptr<SchedulingConsole> schedulingConsole = std::make_shared<SchedulingConsole>();
+    //const std::shared_ptr<MemoryConsole> memoryConsole = std::make_shared<MemoryConsole>();
+
+    this->consoleTable[MAIN_CONSOLE] = mainConsole;
+    this->consoleTable[MARQUEE_CONSOLE] = marqueeConsole;
+    //this->consoleTable[SCHEDULING_CONSOLE] = schedulingConsole;
+    //this->consoleTable[MEMORY_CONSOLE] = memoryConsole;
+
+    this->switchConsole(MAIN_CONSOLE);
 }
 
 void ConsoleManager::setCursorPosition(int posX, int posY) const

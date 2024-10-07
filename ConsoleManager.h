@@ -53,12 +53,3 @@ private:
     HANDLE consoleHandle;
     bool running = true;
 };
-
-
-ConsoleManager::ConsoleManager(/* args */)
-{
-}
-
-ConsoleManager::~ConsoleManager()
-{
-}

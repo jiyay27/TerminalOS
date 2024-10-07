@@ -5,8 +5,6 @@
 class MarqueeConsole : public AConsole
 {
 public:
-
-private:
 	MarqueeConsole();
 	~MarqueeConsole() = default;
 };

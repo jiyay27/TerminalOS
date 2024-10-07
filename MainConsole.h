@@ -5,8 +5,6 @@
 class MainConsole : public AConsole
 {
 public:
-
-private:
 	MainConsole();
 	~MainConsole() = default;
 };
