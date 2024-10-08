@@ -61,6 +61,27 @@ void ConsoleManager::switchConsole(String consoleName)
     }
 }
 
+void ConsoleManager::returnToPreviousConsole()
+{
+    if (this->previousConsole != nullptr)
+    {
+        this->currentConsole = this->previousConsole;
+        this->currentConsole->onEnabled();
+    }
+    else
+    {
+        std::cerr << "No previous console has been initialized." << std::endl;
+    }
+}
+
+void ConsoleManager::exitConsole()
+{
+    if (1)
+    {
+        
+    }
+}
+
 void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
 {
     if (this->consoleTable.contains(screenRef->getName()))
@@ -111,6 +132,18 @@ bool ConsoleManager::isRunning() const
     }
 }
 
+void ConsoleManager::setCursorPosition(int posX, int posY) const
+{
+    COORD coord;
+    coord = { (SHORT)posX, (SHORT)posX };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+HANDLE ConsoleManager::getConsoleHandle() const
+{
+    return this->consoleHandle;
+}
+
 ConsoleManager::ConsoleManager()
 {
     this->running = true;
@@ -128,11 +161,4 @@ ConsoleManager::ConsoleManager()
     //this->consoleTable[MEMORY_CONSOLE] = memoryConsole;
 
     this->switchConsole(MAIN_CONSOLE);
-}
-
-void ConsoleManager::setCursorPosition(int posX, int posY) const
-{
-    COORD coord;
-    coord = { (SHORT)posX, (SHORT)posX };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }

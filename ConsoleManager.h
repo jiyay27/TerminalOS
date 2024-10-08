@@ -35,7 +35,7 @@ public:
     void switchToScreen(String screenName);
     void unregisterScreen(String screenName);
 
-    HANDLE getConsoleHanlde() const;
+    HANDLE getConsoleHandle() const;
 
     void setCursorPosition(int posX, int posY) const;
 
