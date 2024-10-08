@@ -7,7 +7,7 @@ BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 
 void BaseScreen::onEnabled()
 {
-
+	
 }
 
 void BaseScreen::process()
@@ -16,6 +16,11 @@ void BaseScreen::process()
 }
 
 void BaseScreen::display()
+{
+
+}
+
+void BaseScreen::printProcessInfo() const
 {
 
 }
