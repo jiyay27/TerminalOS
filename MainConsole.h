@@ -5,6 +5,16 @@
 class MainConsole : public AConsole
 {
 public:
-	MainConsole();
+	MainConsole(String name);
 	~MainConsole() = default;
+
+	String getName() const;
+	void onEnabled() override;
+	void display() override;
+	void process() override;
+
+	// void header()
+
+private:
+	String name;
 };

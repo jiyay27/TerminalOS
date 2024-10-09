@@ -10,20 +10,20 @@ Process::Process()
 
 Process::Process(String processName)
 {
-
+	this->processName = processName;
 }
 
 int Process::getID()
 {
-	return 0;
+	return this->pid;
 }
 
 String Process::getProcessName()
 {
-	return "a";
+	return this->processName;
 }
 
 int Process::getCurrentLine()
 {
-	return 0;
+	return this->currentLine;
 }

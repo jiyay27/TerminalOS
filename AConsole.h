@@ -5,7 +5,7 @@ class AConsole
 {
 public:
     typedef std::string String;
-    AConsole(String name = "placeholderName");
+    AConsole(String name = "placeholder");
     ~AConsole() = default;
 
     String getName() const;

@@ -11,8 +11,3 @@ std::string AConsole::getName() const
 {
 	return this->name;
 }
-
-void AConsole::onEnabled()
-{
-
-}
