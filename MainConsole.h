@@ -1,6 +1,11 @@
 #pragma once
 #include <string>
+#include <iostream>
+#include <Windows.h>
+#include <sstream>
 #include "AConsole.h"
+
+using namespace std;
 
 class MainConsole : public AConsole
 {
