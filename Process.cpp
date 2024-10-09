@@ -2,28 +2,24 @@
 
 #include <string>
 
-Process::Process()
-{
-	if (this->pid != 0)
-		this->pid = Process::getID() + 1;
-}
-
 Process::Process(String processName)
 {
+	this->pid + 1;
 	this->processName = processName;
+	this->currentLine = 0;
 }
 
-int Process::getID()
+int Process::getID() const
 {
 	return this->pid;
 }
 
-String Process::getProcessName()
+String Process::getProcessName() const
 {
 	return this->processName;
 }
 
-int Process::getCurrentLine()
+int Process::getCurrentLine() const
 {
 	return this->currentLine;
 }
