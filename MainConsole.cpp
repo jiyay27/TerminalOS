@@ -1,4 +1,5 @@
 #include "MainConsole.h"
+#include "ConsoleManager.h"
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -23,9 +24,14 @@ void MainConsole::onEnabled() //main screen start up
 
 void MainConsole::display() // Displays output
 {
+
     if (outputMessage.empty()) {
         onEnabled();
-        // cout << outputMessage << endl;
+    }
+
+    if (outputMessage == "initialize")
+    {
+
     }
 
     if (outputMessage == "clear")
@@ -52,11 +58,10 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = command;
     }
     else if (command == "exit") {
-       
+        ConsoleManager::getInstance()->exitConsole();
     }
     else if (command == "initialize") {
-        //initialize();  // Assuming initialize function is defined
-        outputMessage = "Initialization complete.";
+        outputMessage = command;
     }
     else if (command == "scheduler-test") {
        // schedulertest();  // Assuming schedulertest function is defined

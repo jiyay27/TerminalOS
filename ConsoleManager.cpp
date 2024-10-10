@@ -76,7 +76,7 @@ void ConsoleManager::returnToPreviousConsole()
 
 void ConsoleManager::exitConsole()
 {
-    this->currentConsole = nullptr;
+    this->running = false;
 }
 
 void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
@@ -119,14 +119,7 @@ void ConsoleManager::unregisterScreen(String screenName)
 
 bool ConsoleManager::isRunning() const
 {
-    if (sharedInstance->currentConsole != nullptr)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return this->running;
 }
 
 void ConsoleManager::setCursorPosition(int posX, int posY) const
