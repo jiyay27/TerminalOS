@@ -4,6 +4,7 @@
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
 string outputMessage = "";
+int isInitialized = 0;
 
 MainConsole::MainConsole() 
 {
@@ -24,25 +25,31 @@ void MainConsole::onEnabled() //main screen start up
 
 void MainConsole::display() // Displays output
 {
-
     if (outputMessage.empty()) {
         onEnabled();
     }
 
-    if (outputMessage == "initialize")
-    {
+    if (isInitialized == 1) {
+        if (outputMessage == "initialize") {
+            cout << "Console has been initialized..." << endl;
+        }
 
+        if (outputMessage == "clear")
+        {
+            system("cls");
+        }
+
+        if (outputMessage == "exit")
+        {
+            ConsoleManager::getInstance()->exitConsole();
+        }
+
+        if (outputMessage == "screenr") {
+
+        }
     }
-
-    if (outputMessage == "clear")
-    {
-        system("cls");
-    }
-
-    if (outputMessage == "exit")
-    {
-
-    }
+    else
+        cout << "Console has not been initialized." << endl;
 }
 
 void MainConsole::process() // Takes in input and processes it
@@ -58,10 +65,11 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = command;
     }
     else if (command == "exit") {
-        ConsoleManager::getInstance()->exitConsole();
+        outputMessage = command;
     }
     else if (command == "initialize") {
         outputMessage = command;
+        isInitialized = 1;
     }
     else if (command == "scheduler-test") {
        // schedulertest();  // Assuming schedulertest function is defined
@@ -77,13 +85,15 @@ void MainConsole::process() // Takes in input and processes it
     }
     else if (command == "screen" && arg1 == "-r" && !arg2.empty()) {
         // Handle 'screen -r [name]' command
-        outputMessage = "Resuming screen with name: " + arg2;
-        // Logic to resume the screen goes here (e.g., checking if screen exists)
+        outputMessage = "screenr";
+    }
+    else if (command == "screen" && arg1 == "-s" && !arg2.empty()) {
+        // Handle 'screen -r [name]' command
+        outputMessage = "screens";
     }
     else if (command == "screen" && arg1 == "-ls") {
         // Handle 'screen -ls' command (list screens)
-        outputMessage = "Listing all screens.";
-        // Logic to list screens goes here
+        outputMessage = "screenls";
     }
     else {
         outputMessage = "Invalid command...";
