@@ -4,6 +4,7 @@
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
 string outputMessage = "";
+string outputArg2 = "";
 int isInitialized = 0;
 
 MainConsole::MainConsole() 
@@ -25,7 +26,8 @@ void MainConsole::onEnabled() //main screen start up
 
 void MainConsole::display() // Displays output
 {
-    if (outputMessage.empty()) {
+    if (outputMessage.empty()) 
+    {
         onEnabled();
     }
 
@@ -44,8 +46,16 @@ void MainConsole::display() // Displays output
             ConsoleManager::getInstance()->exitConsole();
         }
 
-        if (outputMessage == "screenr") {
+        if (outputMessage == "screenr") 
+        {
 
+        }
+
+        if (outputMessage == "screens")
+        {
+            //Process process;
+            //BaseScreen baseScreen(process, outputArg2)
+            //ConsoleManager::getInstance()->registerScreen(baseScreen);
         }
     }
     else
@@ -84,15 +94,17 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = "Utility report generated.";
     }
     else if (command == "screen" && arg1 == "-r" && !arg2.empty()) {
-        // Handle 'screen -r [name]' command
+        // TODO: Handle 'screen -r [name]' command
         outputMessage = "screenr";
+        outputArg2 = arg2;
     }
     else if (command == "screen" && arg1 == "-s" && !arg2.empty()) {
-        // Handle 'screen -r [name]' command
+        // TODO: Handle 'screen -s [name]' command
         outputMessage = "screens";
+        outputArg2 = arg2;
     }
     else if (command == "screen" && arg1 == "-ls") {
-        // Handle 'screen -ls' command (list screens)
+        // TODO: Handle 'screen -ls' command (list screens)
         outputMessage = "screenls";
     }
     else {

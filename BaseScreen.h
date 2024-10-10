@@ -2,10 +2,13 @@
 
 #include "AConsole.h"
 #include "Process.h"
+#include <iostream>
+#include <string>
 
 class BaseScreen : public AConsole
 {
 public:
+    typedef std::string String;
     BaseScreen(std::shared_ptr<Process> process, String processName);
     void onEnabled() override;
     void process() override;

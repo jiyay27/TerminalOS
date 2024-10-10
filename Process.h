@@ -16,21 +16,21 @@ public:
 		FINISHED,
 	};
 
-	Process(String processName);
+	Process();
 
 	int getID() const;
 	String getProcessName() const;
 	int getCurrentLine() const;
 
 	int pid = 0;
-	String processName;
+	String processName = NULL;
 	int currentLine;
 
 	// COMMAND STUFF
 	//typedef std::vector<std::sharedptr<ICommand>> CommandList;
 	//CommandList commandList;
 	
-	int commandCounter;
-	int cpuCoreID = -1;
+	//int commandCounter;
+	//int cpuCoreID = -1;
 
 };

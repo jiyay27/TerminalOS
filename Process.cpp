@@ -2,10 +2,9 @@
 
 #include <string>
 
-Process::Process(String processName)
+Process::Process()
 {
 	this->pid = this->pid + 1;
-	this->processName = processName;
 	this->currentLine = 0;
 }
 

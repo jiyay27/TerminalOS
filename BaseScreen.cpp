@@ -1,23 +1,18 @@
 #include "BaseScreen.h"
 
-#include "Process.h"
-#include <iostream>
+String response = "";
+String outputMessage = "";
 
 BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 {
-	onEnabled();
-
+	this->attachedProcess = process;
+	this->attachedProcess->processName = processName;
 }
 
 void BaseScreen::onEnabled()
 {
 	system("cls");
-	this->refreshed = true;
-}
-
-void BaseScreen::process()
-{
-
+	printProcessInfo();
 }
 
 void BaseScreen::display()
@@ -25,10 +20,21 @@ void BaseScreen::display()
 
 }
 
+void BaseScreen::process()
+{
+	std::cout << "root:\\> ";
+	getline(std::cin, response); // get user input
+	
+	if (response == "exit")
+	{
+		return;
+	}
+}
+
 void BaseScreen::printProcessInfo() const
 {
-	std::cout << "Process: " << this->attachedProcess << std::endl;
-	std::cout << "ID: " << this->attachedProcess << std::endl;
+	std::cout << "Process: " << this->attachedProcess->getProcessName() << std::endl;
+	std::cout << "ID: " << this->attachedProcess->getID() << std::endl;
 	std::cout << "" << std::endl;
-	std::cout << "Current insruction line: " << this->attachedProcess << std::endl;
+	std::cout << "Current insruction line: " << this->attachedProcess->getCurrentLine() << std::endl;
 }
