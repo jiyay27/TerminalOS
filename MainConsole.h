@@ -10,6 +10,7 @@ using namespace std;
 class MainConsole : public AConsole
 {
 public:
+	MainConsole();
 	MainConsole(String name);
 	~MainConsole() = default;
 
@@ -18,7 +19,9 @@ public:
 	void display() override;
 	void process() override;
 
+	void header() const;
+	void asciiart() const;
 
-private:
 	String name;
+	friend class ConsoleManager;
 };

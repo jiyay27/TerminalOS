@@ -1,24 +1,41 @@
 #include "MainConsole.h"
+
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
 string outputMessage = "";
+
+MainConsole::MainConsole() 
+{
+    this->name = "MainConsole";
+}
+
 MainConsole::MainConsole(String name) //constructor
 {
-
+    this->name = name;
 }
 
 void MainConsole::onEnabled() //main screen start up
 {
-
+    system("cls");
+    asciiart();
+    header();
 }
 
 void MainConsole::display() // Displays output
 {
-    if (!outputMessage.empty()) {
-        cout << outputMessage << endl;  // Display the stored message
+    if (outputMessage.empty()) {
+        onEnabled();
+        // cout << outputMessage << endl;
     }
-    else {
-        cout << "No command processed yet." << endl;
+
+    if (outputMessage == "clear")
+    {
+        system("cls");
+    }
+
+    if (outputMessage == "exit")
+    {
+
     }
 }
 
@@ -32,12 +49,10 @@ void MainConsole::process() // Takes in input and processes it
     ss >> command >> arg1 >> arg2;  // Parse the input
 
     if (command == "clear") {
-        //clear();  // Clear the console screen (assuming the clear function is defined)
-        outputMessage = "Screen cleared.";
+        outputMessage = command;
     }
     else if (command == "exit") {
-        outputMessage = "Exiting the program.";
-        return;
+       
     }
     else if (command == "initialize") {
         //initialize();  // Assuming initialize function is defined
@@ -70,7 +85,7 @@ void MainConsole::process() // Takes in input and processes it
     }
 }
 
-void asciiart() {
+void MainConsole::asciiart() const {
     cout << "  _____  _____  ____  _____  ______  _______     __ \n";
     cout << " / ____|/ ____|/ __ \\|  __ \\|  ____|/ ____\\ \\   / / \n";
     cout << "| |    | (___ | |  | | |__) | |__  | (___  \\ \\_/ /  \n";
@@ -79,10 +94,15 @@ void asciiart() {
     cout << " \\_____|_____/ \\____/|_|    |______|_____/   |_|    \n";
 }
 
-void header() {
+void MainConsole::header() const {
     SetConsoleTextAttribute(hConsole, 10);
     cout << "Hello, Welcome to CSOPESY commandline!\n";
     SetConsoleTextAttribute(hConsole, 14);
     cout << "Type 'exit' to quit, 'clear' to clear the screen\n";
     SetConsoleTextAttribute(hConsole, 15);
+}
+
+string MainConsole::getName() const 
+{
+    return this->name;
 }

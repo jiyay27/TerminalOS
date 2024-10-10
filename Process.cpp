@@ -4,7 +4,7 @@
 
 Process::Process(String processName)
 {
-	this->pid + 1;
+	this->pid = this->pid + 1;
 	this->processName = processName;
 	this->currentLine = 0;
 }
