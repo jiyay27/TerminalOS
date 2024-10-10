@@ -13,7 +13,6 @@ public:
 	void display() override;
 	void process() override;
 
-	// void header()
 
 private:
 	String name;
