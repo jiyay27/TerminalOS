@@ -35,6 +35,11 @@ public:
     void switchToScreen(String screenName);
     void unregisterScreen(String screenName);
 
+    void addProcess(std::shared_ptr<Process> process);
+    int getProcessCount() const;
+
+    void createBaseScreen(String screenName);
+
     HANDLE getConsoleHandle() const;
 
     void setCursorPosition(int posX, int posY) const;
@@ -50,6 +55,9 @@ private:
     std::shared_ptr<AConsole> currentConsole;
     std::shared_ptr<AConsole> previousConsole;
 
+
+    //Vector para sa processes
+    std::vector<std::shared_ptr<Process>> processList;
     HANDLE consoleHandle;
     bool running = true;
 };

@@ -87,7 +87,9 @@ void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
         return;
     }
 
+    this->addProcess(screenRef->getProcess());
     this->consoleTable[screenRef->getName()] = screenRef;
+    this->switchConsole(screenRef->getName());
 }
 
 void ConsoleManager::switchToScreen(String screenName)
@@ -129,6 +131,22 @@ void ConsoleManager::setCursorPosition(int posX, int posY) const
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+void ConsoleManager::addProcess(std::shared_ptr<Process> process)
+{
+    this->processList.push_back(process);
+}
+
+int ConsoleManager::getProcessCount() const
+{
+    return this->processList.size();
+}
+
+void ConsoleManager::createBaseScreen(String screenName)
+{
+    std::shared_ptr<Process> process = std::make_shared<Process>(screenName);
+    std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process, screenName);
+    this->registerScreen(baseScreen);
+}
 HANDLE ConsoleManager::getConsoleHandle() const
 {
     return this->consoleHandle;
