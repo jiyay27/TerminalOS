@@ -25,7 +25,7 @@ public:
 	int getCurrentLine() const;
 
 	int pid = 0;
-	String processName = NULL;
+	String processName;
 	int currentLine;
 
 	int totalInstructions;

@@ -53,9 +53,9 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screens")
         {
-            //Process process;
-            //BaseScreen baseScreen(process, outputArg2)
-            //ConsoleManager::getInstance()->registerScreen(baseScreen);
+            std::shared_ptr<Process> process = std::make_shared<Process>();
+            std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process,outputArg2);
+            ConsoleManager::getInstance()->registerScreen(baseScreen);
         }
     }
     else

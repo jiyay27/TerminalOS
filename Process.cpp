@@ -6,8 +6,11 @@
 
 Process::Process()
 {
-	this->pid = this->pid + 1;
+	this->pid++;
+	this->processName = "";
 	this->currentLine = 0;
+	this->totalInstructions = 0;
+	this->remainingInstructions = 50;
 }
 
 int Process::getID() const

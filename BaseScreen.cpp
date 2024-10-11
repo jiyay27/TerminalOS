@@ -29,6 +29,11 @@ void BaseScreen::process()
 	{
 		return;
 	}
+
+	if (response == "clear")
+	{
+		system("cls");
+	}
 }
 
 void BaseScreen::printProcessInfo() const
