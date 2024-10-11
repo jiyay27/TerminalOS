@@ -17,7 +17,11 @@ void BaseScreen::onEnabled()
 
 void BaseScreen::display()
 {
+	printProcessInfo();
+	if (1)
+	{
 
+	}
 }
 
 void BaseScreen::process()

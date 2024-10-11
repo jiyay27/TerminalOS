@@ -20,9 +20,15 @@ public:
 	//Process (const std::string& name, int id, int numInstructions)
 	// : processName(name), id(pid), totalInstructions(numInstructions), remainingInstructions(numInstructions) {}
 
+	// INSTRUCTION FUNCTIONS
 	int getID() const;
 	String getProcessName() const;
 	int getCurrentLine() const;
+
+	void executeInstruction();
+	int getRemainingInstructions() const;
+	bool hasFinished() const;
+
 
 	int pid = 0;
 	String processName;
@@ -39,10 +45,5 @@ public:
 	//int cpuCoreID = -1;
 
 
-	// INSTRUCTION FUNCTIONS
-
-	void executeInstruction();
-	int getRemainingInstructions() const;
-	bool hasFinished() const;
-
+	
 };
