@@ -1,6 +1,8 @@
 #include "Process.h"
 
 #include <string>
+#include <iostream>
+#include <cstdlib>
 
 Process::Process()
 {
@@ -21,4 +23,23 @@ String Process::getProcessName() const
 int Process::getCurrentLine() const
 {
 	return this->currentLine;
+}
+
+void Process::executeInstruction()
+{
+	if(this->remainingInstructions > 0){
+		std::cout << "Executing instruction for Process" << this->pid << ": " << this->processName << "\n";
+		this->remainingInstructions--;
+	}else{
+		std::cout << "Process" << this->pid << ": " << this->processName << " has already finished.\n";
+
+	}
+}
+
+int Process::getRemainingInstructions() const{
+	return remainingInstructions;
+}
+
+bool Process::hasFinished() const{
+	return this->remainingInstructions == 0;
 }
