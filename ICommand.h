@@ -1,7 +1,7 @@
 #pragma once
 //#include "GlobalConfig.h"
 //#include "IETThread.h"
-
+#include <string>
 class ICommand
 {
 public:
