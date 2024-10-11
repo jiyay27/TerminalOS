@@ -13,7 +13,7 @@ public:
     void onEnabled() override;
     void process() override;
     void display() override;
-
+    std::shared_ptr<Process> getProcess() const;
 private:
     void printProcessInfo() const;
     std::shared_ptr<Process> attachedProcess;

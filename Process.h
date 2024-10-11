@@ -16,7 +16,7 @@ public:
 		FINISHED,
 	};
 
-	Process();
+	Process(String name);
 	//Process (const std::string& name, int id, int numInstructions)
 	// : processName(name), id(pid), totalInstructions(numInstructions), remainingInstructions(numInstructions) {}
 

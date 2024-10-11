@@ -5,8 +5,7 @@ String outputMessage = "";
 
 BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 {
-	this->attachedProcess = process;
-	this->attachedProcess->processName = processName;
+	this->attachedProcess = std::make_shared<Process>(processName);
 }
 
 void BaseScreen::onEnabled()
@@ -36,6 +35,10 @@ void BaseScreen::process()
 	}
 }
 
+std::shared_ptr<Process> BaseScreen::getProcess() const
+{
+	return this->attachedProcess;
+}
 void BaseScreen::printProcessInfo() const
 {
 	std::cout << "Process: " << this->attachedProcess->getProcessName() << std::endl;

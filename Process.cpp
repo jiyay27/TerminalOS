@@ -1,16 +1,15 @@
 #include "Process.h"
+#include "ConsoleManager.h"
 
 #include <string>
 #include <iostream>
 #include <cstdlib>
 
-Process::Process()
+Process::Process(String name)
 {
-	this->pid++;
-	this->processName = "";
-	this->currentLine = 0;
-	this->totalInstructions = 0;
-	this->remainingInstructions = 50;
+	this->processName = name;
+	this->pid = ConsoleManager::getInstance()->getProcessCount();
+	//TODO: print commands
 }
 
 int Process::getID() const
