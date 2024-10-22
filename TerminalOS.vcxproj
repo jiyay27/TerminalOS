@@ -135,15 +135,19 @@
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="MarqueeConsole.cpp" />
     <ClCompile Include="BaseScreen.cpp" />
+    <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AConsole.h" />
     <ClInclude Include="ConsoleManager.h" />
+    <ClInclude Include="FCFSScheduler.h" />
+    <ClInclude Include="ICommand.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MainConsole.h" />
     <ClInclude Include="MarqueeConsole.h" />
     <ClInclude Include="BaseScreen.h" />
+    <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
