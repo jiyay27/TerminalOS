@@ -2,6 +2,10 @@
 
 #include <string>
 
+AConsole::AConsole()
+{
+}
+
 AConsole::AConsole(String name)
 {
 	this->name = name;

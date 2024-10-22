@@ -57,6 +57,14 @@ void MainConsole::display() // Displays output
             std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process,outputArg2);
             ConsoleManager::getInstance()->registerScreen(baseScreen);
         }
+
+        if (outputMessage == "screenls")
+        {
+            for (int i = 0; i < ConsoleManager::getInstance()->getProcessCount(); i++)
+            {
+                //lstd::cout << "Name: " << ConsoleManager::getInstance()->getProcessName(i)->getProcessName;
+            }
+        }
     }
     else
         cout << "Console has not been initialized." << endl;

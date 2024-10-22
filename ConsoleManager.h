@@ -40,6 +40,8 @@ public:
 
     void createBaseScreen(String screenName);
 
+    std::shared_ptr<Process> getProcessName(int index);
+
     HANDLE getConsoleHandle() const;
 
     void setCursorPosition(int posX, int posY) const;
@@ -54,7 +56,6 @@ private:
     ConsoleTable consoleTable;
     std::shared_ptr<AConsole> currentConsole;
     std::shared_ptr<AConsole> previousConsole;
-
 
     // Vector para sa processes
     std::vector<std::shared_ptr<Process>> processList;
