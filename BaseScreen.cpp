@@ -12,18 +12,18 @@ BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 void BaseScreen::onEnabled()
 {
 	system("cls");
+	this->printProcessInfo();
 }
 
 void BaseScreen::display()
 {
-	
+
 }
 
 void BaseScreen::process()
 {
 	if (this->refreshed == false) {
 		this->refreshed = true;
-		this->printProcessInfo();
 	}
 
 	std::cout << "root:\\> ";
