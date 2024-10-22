@@ -56,7 +56,7 @@ private:
     std::shared_ptr<AConsole> previousConsole;
 
 
-    //Vector para sa processes
+    // Vector para sa processes
     std::vector<std::shared_ptr<Process>> processList;
     HANDLE consoleHandle;
     bool running = true;

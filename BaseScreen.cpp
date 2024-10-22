@@ -1,11 +1,12 @@
 #include "BaseScreen.h"
 
-String response = "";
-String outputMessage = "";
+String responseBase = "";
+String outputMessageBase = "";
 
 BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 {
-	this->attachedProcess = std::make_shared<Process>(processName);
+	process = std::make_shared<Process>(processName);
+	this->attachedProcess = process;
 }
 
 void BaseScreen::onEnabled()
@@ -17,7 +18,7 @@ void BaseScreen::onEnabled()
 void BaseScreen::display()
 {
 	printProcessInfo();
-	if (1)
+	if (outputMessageBase == "0")
 	{
 
 	}
@@ -26,14 +27,14 @@ void BaseScreen::display()
 void BaseScreen::process()
 {
 	std::cout << "root:\\> ";
-	getline(std::cin, response); // get user input
+	getline(std::cin, responseBase); // get user input
 	
-	if (response == "exit")
+	if (responseBase == "exit")
 	{
 		return;
 	}
 
-	if (response == "clear")
+	if (responseBase == "clear")
 	{
 		system("cls");
 	}

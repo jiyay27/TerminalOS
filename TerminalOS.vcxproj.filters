@@ -48,7 +48,6 @@
     <ClCompile Include="Process.cpp">
       <Filter>Process</Filter>
     </ClCompile>
-    <ClCompile Include="PrintCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h">
@@ -72,8 +71,8 @@
     <ClInclude Include="Process.h">
       <Filter>Process</Filter>
     </ClInclude>
-    <ClInclude Include="FCFSScheduler.h" />
-    <ClInclude Include="ICommand.h" />
-    <ClInclude Include="PrintCommand.h" />
+    <ClInclude Include="TypedefRepo.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

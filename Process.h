@@ -16,11 +16,10 @@ public:
 		FINISHED,
 	};
 
-	Process(String name);
-	//Process (const std::string& name, int id, int numInstructions)
-	// : processName(name), id(pid), totalInstructions(numInstructions), remainingInstructions(numInstructions) {}
+	Process();
 
-	// INSTRUCTION FUNCTIONS
+	Process(String name);
+
 	int getID() const;
 	String getProcessName() const;
 	int getCurrentLine() const;
@@ -30,7 +29,7 @@ public:
 	bool hasFinished() const;
 
 
-	int pid = 0;
+	int pid;
 	String processName;
 	int currentLine;
 
@@ -43,7 +42,4 @@ public:
 	
 	//int commandCounter;
 	//int cpuCoreID = -1;
-
-
-	
 };

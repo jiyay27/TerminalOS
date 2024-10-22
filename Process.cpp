@@ -3,12 +3,20 @@
 
 #include <string>
 #include <iostream>
-#include <cstdlib>
+//#include <cstdlib>
+
+Process::Process()
+	: pid(0), processName("Unknown"), currentLine(0), totalInstructions(0), remainingInstructions(0) {}
+
 
 Process::Process(String name)
 {
+	this->pid = 0;
 	this->processName = name;
-	this->pid = ConsoleManager::getInstance()->getProcessCount();
+	//this->pid = ConsoleManager::getInstance()->getProcessCount();
+	this->currentLine = 0;
+	this->totalInstructions = 0;
+	this->remainingInstructions = 50;
 	//TODO: print commands
 }
 

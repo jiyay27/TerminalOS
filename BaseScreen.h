@@ -3,7 +3,6 @@
 #include "AConsole.h"
 #include "Process.h"
 #include <iostream>
-#include <string>
 
 class BaseScreen : public AConsole
 {
@@ -14,6 +13,7 @@ public:
     void process() override;
     void display() override;
     std::shared_ptr<Process> getProcess() const;
+
 private:
     void printProcessInfo() const;
     std::shared_ptr<Process> attachedProcess;

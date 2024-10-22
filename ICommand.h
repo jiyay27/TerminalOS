@@ -2,6 +2,7 @@
 //#include "GlobalConfig.h"
 //#include "IETThread.h"
 #include <string>
+#include "TypedefRepo.h"
 class ICommand
 {
 public:
