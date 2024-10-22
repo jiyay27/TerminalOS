@@ -12,6 +12,7 @@ public:
     void onEnabled() override;
     void process() override;
     void display() override;
+    String getName() const;
     std::shared_ptr<Process> getProcess() const;
 
 private:

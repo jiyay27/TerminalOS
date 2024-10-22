@@ -5,6 +5,7 @@ class AConsole
 {
 public:
     typedef std::string String;
+    AConsole();
     AConsole(String name);
     ~AConsole() = default;
 

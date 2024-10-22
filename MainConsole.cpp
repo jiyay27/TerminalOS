@@ -48,12 +48,12 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenr") 
         {
-
+            ConsoleManager::getInstance()->switchToScreen(outputArg2);
         }
 
         if (outputMessage == "screens")
         {
-            std::shared_ptr<Process> process = std::make_shared<Process>();
+            std::shared_ptr<Process> process;
             std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process,outputArg2);
             ConsoleManager::getInstance()->registerScreen(baseScreen);
         }

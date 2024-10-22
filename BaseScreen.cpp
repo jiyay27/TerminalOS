@@ -16,7 +16,7 @@ void BaseScreen::onEnabled()
 
 void BaseScreen::display()
 {
-
+	
 }
 
 void BaseScreen::process()
@@ -31,7 +31,6 @@ void BaseScreen::process()
 	
 	if (responseBase == "exit")
 	{
-	
 		ConsoleManager::getInstance()->returnToPreviousConsole();
 	}
 
@@ -45,6 +44,11 @@ void BaseScreen::process()
 	else {
 		std::cout << "Unknown command: " << responseBase << std::endl;
 	}
+}
+
+String BaseScreen::getName() const
+{
+	return this->attachedProcess->getProcessName();
 }
 
 std::shared_ptr<Process> BaseScreen::getProcess() const

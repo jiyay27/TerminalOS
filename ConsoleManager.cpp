@@ -83,7 +83,7 @@ void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
 {
     if (this->consoleTable.contains(screenRef->getName()))
     {
-        std::cerr << "Screen name " << screenRef->getName() << "already exists." << std::endl;
+        std::cerr << "Screen name " << screenRef->getName() << " already exists." << std::endl;
         return;
     }
 
