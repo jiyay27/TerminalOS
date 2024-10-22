@@ -1,5 +1,5 @@
 #include "BaseScreen.h"
-
+#include "ConsoleManager.h"
 String responseBase = "";
 String outputMessageBase = "";
 
@@ -12,31 +12,38 @@ BaseScreen::BaseScreen(std::shared_ptr<Process> process, String processName)
 void BaseScreen::onEnabled()
 {
 	system("cls");
-	printProcessInfo();
 }
 
 void BaseScreen::display()
 {
-	printProcessInfo();
-	if (outputMessageBase == "0")
-	{
 
-	}
 }
 
 void BaseScreen::process()
 {
+	if (this->refreshed == false) {
+		this->refreshed = true;
+		this->printProcessInfo();
+	}
+
 	std::cout << "root:\\> ";
 	getline(std::cin, responseBase); // get user input
 	
 	if (responseBase == "exit")
 	{
-		return;
+	
+		ConsoleManager::getInstance()->returnToPreviousConsole();
 	}
 
-	if (responseBase == "clear")
+	else if (responseBase == "clear")
 	{
 		system("cls");
+	}
+	else if (responseBase == "process-smi") {
+		this->printProcessInfo();
+	}
+	else {
+		std::cout << "Unknown command: " << responseBase << std::endl;
 	}
 }
 
