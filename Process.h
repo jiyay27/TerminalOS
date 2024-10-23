@@ -22,7 +22,10 @@ public:
 	void executeCurrentCommand() const;
 	void moveToNextLine();
 	int getID() const;
+	int getCPUCoreID() const;
+	ProcessState getState() const;
 	String getName() const;
+
 	void executeInstruction();
 
 private:

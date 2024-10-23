@@ -19,6 +19,23 @@ int Process::getID() const
 	return this->pid;
 }
 
+int Process::getCPUCoreID() const
+{
+	return this->cpuCoreID;
+}
+
+Process::ProcessState getState() const
+{
+	return this->currentState;
+}
+
+String Process::getName() const
+{
+	return this->name;
+}
+
+
+
 void Process::addCommand(ICommand::CommandType commandType)
 {
 	String toPrint = "Command added";
@@ -49,9 +66,8 @@ void Process::executeInstruction()
 	}
 }
 
-String Process::getName() const
-{
-	return this->name;
-}
+
+
+
 
 
