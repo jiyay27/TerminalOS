@@ -26,6 +26,7 @@ void Process::addCommand(ICommand::CommandType commandType)
 	this->commandList.push_back(command);
 }
 
+//called by CPU Core Worker
 void Process::executeCurrentCommand() const
 {
 	this->commandList[this->commandCounter]->execute();
@@ -47,6 +48,11 @@ void Process::executeInstruction()
 	{
 		this->currentState = ProcessState::FINISHED;
 	}
+}
+
+bool Process::isFinished() const
+{
+	return this->commandCounter == this->commandList.size();
 }
 
 String Process::getName() const

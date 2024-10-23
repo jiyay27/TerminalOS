@@ -24,7 +24,7 @@ public:
 	int getID() const;
 	String getName() const;
 	void executeInstruction();
-
+	bool isFinished() const;
 private:
 	int pid;
 	String name;
