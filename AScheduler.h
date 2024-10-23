@@ -17,7 +17,6 @@ public:
 	{
 		FCFS, 
 		RR
-
 	};
 
 	AScheduler(SchedulingAlgorithm schedulingAlgo, int pid, String processName);
@@ -28,7 +27,12 @@ public:
 	void stop();
 
 	virtual void init() = 0;
+	virtual void execute() = 0;
 
-
-
+private:
+	SchedulingAlgorithm schedulingAlgo;
+	int pid;
+	String processName;
+	std::vector<std::shared_ptr<Process>> processes;
+	bool running = true;
 };
