@@ -7,8 +7,8 @@ class IETThread
 {
 
 public:
-	IETThread();
-	~IETThread();
+	IETThread() = default;
+	~IETThread() = default;
 
 
 	void start();
