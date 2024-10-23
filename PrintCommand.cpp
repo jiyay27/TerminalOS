@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream> // Include this header for std::stringstream
 #include "TypedefRepo.h"
 //#include "IETThread.h"
 //#include "MessageBuffer.h"
@@ -15,6 +16,5 @@ void PrintCommand::execute()
 {
     ICommand::execute();
     std::stringstream msg; 
-    msg << String("PID ") << this->pid << ";" << this->toPrint << std::endl;
-    //MessageBuffer::log(msg.str());
+    msg << "PID " << this->pid << ":" << this->toPrint << std::endl; // Use std::string instead of String
 }

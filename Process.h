@@ -2,8 +2,8 @@
 
 #include <string>
 #include <memory>
-
-typedef std::string String;
+#include "ICommand.h"
+#include "TypedefRepo.h"
 
 class Process
 {
@@ -16,30 +16,24 @@ public:
 		FINISHED,
 	};
 
-	Process();
-
-	Process(String name);
-
+	Process(int pid, String name);
+	void addCommand(ICommand::CommandType commandType);
+	void executeCurrentCommand() const;
+	void moveToNextLine();
 	int getID() const;
-	String getProcessName() const;
-	int getCurrentLine() const;
-
+	String getName() const;
 	void executeInstruction();
-	int getRemainingInstructions() const;
-	bool hasFinished() const;
 
-
+private:
 	int pid;
-	String processName;
-	int currentLine;
-
-	int totalInstructions;
-	int remainingInstructions;
+	String name;
 
 	// COMMAND STUFF
-	//typedef std::vector<std::sharedptr<ICommand>> CommandList;
-	//CommandList commandList;
+	typedef std::vector<std::shared_ptr<ICommand>> CommandList;
+	CommandList commandList;
 	
-	//int commandCounter;
-	//int cpuCoreID = -1;
+	int commandCounter;
+	int cpuCoreID = -1;
+	ProcessState currentState;
+
 };

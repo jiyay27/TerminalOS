@@ -1,23 +1,16 @@
 #include "Process.h"
 #include "ConsoleManager.h"
-
+#include "PrintCommand.h"
 #include <string>
 #include <iostream>
-//#include <cstdlib>
-
-Process::Process()
-	: pid(0), processName("Unknown"), currentLine(0), totalInstructions(0), remainingInstructions(0) {}
 
 
-Process::Process(String name)
+Process::Process(int pid, String name)
 {
-	this->pid = 0;
-	this->processName = name;
-	//this->pid = ConsoleManager::getInstance()->getProcessCount();
-	this->currentLine = 0;
-	this->totalInstructions = 0;
-	this->remainingInstructions = 50;
-	//TODO: print commands
+	this->pid = pid;
+	this->name = name;
+	this->commandCounter = 0;
+	this->currentState = ProcessState::READY;
 }
 
 int Process::getID() const
@@ -25,31 +18,39 @@ int Process::getID() const
 	return this->pid;
 }
 
-String Process::getProcessName() const
+void Process::addCommand(ICommand::CommandType commandType)
 {
-	return this->processName;
+	String toPrint = "Command added";
+	const std::shared_ptr<ICommand> command = std::make_shared<PrintCommand>(this->pid, toPrint);
+	this->commandList.push_back(command);
 }
 
-int Process::getCurrentLine() const
+void Process::executeCurrentCommand() const
 {
-	return this->currentLine;
+	this->commandList[this->commandCounter]->execute();
+}
+
+void Process::moveToNextLine()
+{
+	this->commandCounter++;
 }
 
 void Process::executeInstruction()
 {
-	if(this->remainingInstructions > 0){
-		std::cout << "Executing instruction for Process" << this->pid << ": " << this->processName << "\n";
-		this->remainingInstructions--;
-	}else{
-		std::cout << "Process" << this->pid << ": " << this->processName << " has already finished.\n";
-
+	if (this->commandCounter < this->commandList.size())
+	{
+		this->executeCurrentCommand();
+		this->moveToNextLine();
+	}
+	else
+	{
+		this->currentState = ProcessState::FINISHED;
 	}
 }
 
-int Process::getRemainingInstructions() const{
-	return remainingInstructions;
+String Process::getName() const
+{
+	return this->name;
 }
 
-bool Process::hasFinished() const{
-	return this->remainingInstructions == 0;
-}
+
