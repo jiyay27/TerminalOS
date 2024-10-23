@@ -48,7 +48,7 @@ void BaseScreen::process()
 
 String BaseScreen::getName() const
 {
-	return this->attachedProcess->getProcessName();
+	return this->attachedProcess->getName();
 }
 
 std::shared_ptr<Process> BaseScreen::getProcess() const
@@ -57,8 +57,8 @@ std::shared_ptr<Process> BaseScreen::getProcess() const
 }
 void BaseScreen::printProcessInfo() const
 {
-	std::cout << "Process: " << this->attachedProcess->getProcessName() << std::endl;
+	std::cout << "Process: " << this->attachedProcess->getName() << std::endl;
 	std::cout << "ID: " << this->attachedProcess->getID() << std::endl;
 	std::cout << "" << std::endl;
-	std::cout << "Current insruction line: " << this->attachedProcess->getCurrentLine() << std::endl;
+	//std::cout << "Current insruction line: " << this->attachedProcess->getCurrentLine() << std::endl;
 }

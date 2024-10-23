@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include "ICommand.h"
 #include "TypedefRepo.h"
 
@@ -15,8 +16,8 @@ public:
 		WAITING,
 		FINISHED,
 	};
-
-	Process(int pid, String name);
+	
+	Process(String name);
 	void addCommand(ICommand::CommandType commandType);
 	void executeCurrentCommand() const;
 	void moveToNextLine();
@@ -27,12 +28,9 @@ public:
 private:
 	int pid;
 	String name;
-
-	// COMMAND STUFF
 	typedef std::vector<std::shared_ptr<ICommand>> CommandList;
 	CommandList commandList;
-	
-	int commandCounter;
+	int commandCounter = 0;
 	int cpuCoreID = -1;
 	ProcessState currentState;
 

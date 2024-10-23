@@ -2,7 +2,7 @@
 
 void IETThread::start()
 {
-	std::thread(&IETThread::run, this).detach()
+	std::thread(&IETThread::run, this).detach();
 }
 
 void IETThread::sleep(int ms)

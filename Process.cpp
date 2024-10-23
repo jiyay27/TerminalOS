@@ -5,9 +5,10 @@
 #include <iostream>
 
 
-Process::Process(int pid, String name)
+
+Process::Process(String name)
 {
-	this->pid = pid;
+	this->pid = 0;
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
