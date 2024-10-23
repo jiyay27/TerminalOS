@@ -8,4 +8,5 @@ class SchedulerWorker
 public:
 	void update(bool isRunning);
 	void run();
+
 };
