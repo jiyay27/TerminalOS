@@ -13,13 +13,20 @@ class FCFSScheduler
     public:
         FCFSScheduler(int cores) : numCores(cores), processQueues(cores){}
 
-        void addProcess(const Process& process, int core = 0){
+        void initialize() const;
+        void addProcess() const; // add process to core worker
+        void sortProcessQueues() const;
+        void runScheduler() const;
+
+
+
+        /*void addProcess(const Process& process, int core = 0) {
             if(core >=0 && core < numCores){
                 processQueues[core].push_back(process);
             }else {
                 std::cerr << "Invalid core specified for process addition.\n";
             }
-        }
+        }*/
 
        /* void sortProcessQueues(){
             for (auto& queue : processQueues){

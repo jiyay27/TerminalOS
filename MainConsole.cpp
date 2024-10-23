@@ -68,6 +68,14 @@ void MainConsole::display() // Displays output
             {
                 //lstd::cout << "Name: " << ConsoleManager::getInstance()->getProcessName(i)->getProcessName;
             }
+
+            //scheduler
+            /*
+            1. Make Scheduler thread
+
+            2. Run Scheduler
+          
+            */
         }
     }
     else
