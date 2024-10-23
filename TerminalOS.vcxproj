@@ -139,6 +139,7 @@
     <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="Scheduler.cpp" />
+    <ClCompile Include="SchedulerWorker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AConsole.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="BaseScreen.h" />
     <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="SchedulerWorker.h" />
     <ClInclude Include="TypedefRepo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
