@@ -17,7 +17,28 @@ void BaseScreen::onEnabled()
 
 void BaseScreen::display()
 {
+	if (outputMessageBase.empty())
+	{
+		onEnabled();
+	}
 
+	if (outputMessageBase == "exit")
+	{
+		ConsoleManager::getInstance()->returnToPreviousConsole();
+		outputMessageBase = "";
+	}
+
+	if (outputMessageBase == "clear")
+	{
+		system("cls");
+		outputMessageBase = "";
+	}
+
+	if (outputMessageBase == "process-smi")
+	{
+		this->printProcessInfo();
+		outputMessageBase = "";
+	}
 }
 
 void BaseScreen::process()
@@ -31,17 +52,18 @@ void BaseScreen::process()
 	
 	if (responseBase == "exit")
 	{
-		ConsoleManager::getInstance()->returnToPreviousConsole();
+		outputMessageBase = responseBase;
 	}
-
 	else if (responseBase == "clear")
 	{
-		system("cls");
+		outputMessageBase = responseBase;
 	}
-	else if (responseBase == "process-smi") {
-		this->printProcessInfo();
+	else if (responseBase == "process-smi") 
+	{
+		outputMessageBase = responseBase;
 	}
-	else {
+	else 
+	{
 		std::cout << "Unknown command: " << responseBase << std::endl;
 	}
 }
@@ -57,6 +79,7 @@ std::shared_ptr<Process> BaseScreen::getProcess() const
 }
 void BaseScreen::printProcessInfo() const
 {
+	std::cout << "" << std::endl;
 	std::cout << "Process: " << this->attachedProcess->getName() << std::endl;
 	std::cout << "ID: " << this->attachedProcess->getID() << std::endl;
 	std::cout << "" << std::endl;
