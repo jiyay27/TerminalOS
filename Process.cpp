@@ -24,7 +24,7 @@ int Process::getCPUCoreID() const
 	return this->cpuCoreID;
 }
 
-Process::ProcessState getState() const
+Process::ProcessState Process::getState() const
 {
 	return this->currentState;
 }
