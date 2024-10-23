@@ -34,7 +34,10 @@ String Process::getName() const
 	return this->name;
 }
 
-
+bool Process::isFinished() const
+{
+	return this->currentState == ProcessState::FINISHED;
+}
 
 void Process::addCommand(ICommand::CommandType commandType)
 {
