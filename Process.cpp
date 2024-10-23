@@ -19,6 +19,11 @@ int Process::getID() const
 	return this->pid;
 }
 
+int Process::getRemainingInstructions() const
+{
+	return this->remainingInstructions;
+}
+
 int Process::getCPUCoreID() const
 {
 	return this->cpuCoreID;
@@ -67,6 +72,11 @@ void Process::executeInstruction()
 	{
 		this->currentState = ProcessState::FINISHED;
 	}
+}
+
+bool Process::isFinished() const
+{
+	return this->commandCounter == this->commandList.size();
 }
 
 

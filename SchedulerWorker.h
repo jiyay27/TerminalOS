@@ -9,4 +9,6 @@ public:
 	void update(bool isRunning);
 	void run();
 
+private:
+	bool isRunning;
 };
