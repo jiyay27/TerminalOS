@@ -91,8 +91,8 @@ void MainConsole::display() // Displays output
                 if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
                 {
                     std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
-                        "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
-                        "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
+                        "   FINISHED " << "     " 
+                        << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
                         "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
                 }
             }
@@ -110,7 +110,7 @@ void MainConsole::display() // Displays output
 
 void MainConsole::process() // Takes in input and processes it
 {
-    cout << "Enter command: ";
+    cout << "root:\\>";
     getline(cin, response);  // Get the user input
 
     stringstream ss(response);
