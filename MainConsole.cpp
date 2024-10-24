@@ -67,19 +67,37 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
+            std::cout << "CPU Utilization: " << "100%" << std::endl;
+            std::cout << "Cores used: " << "4" << std::endl;
+            std::cout << "Cores available: " << "0" << std::endl;
+            std::cout << "" << std::endl;
+            std::cout << "Running processes:" << std::endl;
             for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
             {
-                //lstd::cout << "Name: " << ConsoleManager::getInstance()->getProcessName(i)->getProcessName;
+                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions())
+                {
+                    std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
+                        "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
+                        "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
+                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions() << std::endl;
+                }
             }
 
+            std::cout << "" << std::endl;
 
-            //scheduler
-            /*
-            1. Make Scheduler thread
-            std::thread schedulerThread();
-            2. Run Scheduler
-          
-            */
+
+            std::cout << "Finished processes:" << std::endl;
+            for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
+            {
+                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions())
+                {
+                    std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
+                        "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
+                        "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
+                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions() << std::endl;
+                }
+            }
+
         }
         if (outputMessage == "invalid")
         {
@@ -123,12 +141,10 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = "Utility report generated.";
     }
     else if (command == "screen" && arg1 == "-r" && !arg2.empty()) {
-        // TODO: Handle 'screen -r [name]' command
         outputMessage = "screenr";
         outputArg2 = arg2;
     }
     else if (command == "screen" && arg1 == "-s" && !arg2.empty()) {
-        // TODO: Handle 'screen -s [name]' command
         outputMessage = "screens";
         outputArg2 = arg2;
     }

@@ -49,10 +49,14 @@ int GlobalScheduler::getProcessCount() const
 	return this->processList.size();
 }
 
-std::shared_ptr<Process> GlobalScheduler::getProcessName(int index)
+std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 {
-	return this->processList[index];
+	if (index >= processList.size()) {
+		throw std::out_of_range("Index out of range");
+	}
+	return processList[index];
 }
+
 
 GlobalScheduler::GlobalScheduler()
 {

@@ -14,8 +14,10 @@ public:
 
 	void addProcess(std::shared_ptr<Process> process);
 	int getProcessCount() const;
-	std::shared_ptr<Process> getProcessName(int index);
+	std::shared_ptr<Process>& getProcess(int index);
+
 	void selectScheduler(String algoName);
+
 
 private:
 	GlobalScheduler();
@@ -25,5 +27,6 @@ private:
 	static GlobalScheduler* sharedInstance;
 	AScheduler* scheduler;
 	CPUWorkers cpuWorkers;
+
 	std::vector<std::shared_ptr<Process>> processList;
 };

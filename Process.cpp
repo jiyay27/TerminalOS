@@ -15,6 +15,7 @@ Process::Process(String name)
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
 	this->remainingInstructions = randomNum;
+	this->totalInstructions = randomNum;
 }
 
 Process::Process(int pid, String name, int remainingInstructions)
@@ -24,11 +25,23 @@ Process::Process(int pid, String name, int remainingInstructions)
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
 	this->remainingInstructions = remainingInstructions;
+	this->totalInstructions = remainingInstructions;
 }
 
 int Process::getID() const
 {
 	return this->pid;
+}
+
+int Process::getCommandCounter() const
+{
+	return this->commandCounter;
+}
+
+
+int Process::getTotalInstructions() const
+{
+	return this->totalInstructions;
 }
 
 int Process::getRemainingInstructions() const

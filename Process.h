@@ -24,6 +24,8 @@ public:
 	void moveToNextLine();
 	int getID() const;
 	int getCPUCoreID() const;
+	int getCommandCounter() const;
+	int getTotalInstructions() const;
 	int getRemainingInstructions() const;
 	ProcessState getState() const;
 	String getName() const;
@@ -33,6 +35,7 @@ public:
 private:
 	int pid;
 	int remainingInstructions;
+	int totalInstructions;
 	String name;
 	typedef std::vector<std::shared_ptr<ICommand>> CommandList;
 	CommandList commandList;
