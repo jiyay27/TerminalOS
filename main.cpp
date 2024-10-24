@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "ConsoleManager.h"
 #include "InputManager.h"
-
+#include "GlobalScheduler.h"
 using std::cout;
 using std::cin;
 using std::endl;
@@ -54,7 +54,7 @@ void showTimestamp() {
 
 int main() {
     ConsoleManager::initialize();
-
+	GlobalScheduler::initialize();
     bool running = true;
     while (running)
     {
@@ -65,6 +65,6 @@ int main() {
     }
 
     ConsoleManager::destroy();
-
+	GlobalScheduler::destroy(); 
     return 0;
 }

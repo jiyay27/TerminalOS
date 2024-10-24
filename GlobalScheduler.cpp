@@ -35,3 +35,7 @@ std::shared_ptr<Process> GlobalScheduler::getProcessName(int index)
 {
 	return this->processList[index];
 }
+
+GlobalScheduler::GlobalScheduler()
+{
+}

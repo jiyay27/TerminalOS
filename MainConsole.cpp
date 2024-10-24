@@ -81,6 +81,11 @@ void MainConsole::display() // Displays output
           
             */
         }
+        if (outputMessage == "invalid")
+        {
+			outputMessage = "";
+			std::cout << "Invalid command..." << std::endl;
+        }
     }
     else
         cout << "Console has not been initialized." << endl;
@@ -132,7 +137,7 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = "screenls";
     }
     else {
-        outputMessage = "Invalid command...";
+        outputMessage = "invalid";
     }
 }
 

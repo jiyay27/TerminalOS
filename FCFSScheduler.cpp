@@ -6,7 +6,7 @@ void FCFSScheduler::initialize() const
 
 }
 
-void FCFSScheduler::addProcess(const Process& process, int core = 0) const
+void FCFSScheduler::addProcess(const Process& process, int core) 
 {
      if(core >=0 && core < numCores)
      {
@@ -18,16 +18,16 @@ void FCFSScheduler::addProcess(const Process& process, int core = 0) const
      }
 }
 
-void FCFSScheduler::sortProcessQueues() const
-{
-     for (auto& queue : processQueues)
-     {
-        std::sort(queue.begin(), queue.end(), [](const Process& a, const Process& b) 
-        {
-            return a.getRemainingInstructions() > b.getRemainingInstructions();
-        });
-     }
-}
+//void FCFSScheduler::sortProcessQueues() const
+//{
+//     for (auto& queue : processQueues)
+//     {
+//        std::sort(queue.begin(), queue.end(), [](const Process& a, const Process& b) 
+//        {
+//            return a.getRemainingInstructions() > b.getRemainingInstructions();
+//        });
+//     }
+//}
 
 
 void FCFSScheduler::runScheduler() const
