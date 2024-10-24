@@ -20,7 +20,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(1);
+		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(4);
 		this->scheduler = fcfs;
 
 	}

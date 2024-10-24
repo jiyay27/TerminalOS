@@ -54,7 +54,9 @@ void showTimestamp() {
 
 int main() {
     ConsoleManager::initialize();
-	GlobalScheduler::initialize();
+    GlobalScheduler::initialize();
+
+    GlobalScheduler::getInstance()->startThreads();
     bool running = true;
     while (running)
     {
