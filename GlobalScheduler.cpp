@@ -20,7 +20,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>();
+		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(1);
 		this->scheduler.push_back(fcfs);
 
 	}
@@ -42,7 +42,7 @@ AScheduler* GlobalScheduler::getScheduler()
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-	this->scheduler->execute();
+	//this->scheduler->execute();
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
@@ -71,7 +71,7 @@ GlobalScheduler::GlobalScheduler()
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
 		cpuWorkers[i] = worker;
 	}
-	scheduler 
+	//scheduler
 }
 
 //pag initialize ng console

@@ -8,7 +8,7 @@
 class FCFSScheduler : public AScheduler
 {
 public:
-    FCFSScheduler(int cores) : numCores(cores), processQueues(cores) {};
+    FCFSScheduler(int cores);// : numCores(cores), processQueues(cores) {};
 
     void init() override;
     void addProcess(const Process& process, int core); // add process to core worker

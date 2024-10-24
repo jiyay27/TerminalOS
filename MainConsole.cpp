@@ -68,37 +68,10 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            std::cout << "CPU Utilization: " << "100%" << std::endl;
-            std::cout << "Cores used: " << "4" << std::endl;
-            std::cout << "Cores available: " << "0" << std::endl;
+            this->displayCPUUtil(1,4);
+            this->displayRunning();
             std::cout << "" << std::endl;
-            std::cout << "Running processes:" << std::endl;
-            for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
-            {
-                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
-                {
-                    std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
-                        "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
-                        "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
-                }
-            }
-
-            std::cout << "" << std::endl;
-
-
-            std::cout << "Finished processes:" << std::endl;
-            for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
-            {
-                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
-                {
-                    std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
-                        "   FINISHED " << "     " 
-                        << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
-                }
-            }
-
+            this->displayFinished();
         }
         if (outputMessage == "invalid")
         {
@@ -172,6 +145,46 @@ void MainConsole::header() const {
     SetConsoleTextAttribute(hConsole, 14);
     cout << "Type 'exit' to quit, 'clear' to clear the screen\n";
     SetConsoleTextAttribute(hConsole, 15);
+}
+
+void MainConsole::displayCPUUtil(int coresUsed, int cores) const
+{
+    int coresAvail = cores - coresUsed;
+    float cpuUtil = coresUsed * 100 / cores;
+    std::cout << "CPU Utilization: " << cpuUtil << "%" << std::endl;
+    std::cout << "Cores used: " << coresUsed << std::endl;
+    std::cout << "Cores available: " << coresAvail << std::endl;
+    std::cout << "" << std::endl;
+}
+
+void MainConsole::displayRunning() const
+{
+    std::cout << "Running processes:" << std::endl;
+    for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
+    {
+        if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
+        {
+            std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
+                "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
+                "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
+                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+        }
+    }
+}
+
+void MainConsole::displayFinished() const
+{
+    std::cout << "Finished processes:" << std::endl;
+    for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
+    {
+        if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
+        {
+            std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
+                "   FINISHED " << "     "
+                << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
+                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+        }
+    }
 }
 
 string MainConsole::getName() const 

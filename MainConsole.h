@@ -22,6 +22,10 @@ public:
 	void header() const;
 	void asciiart() const;
 
+	void displayCPUUtil(int coresUsed, int cores) const;
+	void displayRunning() const;
+	void displayFinished() const;
+
 	String name;
 	friend class ConsoleManager;
 };

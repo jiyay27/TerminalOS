@@ -4,6 +4,7 @@
 
 void FCFSScheduler::init()
 {
+
 }
 
 void FCFSScheduler::addProcess(const Process& process, int core) 
@@ -19,7 +20,8 @@ void FCFSScheduler::addProcess(const Process& process, int core)
 }
 
 //assign coreworker to process
-void FCFSScheduler::assignCore(std::shared_ptr<Process> process) {
+void FCFSScheduler::assignCore(std::shared_ptr<Process> process) 
+{
     if (process->getState() == Process::READY)
     {
         for (int core = 0; core < numCores; ++core)
@@ -33,8 +35,10 @@ void FCFSScheduler::assignCore(std::shared_ptr<Process> process) {
             }
         }
     }
-	else {
-		std::cerr << "Process is not in READY state.\n";
+    else
+    {
+        std::cerr << "Process is not in READY state.\n";
+    }
 }
 
 void FCFSScheduler::execute() 
@@ -57,4 +61,9 @@ void FCFSScheduler::execute()
             }
         }
     }
+}
+
+FCFSScheduler::FCFSScheduler(int cores)
+{
+    this->numCores = cores;
 }
