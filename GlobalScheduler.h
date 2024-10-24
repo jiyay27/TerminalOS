@@ -25,6 +25,10 @@ public:
 	AScheduler* getScheduler();
 	int checkCoreAvailability(int index);
 	std::shared_ptr<SchedulerWorker> getCPUWorker(int index);
+	CPUWorkers& getCPUWorkers();
+	int availableCores();
+	void setCoreCount(int coreCount);
+	int getCoreCount() const;
 private:
 	GlobalScheduler();
 	~GlobalScheduler() = default;

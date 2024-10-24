@@ -100,7 +100,34 @@ int GlobalScheduler::checkCoreAvailability(int index)
 		return -1;
 }
 
+GlobalScheduler::CPUWorkers& GlobalScheduler::getCPUWorkers()
+{
+	return cpuWorkers;
+}
+
 std::shared_ptr<SchedulerWorker> GlobalScheduler::getCPUWorker(int index)
 {
 	return cpuWorkers[index];
+}
+
+int GlobalScheduler::availableCores() {
+	int count = 0;
+	for (int i = 0; i < this->coreCount; i++)
+	{
+		if (cpuWorkers[i]->isAvailable())
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+void GlobalScheduler::setCoreCount(int coreCount)
+{
+	this->coreCount = coreCount;
+}
+
+int GlobalScheduler::getCoreCount() const
+{
+	return this->coreCount;
 }

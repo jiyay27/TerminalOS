@@ -36,8 +36,9 @@ void MainConsole::display() // Displays output
     if (isInitialized == 1) {
         if (outputMessage == "initialize") {
             // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
-            // 
-            GlobalScheduler::getInstance()->startThreads();
+            GlobalScheduler::getInstance()->setCoreCount(4);
+			std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
+            //GlobalScheduler::getInstance()->startThreads();
 			GlobalScheduler::getInstance()->selectScheduler("FCFS");
             cout << "Console has been initialized..." << endl;
         }
@@ -68,7 +69,9 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            this->displayCPUUtil(1,4);
+            int coreTotal = 4;//GlobalScheduler::getInstance()->getCPUWorkers().size();
+            int coresUsed = 1;//GlobalScheduler::getInstance()->availableCores();
+            this->displayCPUUtil(coresUsed, coreTotal);
             this->displayRunning();
             std::cout << "" << std::endl;
             this->displayFinished();
