@@ -52,16 +52,11 @@ void MainConsole::display() // Displays output
         {
             outputMessage = "";
             ConsoleManager::getInstance()->switchToScreen(outputArg2);
-
         }
 
         if (outputMessage == "screens")
         {
             outputMessage = "";
-            /*std::shared_ptr<Process> process;
-            std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process,outputArg2);
-            ConsoleManager::getInstance()->registerScreen(baseScreen);*/
-            
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
         }
 
@@ -149,7 +144,6 @@ void MainConsole::process() // Takes in input and processes it
         outputArg2 = arg2;
     }
     else if (command == "screen" && arg1 == "-ls") {
-        // TODO: Handle 'screen -ls' command (list screens)
         outputMessage = "screenls";
     }
     else {
