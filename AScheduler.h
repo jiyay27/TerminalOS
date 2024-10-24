@@ -13,22 +13,27 @@ static const String RR_SCHEDULER_NAME = "RRScheduler";
 class AScheduler : public IETThread
 {
 public:
-	AScheduler();
 	enum SchedulingAlgorithm
 	{
 		FCFS, 
 		RR
 	};
 
+	AScheduler();
 	AScheduler(SchedulingAlgorithm schedulingAlgo, int pid, String processName);
+	~AScheduler() = default;
 
-	virtual void addProcess(std::shared_ptr<Process> process);
 	std::shared_ptr<Process> findProcess(String processName);
 	void run() override;
 	void stop();
 
 	virtual void init() = 0;
 	virtual void execute() = 0;
+	virtual void addProcess(std::shared_ptr<Process> process, int core) = 0;
+	virtual int assignCore(std::shared_ptr<Process> process) = 0;
+
+
+	friend class GlobalScheduler;
 private:
 	SchedulingAlgorithm schedulingAlgo;
 	int pid;

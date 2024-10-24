@@ -1,6 +1,11 @@
 #include "SchedulerWorker.h"
 #include "GlobalScheduler.h"
 
+SchedulerWorker::SchedulerWorker(int numCore)
+{
+	this->coreNum = numCore;
+}
+
 void SchedulerWorker::update(bool isRunning)
 {
 	this->isRunning = isRunning;
@@ -8,14 +13,11 @@ void SchedulerWorker::update(bool isRunning)
 
 void SchedulerWorker::run()
 {
-	this->process->addCommand(ICommand::PRINT);
 	while (this->isRunning) {
-		GlobalScheduler::getInstance()->tick();
+		//GlobalScheduler::getInstance()->tick();
 		this->process->executeInstruction();
 	}
-
 }
-
 
 void SchedulerWorker::addProcess(int index)
 {

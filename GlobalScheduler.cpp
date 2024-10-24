@@ -16,6 +16,7 @@ void GlobalScheduler::destroy()
 {
 	delete sharedInstance;
 }
+
 void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
@@ -68,7 +69,7 @@ GlobalScheduler::GlobalScheduler()
 {
 	for (int i = 0; i < coreCount; i++)
 	{
-		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
+		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i);
 		this->cpuWorkers[i] = worker;
 	}
 	//scheduler
@@ -79,7 +80,8 @@ GlobalScheduler::GlobalScheduler()
 //dito palang naka bukas na ung threads
 void GlobalScheduler::startThreads()
 {
-	for (int i = 0; i < coreCount - 1; i++)
+	this->scheduler->start();
+	for (int i = 0; i < coreCount; i++)
 	{
 		this->cpuWorkers[i]->start();
 	}

@@ -28,6 +28,7 @@ public:
 	int availableCores();
 	void setCoreCount(int coreCount);
 	int getCoreCount() const;
+
 private:
 	GlobalScheduler();
 	~GlobalScheduler() = default;

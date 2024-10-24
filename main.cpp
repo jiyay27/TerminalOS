@@ -7,6 +7,7 @@
 #include "ConsoleManager.h"
 #include "InputManager.h"
 #include "GlobalScheduler.h"
+#include "FCFSScheduler.h"
 using std::cout;
 using std::cin;
 using std::endl;

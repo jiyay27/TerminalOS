@@ -63,12 +63,13 @@ void MainConsole::display() // Displays output
         {
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
-            GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess());
+            int cor = GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess());
+            GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
         }
 
         if (outputMessage == "screenls")
         {
-            int coreTotal = 4;//GlobalScheduler::getInstance()->getCPUWorkers().size();
+            int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
             int coresUsed = 1;//GlobalScheduler::getInstance()->availableCores();
             this->displayCPUUtil(coresUsed, coreTotal);
             this->displayRunning();
@@ -164,7 +165,7 @@ void MainConsole::displayRunning() const
     std::cout << "Running processes:" << std::endl;
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
-        if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
+        if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
             std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                 "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
@@ -179,7 +180,7 @@ void MainConsole::displayFinished() const
     std::cout << "Finished processes:" << std::endl;
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
-        if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
+        if (GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
             std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                 "   FINISHED " << "     "
