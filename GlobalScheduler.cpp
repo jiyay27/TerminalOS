@@ -21,7 +21,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 	if (algoName == "FCFS")
 	{
 		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(1);
-		this->scheduler.push_back(fcfs);
+		this->scheduler = fcfs;
 
 	}
 	else if (algoName == "RR")
@@ -34,15 +34,15 @@ void GlobalScheduler::selectScheduler(String algoName)
 	}
 }
 
-AScheduler* GlobalScheduler::getScheduler()
+std::shared_ptr<AScheduler> GlobalScheduler::getScheduler()
 {
-	return this->scheduler.back().get();
+	return this->scheduler;
 }
 
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-	//this->scheduler->execute();
+	this->scheduler->execute();
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
@@ -60,7 +60,7 @@ std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 	if (index >= processList.size()) {
 		throw std::out_of_range("Index out of range");
 	}
-	return processList[index];
+	return this->processList[index];
 }
 
 //ASSIGNED NA YUNG CORE SA WORKER
@@ -69,7 +69,7 @@ GlobalScheduler::GlobalScheduler()
 	for (int i = 0; i < coreCount; i++)
 	{
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
-		cpuWorkers[i] = worker;
+		this->cpuWorkers[i] = worker;
 	}
 	//scheduler
 }
@@ -79,9 +79,9 @@ GlobalScheduler::GlobalScheduler()
 //dito palang naka bukas na ung threads
 void GlobalScheduler::startThreads()
 {
-	for (int i = 0; i < coreCount; i++)
+	for (int i = 0; i < coreCount - 1; i++)
 	{
-		cpuWorkers[i]->start();
+		this->cpuWorkers[i]->start();
 	}
 }
 
@@ -93,7 +93,7 @@ std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 
 int GlobalScheduler::checkCoreAvailability(int index) 
 {
-	if (cpuWorkers[index]->isAvailable()) {
+	if (this->cpuWorkers[index]->isAvailable()) {
 		return index;
 	}
 	else
@@ -102,19 +102,19 @@ int GlobalScheduler::checkCoreAvailability(int index)
 
 GlobalScheduler::CPUWorkers& GlobalScheduler::getCPUWorkers()
 {
-	return cpuWorkers;
+	return this->cpuWorkers;
 }
 
 std::shared_ptr<SchedulerWorker> GlobalScheduler::getCPUWorker(int index)
 {
-	return cpuWorkers[index];
+	return this->cpuWorkers[index];
 }
 
 int GlobalScheduler::availableCores() {
 	int count = 0;
 	for (int i = 0; i < this->coreCount; i++)
 	{
-		if (cpuWorkers[i]->isAvailable())
+		if (this->cpuWorkers[i]->isAvailable())
 		{
 			count++;
 		}

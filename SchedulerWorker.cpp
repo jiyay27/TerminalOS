@@ -11,10 +11,7 @@ void SchedulerWorker::run()
 	this->process->addCommand(ICommand::PRINT);
 	while (this->isRunning) {
 		GlobalScheduler::getInstance()->tick();
-		
 		this->process->executeInstruction();
-		
-		
 	}
 
 }

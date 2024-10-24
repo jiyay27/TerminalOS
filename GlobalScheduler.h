@@ -5,8 +5,7 @@
 class GlobalScheduler  
 {
 public:
-	typedef std::vector<std::shared_ptr<AScheduler>> Schedulers;
-	typedef std::unordered_map<int, std::shared_ptr<SchedulerWorker>> CPUWorkers;
+	typedef std::vector<std::shared_ptr<SchedulerWorker>> CPUWorkers;
 
 	static GlobalScheduler* getInstance();
 	static void initialize();
@@ -22,7 +21,7 @@ public:
 	//get most recent process
 	std::shared_ptr<Process> getMostRecentProcess();
 	//get current scheduler
-	AScheduler* getScheduler();
+	std::shared_ptr<AScheduler> getScheduler();
 	int checkCoreAvailability(int index);
 	std::shared_ptr<SchedulerWorker> getCPUWorker(int index);
 	CPUWorkers& getCPUWorkers();
@@ -36,7 +35,7 @@ private:
 	GlobalScheduler& operator=(GlobalScheduler const&) {};
 	static GlobalScheduler* sharedInstance;
 
-	Schedulers scheduler;
+	std::shared_ptr<AScheduler> scheduler;
 	CPUWorkers cpuWorkers;
 
 	int coreCount;

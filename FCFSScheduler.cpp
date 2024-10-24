@@ -4,7 +4,7 @@
 
 void FCFSScheduler::init()
 {
-
+    this->numCores = GlobalScheduler::getInstance()->getCoreCount();
 }
 
 void FCFSScheduler::addProcess(const Process& process, int core) 
