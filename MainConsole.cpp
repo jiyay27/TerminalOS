@@ -38,7 +38,7 @@ void MainConsole::display() // Displays output
             // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
             GlobalScheduler::getInstance()->setCoreCount(4);
 			std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
-            //GlobalScheduler::getInstance()->startThreads();
+            GlobalScheduler::getInstance()->startThreads();
 			GlobalScheduler::getInstance()->selectScheduler("FCFS");
             cout << "Console has been initialized..." << endl;
         }
