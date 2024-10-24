@@ -16,8 +16,7 @@ void SchedulerWorker::run()
 
 }
 
-void SchedulerWorker::addProcess(int index)
+void SchedulerWorker::stop()
 {
-	this->process = GlobalScheduler::getInstance()->getProcess(index);
+	this->isRunning = false;
 }
-

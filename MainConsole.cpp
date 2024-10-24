@@ -34,6 +34,10 @@ void MainConsole::display() // Displays output
 
     if (isInitialized == 1) {
         if (outputMessage == "initialize") {
+            // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
+            // 
+            GlobalScheduler::getInstance()->startThreads();
+			GlobalScheduler::getInstance()->selectScheduler("FCFS");
             cout << "Console has been initialized..." << endl;
         }
 

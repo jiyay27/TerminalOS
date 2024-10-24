@@ -16,7 +16,7 @@ public:
 	void addProcess(std::shared_ptr<Process> process);
 	int getProcessCount() const;
 	std::shared_ptr<Process>& getProcess(int index);
-
+	void startThreads();
 	void selectScheduler(String algoName);
 
 
