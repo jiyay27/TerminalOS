@@ -3,12 +3,13 @@
 #include <string>
 #include <thread>
 
-class SchedulerWorker
+class SchedulerWorker : public IETThread
 {
 public:
 	void update(bool isRunning);
-	void run();
+	void run() override;
 
 private:
 	bool isRunning;
 };
+

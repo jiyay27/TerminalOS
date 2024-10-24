@@ -12,3 +12,4 @@ void SchedulerWorker::run()
 		GlobalScheduler::getInstance()->tick();
 	}
 }
+

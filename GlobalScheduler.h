@@ -1,10 +1,11 @@
 #pragma once
 #include "AScheduler.h"
+#include "SchedulerWorker.h"
 class GlobalScheduler  
 {
 public:
 
-	typedef std::unordered_map<int, std::shared_ptr<AScheduler>> CPUWorkers;
+	typedef std::unordered_map<int, std::shared_ptr<SchedulerWorker>> CPUWorkers;
 
 	static GlobalScheduler* getInstance();
 	static void initialize();
@@ -27,6 +28,6 @@ private:
 	static GlobalScheduler* sharedInstance;
 	AScheduler* scheduler;
 	CPUWorkers cpuWorkers;
-
+	int coreCount;
 	std::vector<std::shared_ptr<Process>> processList;
 };

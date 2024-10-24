@@ -57,7 +57,12 @@ std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 	return processList[index];
 }
 
-
+//ASSIGNED NA YUNG CORE SA WORKER
 GlobalScheduler::GlobalScheduler()
 {
+	for (int i = 0; i < coreCount; i++)
+	{
+		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
+		cpuWorkers[i] = worker;
+	}
 }
