@@ -13,3 +13,7 @@ void SchedulerWorker::run()
 	}
 }
 
+void SchedulerWorker::stop()
+{
+	this->isRunning = false;
+}

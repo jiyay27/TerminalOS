@@ -14,8 +14,10 @@ Process::Process(String name)
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
-	this->remainingInstructions = randomNum;
-	this->totalInstructions = randomNum;
+	for (int i = 0; i < randomNum; i++)
+	{
+		this->addCommand(ICommand::CommandType::PRINT);
+	}
 }
 
 Process::Process(int pid, String name, int remainingInstructions)
@@ -24,8 +26,10 @@ Process::Process(int pid, String name, int remainingInstructions)
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
-	this->remainingInstructions = remainingInstructions;
-	this->totalInstructions = remainingInstructions;
+	for (int i = 0; i < remainingInstructions; i++)
+	{
+		this->addCommand(ICommand::CommandType::PRINT);
+	}
 }
 
 int Process::getID() const
@@ -36,17 +40,6 @@ int Process::getID() const
 int Process::getCommandCounter() const
 {
 	return this->commandCounter;
-}
-
-
-int Process::getTotalInstructions() const
-{
-	return this->totalInstructions;
-}
-
-int Process::getRemainingInstructions() const
-{
-	return this->remainingInstructions;
 }
 
 int Process::getCPUCoreID() const

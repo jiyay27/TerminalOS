@@ -18,13 +18,13 @@ void GlobalScheduler::destroy()
 }
 void GlobalScheduler::selectScheduler(String algoName)
 {
-	if (algoName == FCFS_SCHEDULER_NAME)
+	if (algoName == "FCFS")
 	{
 		FCFSScheduler* fcfs = new FCFSScheduler(1);
 		this->scheduler = fcfs;
 
 	}
-	else if (algoName == RR_SCHEDULER_NAME)
+	else if (algoName == "RR")
 	{
 		//RRScheduler* rr = new RRScheduler(1);
 	}
@@ -64,5 +64,16 @@ GlobalScheduler::GlobalScheduler()
 	{
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
 		cpuWorkers[i] = worker;
+	}
+}
+
+//pag initialize ng console
+//read config file, get core count, create workers, start workers
+//dito palang naka bukas na ung threads
+void GlobalScheduler::startThreads()
+{
+	for (int i = 0; i < coreCount; i++)
+	{
+		cpuWorkers[i]->start();
 	}
 }
