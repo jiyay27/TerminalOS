@@ -8,10 +8,20 @@ void SchedulerWorker::update(bool isRunning)
 
 void SchedulerWorker::run()
 {
+	// this->process->addCommand(print) replace with actual syntax
 	while (this->isRunning) {
 		GlobalScheduler::getInstance()->tick();
+		// this->process->executeCurrentCommand()
 	}
+
 }
+
+
+void SchedulerWorker::addProcess(int index)
+{
+	this->process = GlobalScheduler::getInstance()->getProcess(index);
+}
+
 
 void SchedulerWorker::stop()
 {
