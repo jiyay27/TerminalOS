@@ -26,8 +26,11 @@ private:
 	GlobalScheduler(GlobalScheduler const&) {};
 	GlobalScheduler& operator=(GlobalScheduler const&) {};
 	static GlobalScheduler* sharedInstance;
+
 	AScheduler* scheduler;
 	CPUWorkers cpuWorkers;
+
 	int coreCount;
+
 	std::vector<std::shared_ptr<Process>> processList;
 };

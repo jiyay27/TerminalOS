@@ -34,7 +34,7 @@ void FCFSScheduler::execute()
                     currentProcess.executeInstruction();
                 }
 
-                std::cout << "Process" << currentProcess.getRemainingInstructions() << "completed on Core" << core + 1 << "." << std::endl;
+                std::cout << "Process" << currentProcess.getName() << "completed on Core" << core + 1 << "." << std::endl;
             }
         }
     }

@@ -83,5 +83,5 @@ void BaseScreen::printProcessInfo() const
 	std::cout << "Process: " << this->attachedProcess->getName() << std::endl;
 	std::cout << "ID: " << this->attachedProcess->getID() << std::endl;
 	std::cout << "" << std::endl;
-	//std::cout << "Current insruction line: " << this->attachedProcess->getCurrentLine() << std::endl;
+	std::cout << "Current insruction line: " << this->attachedProcess->getCommandCounter() << std::endl;
 }

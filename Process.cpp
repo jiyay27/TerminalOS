@@ -42,6 +42,11 @@ int Process::getCommandCounter() const
 	return this->commandCounter;
 }
 
+int Process::getCommandListCount() const
+{
+	return this->commandList.size();
+}
+
 int Process::getCPUCoreID() const
 {
 	return this->cpuCoreID;

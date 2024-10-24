@@ -73,12 +73,12 @@ void MainConsole::display() // Displays output
             std::cout << "Running processes:" << std::endl;
             for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
             {
-                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions())
+                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() != GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
                 {
                     std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                         "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
                         "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions() << std::endl;
+                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
                 }
             }
 
@@ -88,12 +88,12 @@ void MainConsole::display() // Displays output
             std::cout << "Finished processes:" << std::endl;
             for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
             {
-                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions())
+                if (GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() == GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount())
                 {
                     std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                         "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
                         "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getTotalInstructions() << std::endl;
+                        "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
                 }
             }
 
