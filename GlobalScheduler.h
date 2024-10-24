@@ -22,7 +22,7 @@ public:
 	std::shared_ptr<Process> getMostRecentProcess();
 	//get current scheduler
 	std::shared_ptr<AScheduler> getScheduler();
-	int checkCoreAvailability(int index);
+	bool checkCoreAvailability(int index);
 	std::shared_ptr<SchedulerWorker> getCPUWorker(int index);
 	CPUWorkers& getCPUWorkers();
 	int availableCores();

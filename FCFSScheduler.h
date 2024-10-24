@@ -8,8 +8,8 @@
 class FCFSScheduler : public AScheduler
 {
 public:
-    //FCFSScheduler() { int numcores = 4; };
-    FCFSScheduler();// : numCores(cores), processQueues(cores) {};
+    FCFSScheduler();
+    FCFSScheduler(int cores);
     ~FCFSScheduler() = default;
 
     void init() override;
@@ -19,6 +19,7 @@ public:
     int assignCore(std::shared_ptr<Process> process) override;
 	void printCores() override;
 private:
+    int cores;
     int numCores;
-    //std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
+    std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
 };

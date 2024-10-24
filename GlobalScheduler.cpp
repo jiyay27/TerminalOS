@@ -22,7 +22,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>();
+		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(4);
 		this->scheduler = fcfs;
 
 	}
@@ -44,11 +44,11 @@ std::shared_ptr<AScheduler> GlobalScheduler::getScheduler()
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-	if (this->scheduler) {
-		this->scheduler->execute();
-	} else {
-		std::cerr << "Scheduler is not set." << std::endl;
-	}
+	//if (this->scheduler) {
+	//	this->scheduler->execute();
+	//} else {
+	//	std::cerr << "Scheduler is not set." << std::endl;
+	//}
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
@@ -78,7 +78,6 @@ GlobalScheduler::GlobalScheduler() // Initialize coreCount
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i);
 		this->cpuWorkers[i] = worker;
 	}
-	//scheduler
 }
 
 //pag initialize ng console
@@ -99,16 +98,16 @@ void GlobalScheduler::startThreads()
 
 std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 {
-	return processList.back();
+	return processList.front();
 }
 
-int GlobalScheduler::checkCoreAvailability(int index) 
+bool GlobalScheduler::checkCoreAvailability(int index) 
 {
 	if (this->cpuWorkers[index]->isAvailable()) {
-		return index;
+		return true;
 	}
 	else
-		return -1;
+		return false;
 }
 
 GlobalScheduler::CPUWorkers& GlobalScheduler::getCPUWorkers()
