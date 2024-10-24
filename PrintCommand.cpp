@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream> // Include this header for std::stringstream
 #include "TypedefRepo.h"
-//#include "IETThread.h"
+#include "IETThread.h"
 //#include "MessageBuffer.h"
 
 PrintCommand::PrintCommand(int pid, String& toPrint) : ICommand(pid, PRINT)
