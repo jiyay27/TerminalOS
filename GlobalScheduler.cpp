@@ -20,8 +20,8 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		FCFSScheduler* fcfs = new FCFSScheduler(1);
-		this->scheduler = fcfs;
+		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>();
+		this->scheduler.push_back(fcfs);
 
 	}
 	else if (algoName == "RR")
@@ -33,6 +33,12 @@ void GlobalScheduler::selectScheduler(String algoName)
 		std::cerr << "Invalid algorithm name." << std::endl;
 	}
 }
+
+AScheduler* GlobalScheduler::getScheduler()
+{
+	return this->scheduler.back().get();
+}
+
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
@@ -65,6 +71,7 @@ GlobalScheduler::GlobalScheduler()
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>();
 		cpuWorkers[i] = worker;
 	}
+	scheduler 
 }
 
 //pag initialize ng console
@@ -76,4 +83,24 @@ void GlobalScheduler::startThreads()
 	{
 		cpuWorkers[i]->start();
 	}
+}
+
+std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
+{
+	return processList.back();
+}
+
+
+int GlobalScheduler::checkCoreAvailability(int index) 
+{
+	if (cpuWorkers[index]->isAvailable()) {
+		return index;
+	}
+	else
+		return -1;
+}
+
+std::shared_ptr<SchedulerWorker> GlobalScheduler::getCPUWorker(int index)
+{
+	return cpuWorkers[index];
 }

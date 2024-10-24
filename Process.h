@@ -30,6 +30,8 @@ public:
 	String getName() const;
 	void executeInstruction();
 	bool isFinished() const;
+	void setCoreID(int coreID);
+	void setState(ProcessState state);
 private:
 	int pid;
 	String name;

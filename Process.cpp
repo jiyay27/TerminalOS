@@ -96,3 +96,13 @@ void Process::executeInstruction()
 		this->currentState = ProcessState::FINISHED;
 	}
 }
+
+void Process::setCoreID(int coreID)
+{
+	this->cpuCoreID = coreID;
+}
+
+void Process::setState(ProcessState state)
+{
+	this->currentState = state;
+}

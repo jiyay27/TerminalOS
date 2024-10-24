@@ -13,7 +13,7 @@ public:
     void init() override;
     void addProcess(const Process& process, int core); // add process to core worker
     void execute() override;
-
+    void assignCore(std::shared_ptr<Process> process);
 private:
     int numCores;
     std::vector<std::vector<Process>> processQueues;

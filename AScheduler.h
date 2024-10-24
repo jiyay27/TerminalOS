@@ -22,18 +22,18 @@ public:
 
 	AScheduler(SchedulingAlgorithm schedulingAlgo, int pid, String processName);
 
-	void addProcess(std::shared_ptr<Process> process);
+	virtual void addProcess(std::shared_ptr<Process> process);
 	std::shared_ptr<Process> findProcess(String processName);
 	void run() override;
 	void stop();
 
 	virtual void init() = 0;
 	virtual void execute() = 0;
-
 private:
 	SchedulingAlgorithm schedulingAlgo;
 	int pid;
 	String processName;
-	std::vector<std::shared_ptr<Process>> processes;
 	bool running = true;
+protected:
+	std::vector<std::shared_ptr<Process>> processes;
 };

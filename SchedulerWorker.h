@@ -10,11 +10,12 @@ public:
 	void update(bool isRunning);
 	void run() override;
 	void addProcess(int index);
+	bool isAvailable() const;
 	void stop();
-
+	void isOccupied();
 private:
 	bool isRunning;
-	bool available; //kung gamit na ung cpu
+	bool available = true; //kung gamit na ung cpu
 	std::shared_ptr<Process> process;
 };
 

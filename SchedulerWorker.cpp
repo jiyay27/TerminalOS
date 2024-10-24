@@ -27,3 +27,12 @@ void SchedulerWorker::stop()
 {
 	this->isRunning = false;
 }
+
+bool SchedulerWorker::isAvailable() const
+{
+	return this->available;
+}
+
+void SchedulerWorker::isOccupied() {
+	this->available = false;
+}

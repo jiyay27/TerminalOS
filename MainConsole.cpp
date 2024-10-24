@@ -1,6 +1,7 @@
 #include "MainConsole.h"
 #include "ConsoleManager.h"
 #include "GlobalScheduler.h"
+#include "FCFSScheduler.h"
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -62,6 +63,7 @@ void MainConsole::display() // Displays output
         {
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
+            GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess());
         }
 
         if (outputMessage == "screenls")
