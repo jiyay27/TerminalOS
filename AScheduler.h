@@ -13,6 +13,7 @@ static const String RR_SCHEDULER_NAME = "RRScheduler";
 class AScheduler : public IETThread
 {
 public:
+	AScheduler();
 	enum SchedulingAlgorithm
 	{
 		FCFS, 

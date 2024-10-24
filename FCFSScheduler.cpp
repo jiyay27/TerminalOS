@@ -1,7 +1,7 @@
 #include "FCFSScheduler.h"
 #include <algorithm>
 
-void FCFSScheduler::initialize() const
+void FCFSScheduler::init()
 {
 
 }
@@ -18,19 +18,7 @@ void FCFSScheduler::addProcess(const Process& process, int core)
      }
 }
 
-//void FCFSScheduler::sortProcessQueues() const
-//{
-//     for (auto& queue : processQueues)
-//     {
-//        std::sort(queue.begin(), queue.end(), [](const Process& a, const Process& b) 
-//        {
-//            return a.getRemainingInstructions() > b.getRemainingInstructions();
-//        });
-//     }
-//}
-
-
-void FCFSScheduler::runScheduler() const
+void FCFSScheduler::execute() 
 {
     while (!processQueues[0].empty())
     {
@@ -39,7 +27,7 @@ void FCFSScheduler::runScheduler() const
             if (!processQueues[core].empty())
             {
                 Process currentProcess = processQueues[core].back();
-                //processQueues[core].pop_back();
+                processQueues[core].pop_back();
 
                 while (!currentProcess.isFinished())
                 {

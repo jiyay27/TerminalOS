@@ -1,4 +1,5 @@
 #include "GlobalScheduler.h"
+#include "FCFSScheduler.h"
 
 GlobalScheduler* GlobalScheduler::sharedInstance = nullptr;
 GlobalScheduler* GlobalScheduler::getInstance()
@@ -15,10 +16,27 @@ void GlobalScheduler::destroy()
 {
 	delete sharedInstance;
 }
+void GlobalScheduler::selectScheduler(String algoName)
+{
+	if (algoName == FCFS_SCHEDULER_NAME)
+	{
+		FCFSScheduler* fcfs = new FCFSScheduler(1);
+		this->scheduler = fcfs;
 
+	}
+	else if (algoName == RR_SCHEDULER_NAME)
+	{
+		//RRScheduler* rr = new RRScheduler(1);
+	}
+	else
+	{
+		std::cerr << "Invalid algorithm name." << std::endl;
+	}
+}
+//DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-
+	this->scheduler->execute();
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
