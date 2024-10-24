@@ -131,26 +131,11 @@ void ConsoleManager::setCursorPosition(int posX, int posY) const
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void ConsoleManager::addProcess(std::shared_ptr<Process> process)
-{
-    this->processList.push_back(process);
-}
-
-int ConsoleManager::getProcessCount() const
-{
-    return this->processList.size();
-}
-
 void ConsoleManager::createBaseScreen(String screenName)
 {
     std::shared_ptr<Process> process = std::make_shared<Process>(screenName);
     std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process, screenName);
     this->registerScreen(baseScreen);
-}
-
-std::shared_ptr<Process> ConsoleManager::getProcessName(int index)
-{
-    return this->processList[index];
 }
 
 HANDLE ConsoleManager::getConsoleHandle() const

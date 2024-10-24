@@ -133,7 +133,7 @@
     <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="FCFSScheduler.cpp" />
     <ClCompile Include="GlobalScheduler.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="IETThread.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -152,7 +152,7 @@
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="FCFSScheduler.h" />
     <ClInclude Include="GlobalScheduler.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IETThread.h" />

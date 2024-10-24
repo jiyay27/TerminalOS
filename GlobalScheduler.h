@@ -4,22 +4,26 @@
 class GlobalScheduler
 {
 public:
-	enum SchedulingAlgorithm
-	{
-		FCFS,
-		RR
-	};
+	typedef std::unordered_map<String, std::shared_ptr<AScheduler>> CPUWorkers;
 
-	GlobalScheduler();
-	~GlobalScheduler() = default;
+	static GlobalScheduler* getInstance();
+	static void initialize();
+	static void destroy();
 
-	void init();
-	void execute();
+	void tick();
+
+	void addProcess(std::shared_ptr<Process> process);
+	int getProcessCount() const;
+	std::shared_ptr<Process> getProcessName(int index);
+
 
 private:
-	SchedulingAlgorithm schedulingAlgo;
-	int pid;
-	String processName;
-	std::vector<std::shared_ptr<Process>> processes;
-	bool running = true;
+	GlobalScheduler();
+	~GlobalScheduler() = default;
+	GlobalScheduler(GlobalScheduler const&) {};
+	GlobalScheduler& operator=(GlobalScheduler const&) {};
+	static GlobalScheduler* sharedInstance;
+
+	CPUWorkers cpuWorkers;
+	std::vector<std::shared_ptr<Process>> processList;
 };
