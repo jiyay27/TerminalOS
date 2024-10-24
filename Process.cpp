@@ -3,15 +3,27 @@
 #include "PrintCommand.h"
 #include <string>
 #include <iostream>
-
-
+#include "GlobalScheduler.h"
 
 Process::Process(String name)
 {
-	this->pid = 0;
+	srand(time(0));
+	int randomNum = rand() % 1501;
+
+	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
+	this->remainingInstructions = randomNum;
+}
+
+Process::Process(int pid, String name, int remainingInstructions)
+{
+	this->pid = pid;
+	this->name = name;
+	this->commandCounter = 0;
+	this->currentState = ProcessState::READY;
+	this->remainingInstructions = remainingInstructions;
 }
 
 int Process::getID() const
@@ -41,7 +53,7 @@ String Process::getName() const
 
 bool Process::isFinished() const
 {
-	return this->currentState == ProcessState::FINISHED;
+	return this->commandCounter == this->commandList.size();
 }
 
 void Process::addCommand(ICommand::CommandType commandType)
@@ -73,14 +85,3 @@ void Process::executeInstruction()
 		this->currentState = ProcessState::FINISHED;
 	}
 }
-
-bool Process::isFinished() const
-{
-	return this->commandCounter == this->commandList.size();
-}
-
-
-
-
-
-

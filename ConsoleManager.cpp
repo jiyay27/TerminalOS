@@ -4,6 +4,7 @@
 
 #include "MainConsole.h"
 #include "MarqueeConsole.h"
+#include "GlobalScheduler.h"
 
 
 ConsoleManager* ConsoleManager::sharedInstance = nullptr;
@@ -87,7 +88,7 @@ void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
         return;
     }
 
-    this->addProcess(screenRef->getProcess());
+    GlobalScheduler::getInstance()->addProcess(screenRef->getProcess());
     this->consoleTable[screenRef->getName()] = screenRef;
     this->switchConsole(screenRef->getName());
 }

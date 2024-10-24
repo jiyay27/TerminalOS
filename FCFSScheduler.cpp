@@ -6,7 +6,7 @@ void FCFSScheduler::initialize() const
 
 }
 
-void FCFSScheduler::addProcess(Process& process, int core = 0) const
+void FCFSScheduler::addProcess(const Process& process, int core = 0) const
 {
      if(core >=0 && core < numCores)
      {

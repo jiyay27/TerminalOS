@@ -1,5 +1,6 @@
 #include "MainConsole.h"
 #include "ConsoleManager.h"
+#include "GlobalScheduler.h"
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -66,7 +67,7 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            for (int i = 0; i < ConsoleManager::getInstance()->getProcessCount(); i++)
+            for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
             {
                 //lstd::cout << "Name: " << ConsoleManager::getInstance()->getProcessName(i)->getProcessName;
             }

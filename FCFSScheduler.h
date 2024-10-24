@@ -5,13 +5,13 @@
 #include "Process.h"
 #include "AScheduler.h"
 
-class FCFSScheduler : public AScheduler
+class FCFSScheduler
 {
 public:
     FCFSScheduler(int cores) : numCores(cores), processQueues(cores) {};
 
     void initialize() const;
-    void addProcess(Process& process, int core) const; // add process to core worker
+    void addProcess(const Process& process, int core) const; // add process to core worker
     void sortProcessQueues() const;
     void runScheduler() const;
 

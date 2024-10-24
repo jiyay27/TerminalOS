@@ -35,12 +35,7 @@ public:
     void switchToScreen(String screenName);
     void unregisterScreen(String screenName);
 
-    void addProcess(std::shared_ptr<Process> process);
-    int getProcessCount() const;
-
     void createBaseScreen(String screenName);
-
-    std::shared_ptr<Process> getProcessName(int index);
 
     HANDLE getConsoleHandle() const;
 
@@ -57,7 +52,6 @@ private:
     std::shared_ptr<AConsole> currentConsole;
     std::shared_ptr<AConsole> previousConsole;
 
-    
     HANDLE consoleHandle;
     bool running = true;
 };
