@@ -31,7 +31,7 @@ public:
 	virtual void execute() = 0;
 	virtual void addProcess(std::shared_ptr<Process> process, int core) = 0;
 	virtual int assignCore(std::shared_ptr<Process> process) = 0;
-
+	virtual void printCores() = 0;
 
 	friend class GlobalScheduler;
 private:

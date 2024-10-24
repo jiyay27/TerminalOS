@@ -38,8 +38,12 @@ void MainConsole::display() // Displays output
             // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
             GlobalScheduler::getInstance()->setCoreCount(4);
 			std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
-			GlobalScheduler::getInstance()->selectScheduler("FCFS");
             cout << "Console has been initialized..." << endl;
+            //GlobalScheduler::getInstance()->getScheduler()->init();
+			GlobalScheduler::getInstance()->getScheduler()->printCores();
+
+			outputMessage = "";
+
         }
 
         if (outputMessage == "clear")
@@ -64,6 +68,7 @@ void MainConsole::display() // Displays output
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
             int cor = GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess());
+            std::cout << cor << std::endl;
             GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
         }
 

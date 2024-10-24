@@ -1,3 +1,4 @@
+// GlobalScheduler.cpp
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
 
@@ -21,7 +22,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(4);
+		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>();
 		this->scheduler = fcfs;
 
 	}
@@ -43,7 +44,11 @@ std::shared_ptr<AScheduler> GlobalScheduler::getScheduler()
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-	this->scheduler->execute();
+	if (this->scheduler) {
+		this->scheduler->execute();
+	} else {
+		std::cerr << "Scheduler is not set." << std::endl;
+	}
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
@@ -65,8 +70,9 @@ std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 }
 
 //ASSIGNED NA YUNG CORE SA WORKER
-GlobalScheduler::GlobalScheduler()
+GlobalScheduler::GlobalScheduler() // Initialize coreCount
 {
+	cpuWorkers.resize(coreCount);
 	for (int i = 0; i < coreCount; i++)
 	{
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i);
@@ -80,7 +86,11 @@ GlobalScheduler::GlobalScheduler()
 //dito palang naka bukas na ung threads
 void GlobalScheduler::startThreads()
 {
-	this->scheduler->start();
+	if (this->scheduler) {
+		this->scheduler->start();
+	} else {
+		std::cerr << "Scheduler is not set." << std::endl;
+	}
 	for (int i = 0; i < coreCount; i++)
 	{
 		this->cpuWorkers[i]->start();
@@ -91,7 +101,6 @@ std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 {
 	return processList.back();
 }
-
 
 int GlobalScheduler::checkCoreAvailability(int index) 
 {

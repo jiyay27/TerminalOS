@@ -56,7 +56,7 @@ void showTimestamp() {
 int main() {
     ConsoleManager::initialize();
     GlobalScheduler::initialize();
-
+    GlobalScheduler::getInstance()->selectScheduler("FCFS");
     GlobalScheduler::getInstance()->startThreads();
     bool running = true;
     while (running)

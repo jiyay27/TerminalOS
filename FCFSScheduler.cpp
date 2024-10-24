@@ -4,14 +4,15 @@
 
 void FCFSScheduler::init()
 {
-    this->numCores = GlobalScheduler::getInstance()->getCoreCount();
+    //this->numCores = GlobalScheduler::getInstance()->getCoreCount();
 }
 
 void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
 {
      if(core >=0 && core < numCores)
      {
-        processQueues[core].push_back(process);
+        //processQueues[core].push_back(process);
+		 std::cout << "WOW!" << std::endl;
      } 
      else 
      {
@@ -61,7 +62,11 @@ void FCFSScheduler::execute()
     //}
 }
 
-FCFSScheduler::FCFSScheduler(int cores)
+FCFSScheduler::FCFSScheduler()
 {
-    this->numCores = cores;
+   this->numCores = 4;
+}
+
+void FCFSScheduler::printCores() {
+	std::cout << "Number of cores: " << this->numCores << std::endl;
 }
