@@ -13,3 +13,8 @@ void SchedulerWorker::run()
 	}
 }
 
+void SchedulerWorker::addProcess(int index)
+{
+	this->process = GlobalScheduler::getInstance()->getProcess(index);
+}
+
