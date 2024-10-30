@@ -19,9 +19,9 @@ void SchedulerWorker::run()
 	}
 }
 
-void SchedulerWorker::addProcess(int index)
+void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 {
-	this->process = GlobalScheduler::getInstance()->getProcess(index);
+	this->process = process;
 }
 
 

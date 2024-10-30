@@ -9,10 +9,9 @@ void FCFSScheduler::init()
 
 void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
 {
-     if(core >=0 && core < cores)
+     if(core >=0)
      {
         processQueues[core].push_back(process);
-		
      } 
      else 
      {
@@ -25,12 +24,15 @@ int FCFSScheduler::assignCore(std::shared_ptr<Process> process)
 {
      for (int core = 0; core < cores; core++)
      {
+         std::cout << "Assign core func for loop." << std::endl;
          if(GlobalScheduler::getInstance()->checkCoreAvailability(core)==true)
          {
+             std::cout << "Assign core func." << std::endl;
              process->setCoreID(core);
              process->setState(Process::RUNNING);
-             GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process->getID());
+             GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
              GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
+			 FCFSScheduler::addProcess(process, core);
              return core;
          }
      }
@@ -64,14 +66,14 @@ void FCFSScheduler::execute()
 
 FCFSScheduler::FCFSScheduler()
 {
-    this->numCores = 0;
+    this->numCores = GlobalScheduler::getInstance()->getCoreCount();
 }
 
 FCFSScheduler::FCFSScheduler(int numCores)
 {
-    this->cores = numCores;
+    this->numCores = numCores;
 }
 
 void FCFSScheduler::printCores() {
-	std::cout << "Number of cores: " << this->cores << std::endl;
+	std::cout << "Number of cores: " << this->numCores << std::endl;
 }

@@ -36,7 +36,7 @@ void MainConsole::display() // Displays output
     if (isInitialized == 1) {
         if (outputMessage == "initialize") {
             // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
-            GlobalScheduler::getInstance()->setCoreCount(4);
+            //GlobalScheduler::getInstance()->setCoreCount(4);
 			std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
             cout << "Console has been initialized..." << endl;
             //GlobalScheduler::getInstance()->getScheduler()->init();
@@ -68,8 +68,8 @@ void MainConsole::display() // Displays output
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
             int cor = GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess());
-            std::cout << cor << std::endl;
-            GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
+            std::cout << "Core: " << cor << std::endl;
+            //GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
         }
 
         if (outputMessage == "screenls")

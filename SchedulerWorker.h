@@ -12,7 +12,7 @@ public:
 
 	void update(bool isRunning);
 	void run() override;
-	void addProcess(int index);
+	void addProcess(std::shared_ptr<Process> process);
 	bool isAvailable() const;
 	void stop();
 	void isOccupied();

@@ -22,9 +22,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 {
 	if (algoName == "FCFS")
 	{
-		std::shared_ptr<FCFSScheduler> fcfs = std::make_shared<FCFSScheduler>(4);
-		this->scheduler = fcfs;
-
+		this->scheduler = std::make_shared<FCFSScheduler>(GlobalScheduler::getInstance()->getCoreCount());
 	}
 	else if (algoName == "RR")
 	{
@@ -53,7 +51,12 @@ void GlobalScheduler::tick()
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)
 {
-	this->processList.push_back(process);
+	if (process) {
+		this->processList.push_back(process);
+	}
+	else {
+		std::cerr << "Process is null." << std::endl;
+	}
 }
 
 int GlobalScheduler::getProcessCount() const
@@ -104,6 +107,7 @@ std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 bool GlobalScheduler::checkCoreAvailability(int index) 
 {
 	if (this->cpuWorkers[index]->isAvailable()) {
+		std::cout << "Core is available." << std::endl;
 		return true;
 	}
 	else

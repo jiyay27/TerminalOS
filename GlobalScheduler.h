@@ -39,7 +39,7 @@ private:
 	std::shared_ptr<AScheduler> scheduler;
 	CPUWorkers cpuWorkers;
 
-	int coreCount;
+	int coreCount = 4;
 
 	std::vector<std::shared_ptr<Process>> processList;
 };
