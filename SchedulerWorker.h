@@ -16,8 +16,9 @@ public:
 	bool isAvailable() const;
 	void stop();
 	void isOccupied();
+	bool processExists() const;
 private:
-	bool isRunning = false;
+	bool isRunning = true;
 	bool available = true; //kung gamit na ung cpu
 	int coreNum;
 	std::shared_ptr<Process> process;

@@ -66,15 +66,26 @@ String Process::getName() const
 
 bool Process::isFinished() const
 {
-	return this->commandCounter == this->commandList.size();
+	//return this->commandCounter == this->commandList.size();
+	return this->commandCounter >= 1000;
 }
 
 void Process::addCommand(ICommand::CommandType commandType)
 {
 	String toPrint = "Command added";
 	const std::shared_ptr<ICommand> command = std::make_shared<PrintCommand>(this->pid, toPrint);
+
+	// Check if the command is a null pointer
+	if (command == nullptr)
+	{
+		std::cerr << "Failed to create command. Null pointer detected." << std::endl;
+		return; // Exit the function if the command is null
+	}
+
 	this->commandList.push_back(command);
+	//std::cout << "Command added to process " << this->name << std::endl;
 }
+
 
 void Process::executeCurrentCommand() const
 {
@@ -88,7 +99,7 @@ void Process::moveToNextLine()
 
 void Process::executeInstruction()
 {
-	if (this->commandCounter < this->commandList.size())
+	if (this->commandCounter < 1000)
 	{
 		this->executeCurrentCommand();
 		this->moveToNextLine();

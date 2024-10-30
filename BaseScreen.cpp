@@ -83,5 +83,7 @@ void BaseScreen::printProcessInfo() const
 	std::cout << "" << std::endl;
 	std::cout << "Process: " << this->attachedProcess->getName() << std::endl;
 	std::cout << "ID: " << this->attachedProcess->getID() << std::endl;
+	std::cout << "State: " << this->attachedProcess->getState() << std::endl;
+	std::cout << "Core ID: " << this->attachedProcess->getCPUCoreID() << std::endl;
 	std::cout << "" << std::endl;
 }

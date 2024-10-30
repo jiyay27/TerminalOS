@@ -42,11 +42,11 @@ std::shared_ptr<AScheduler> GlobalScheduler::getScheduler()
 //DAPAT ANDITO APG RUN NG ALGORITHM
 void GlobalScheduler::tick()
 {
-	//if (this->scheduler) {
-	//	this->scheduler->execute();
-	//} else {
-	//	std::cerr << "Scheduler is not set." << std::endl;
-	//}
+	if (this->scheduler) {
+		this->scheduler->execute();
+	} else {
+		std::cerr << "Scheduler is not set." << std::endl;
+	}
 }
 
 void GlobalScheduler::addProcess(std::shared_ptr<Process> process)

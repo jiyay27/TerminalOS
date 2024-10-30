@@ -17,5 +17,5 @@ void PrintCommand::execute()
     ICommand::execute();
     std::stringstream msg; 
     msg << "PID " << this->pid << ":" << this->toPrint << std::endl; // Use std::string instead of String
-	std::cout << msg.str(); 
+	//std::cout << msg.str(); 
 }

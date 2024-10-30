@@ -14,8 +14,18 @@ void SchedulerWorker::update(bool isRunning)
 void SchedulerWorker::run()
 {
 	while (this->isRunning) {
-		//GlobalScheduler::getInstance()->tick();
-		this->process->executeInstruction();
+		if (this->process != nullptr) {
+			//GlobalScheduler::getInstance()->tick();
+			this->process->executeInstruction();
+			if (this->process->isFinished()) {
+				this->process = nullptr;
+				this->available = true;
+				stop();
+			}
+		}
+		else {
+			//std::cerr << "IIIIIIIII" << std::endl;
+		}
 	}
 }
 
@@ -37,4 +47,9 @@ bool SchedulerWorker::isAvailable() const
 
 void SchedulerWorker::isOccupied() {
 	this->available = false;
+}
+
+bool SchedulerWorker::processExists() const
+{
+	return this->process != nullptr;
 }
