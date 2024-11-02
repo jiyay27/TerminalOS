@@ -175,7 +175,7 @@ void MainConsole::displayRunning() const
             std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                 "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
                 "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() + 1 << std::endl;
+                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
 }
@@ -190,7 +190,7 @@ void MainConsole::displayFinished() const
             std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
                 "   FINISHED " << "     "
                 << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() + 1 << std::endl;
+                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
 }
