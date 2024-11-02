@@ -101,7 +101,7 @@ void GlobalScheduler::startThreads()
 
 std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 {
-	return this->processList.front();
+	return this->processList.back();
 }
 
 bool GlobalScheduler::checkCoreAvailability(int index) 

@@ -124,3 +124,4 @@ void Process::setState(ProcessState state)
 {
 	this->currentState = state;
 }
+
