@@ -76,8 +76,8 @@ void MainConsole::display() // Displays output
         if (outputMessage == "screenls")
         {
             int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
-            int coresUsed = GlobalScheduler::getInstance()->availableCores();
-            this->displayCPUUtil(coresUsed, coreTotal);
+            int coresAvail = GlobalScheduler::getInstance()->availableCores();
+            this->displayCPUUtil(coresAvail, coreTotal);
             this->displayRunning();
             std::cout << "" << std::endl;
             this->displayFinished();
@@ -156,10 +156,10 @@ void MainConsole::header() const {
     SetConsoleTextAttribute(hConsole, 15);
 }
 
-void MainConsole::displayCPUUtil(int coresUsed, int cores) const
+void MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
 {
-    int coresAvail = cores - coresUsed;
-    float cpuUtil = coresUsed * 100 / cores;
+    int coresUsed = coresTotal - coresAvail;
+    float cpuUtil = coresUsed * 100 / coresTotal;
     std::cout << "CPU Utilization: " << cpuUtil << "%" << std::endl;
     std::cout << "Cores used: " << coresUsed << std::endl;
     std::cout << "Cores available: " << coresAvail << std::endl;
