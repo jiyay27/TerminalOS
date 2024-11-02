@@ -22,6 +22,9 @@
     <Filter Include="Process">
       <UniqueIdentifier>{3b3dbdd7-4918-41bb-9da2-c7a8b8d5a5a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Command">
+      <UniqueIdentifier>{6fef1cf0-81b3-48f0-8c1e-554dfd4f5811}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,13 +51,24 @@
     <ClCompile Include="Process.cpp">
       <Filter>Process</Filter>
     </ClCompile>
-    <ClCompile Include="AScheduler.cpp" />
-    <ClCompile Include="FCFSScheduler.cpp" />
-    <ClCompile Include="GlobalScheduler.cpp" />
-    <ClCompile Include="IETThread.cpp" />
-    <ClCompile Include="PrintCommand.cpp" />
-    <ClCompile Include="Scheduler.cpp" />
-    <ClCompile Include="SchedulerWorker.cpp" />
+    <ClCompile Include="AScheduler.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="FCFSScheduler.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalScheduler.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintCommand.cpp">
+      <Filter>Command</Filter>
+    </ClCompile>
+    <ClCompile Include="IETThread.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="SchedulerWorker.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h">
@@ -81,12 +95,26 @@
     <ClInclude Include="TypedefRepo.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="AScheduler.h" />
-    <ClInclude Include="FCFSScheduler.h" />
-    <ClInclude Include="GlobalScheduler.h" />
-    <ClInclude Include="ICommand.h" />
-    <ClInclude Include="IETThread.h" />
-    <ClInclude Include="PrintCommand.h" />
-    <ClInclude Include="SchedulerWorker.h" />
+    <ClInclude Include="AScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="FCFSScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="ICommand.h">
+      <Filter>Command</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintCommand.h">
+      <Filter>Command</Filter>
+    </ClInclude>
+    <ClInclude Include="IETThread.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="SchedulerWorker.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

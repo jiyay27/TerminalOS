@@ -143,7 +143,6 @@
     <ClCompile Include="BaseScreen.cpp" />
     <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
-    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="SchedulerWorker.cpp" />
   </ItemGroup>
   <ItemGroup>
