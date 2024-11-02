@@ -25,6 +25,7 @@ public:
 	int getID() const;
 	int getCPUCoreID() const;
 	int getCommandCounter() const;
+	int decrementCommandCounter();
 	int getCommandListCount() const;
 	ProcessState getState() const;
 	String getName() const;

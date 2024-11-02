@@ -9,7 +9,7 @@ void FCFSScheduler::init()
 
 void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
 {
-        processQueues[core].push_back(process);
+    processQueues[core].push_back(process);
 }
 
 // TODO: refactor

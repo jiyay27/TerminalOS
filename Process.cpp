@@ -39,6 +39,11 @@ int Process::getID() const
 	return this->pid;
 }
 
+int Process::decrementCommandCounter()
+{
+	return --this->commandCounter;
+}
+
 int Process::getCommandCounter() const
 {
 	return this->commandCounter;
@@ -67,7 +72,7 @@ String Process::getName() const
 bool Process::isFinished() const
 {
 	//return this->commandCounter == this->commandList.size();
-	return this->commandCounter >= 1000;
+	return this->commandCounter >= this->commandList.size();
 }
 
 void Process::addCommand(ICommand::CommandType commandType)
@@ -99,13 +104,14 @@ void Process::moveToNextLine()
 
 void Process::executeInstruction()
 {
-	if (this->commandCounter < 1000)
+	if (this->commandCounter < this->commandList.size())
 	{
 		this->executeCurrentCommand();
 		this->moveToNextLine();
 	}
 	else
 	{
+		decrementCommandCounter();
 		this->currentState = ProcessState::FINISHED;
 	}
 }

@@ -18,9 +18,9 @@ void SchedulerWorker::run()
 			//GlobalScheduler::getInstance()->tick();
 			this->process->executeInstruction();
 			if (this->process->isFinished()) {
-				this->process = nullptr;
 				this->available = true;
 				stop();
+				this->process = nullptr;
 			}
 		}
 		else {
