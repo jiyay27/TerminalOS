@@ -20,7 +20,6 @@ public:
 	int checkCores() override; // check if core is available
 	void printCores() override;
 private:
-    int cores;
     int numCores;
     std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
 };

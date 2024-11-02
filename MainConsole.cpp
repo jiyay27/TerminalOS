@@ -2,6 +2,7 @@
 #include "ConsoleManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
+#include <iomanip>
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -173,10 +174,11 @@ void MainConsole::displayRunning() const
     {
         if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
-            std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
-                "   Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() <<
-                "     " << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+            std::cout << std::left 
+                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName() 
+                << std::setw(4) << "Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() 
+                << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
+                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
 }
@@ -188,10 +190,11 @@ void MainConsole::displayFinished() const
     {
         if (GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
-            std::cout << GlobalScheduler::getInstance()->getProcess(i)->getName() <<
-                "   FINISHED " << "     "
-                << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() <<
-                "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+            std::cout << std::left
+                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName() 
+                << std::setw(4) << "FINISHED" 
+                << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
+                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
 }
