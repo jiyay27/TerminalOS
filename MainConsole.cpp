@@ -67,8 +67,9 @@ void MainConsole::display() // Displays output
         {
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
-            int cor = GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess());
-            std::cout << "Core: " << cor << std::endl;
+            int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCores();
+            GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
+            std::cout << "Core: " << newCore << std::endl;
             //GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
         }
 

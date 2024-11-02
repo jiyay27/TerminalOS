@@ -12,23 +12,26 @@ void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
     processQueues[core].push_back(process);
 }
 
-// TODO: refactor
-int FCFSScheduler::assignCore(std::shared_ptr<Process> process) 
-{
-     for (int core = 0; core < numCores; core++)
-     {
-		 std::cout << "Checking core " << core << std::endl;
-         if(GlobalScheduler::getInstance()->checkCoreAvailability(core)==true)
-         {
-             process->setCoreID(core);
-             process->setState(Process::RUNNING);
-             GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
-             GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
-			 addProcess(process, core);
+// TODO: SEPARATE CHECKING OF CORE AVAILABILITY
+void FCFSScheduler::assignCore(std::shared_ptr<Process> process, int core) 
+{ 
+	process->setCoreID(core);
+	process->setState(Process::RUNNING);
+	GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
+	GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
+	addProcess(process, core);
+}
 
-             return core;
-         }
-     }
+//returns first core that is available
+int FCFSScheduler::checkCores()
+{
+	for (int core = 0; core < numCores; core++)
+	{
+		if (GlobalScheduler::getInstance()->checkCoreAvailability(core) == true)
+		{
+			return core;
+		}
+	}
 }
 
 void FCFSScheduler::execute() 

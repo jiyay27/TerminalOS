@@ -138,7 +138,12 @@ void ConsoleManager::createBaseScreen(String screenName)
     std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process, screenName);
     this->registerScreen(baseScreen);
 }
-
+//DO LATER 
+//void ConsoleManager::createNewProcess(String processName)
+//{
+//	std::shared_ptr<Process> process = std::make_shared<Process>(processName);
+//	GlobalScheduler::getInstance()->addProcess(process);
+//}
 HANDLE ConsoleManager::getConsoleHandle() const
 {
     return this->consoleHandle;

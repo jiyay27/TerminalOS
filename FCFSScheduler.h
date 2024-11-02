@@ -16,7 +16,8 @@ public:
     void execute() override;
 
     void addProcess(std::shared_ptr<Process>, int core) override; // add process to core worker
-    int assignCore(std::shared_ptr<Process> process) override;
+	void assignCore(std::shared_ptr<Process> process, int core) override; // assign core to process
+	int checkCores() override; // check if core is available
 	void printCores() override;
 private:
     int cores;

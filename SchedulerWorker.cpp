@@ -16,11 +16,14 @@ void SchedulerWorker::run()
 	while (this->isRunning) {
 		if (this->process != nullptr) {
 			//GlobalScheduler::getInstance()->tick();
-			this->process->executeInstruction();
+			
 			if (this->process->isFinished()) {
 				this->available = true;
 				stop();
 				this->process = nullptr;
+			}
+			else {
+				this->process->executeInstruction();
 			}
 		}
 		else {
