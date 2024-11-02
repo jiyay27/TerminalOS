@@ -71,7 +71,6 @@ String Process::getName() const
 
 bool Process::isFinished() const
 {
-	//return this->commandCounter == this->commandList.size();
 	return this->commandCounter >= this->commandList.size();
 }
 
