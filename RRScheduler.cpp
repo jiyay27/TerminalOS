@@ -4,9 +4,15 @@
 void RRScheduler::init()
 {
 }
-
-RRScheduler::RRScheduler(int numCores, int timeQuantum)
-	: numCores(numCores), timeQuantum(timeQuantum) {
+RRScheduler::RRScheduler()
+{
+	//this->timeQuantum = tq from config;
+	processQueues.resize(numCores);
+	currentIndex.resize(numCores, 0);
+}
+RRScheduler::RRScheduler(int numCores)
+	: numCores(numCores){
+    //this->timeQuantum = tq from config;
 	processQueues.resize(numCores);
 	currentIndex.resize(numCores, 0);
 }

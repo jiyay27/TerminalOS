@@ -1,7 +1,7 @@
 // GlobalScheduler.cpp
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
-
+#include "RRScheduler.h"
 GlobalScheduler* GlobalScheduler::sharedInstance = nullptr;
 GlobalScheduler* GlobalScheduler::getInstance()
 {
@@ -26,7 +26,7 @@ void GlobalScheduler::selectScheduler(String algoName)
 	}
 	else if (algoName == "RR")
 	{
-		//RRScheduler* rr = new RRScheduler(1);
+		this->scheduler = std::make_shared<RRScheduler>(GlobalScheduler::getInstance()->getCoreCount());
 	}
 	else
 	{

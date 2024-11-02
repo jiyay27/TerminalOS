@@ -9,7 +9,7 @@ class RRScheduler : public AScheduler
 {
 public:
 	RRScheduler();
-	RRScheduler(int cores, int timeQuantum);
+	RRScheduler(int cores);
 	~RRScheduler() = default;
 	bool allProcessesFinished();
 	void init() override;
