@@ -38,6 +38,7 @@ void AScheduler::stop()
 	this->running = false;
 }
 
+
 AScheduler::AScheduler()
 {
 }

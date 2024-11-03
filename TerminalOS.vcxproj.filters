@@ -72,6 +72,9 @@
     <ClCompile Include="RRScheduler.cpp">
       <Filter>Scheduler</Filter>
     </ClCompile>
+    <ClCompile Include="SchedulerWorkerRR.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h">
@@ -120,6 +123,9 @@
       <Filter>Scheduler</Filter>
     </ClInclude>
     <ClInclude Include="RRScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="SchedulerWorkerRR.h">
       <Filter>Scheduler</Filter>
     </ClInclude>
   </ItemGroup>

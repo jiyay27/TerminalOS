@@ -4,7 +4,11 @@
 
 void FCFSScheduler::init()
 {
-    //this->numCores = GlobalScheduler::getInstance()->getCoreCount();
+	//for (int i = 0; i < numCores; i++)
+	//{
+	//	std::cout << "init work" << std::endl;
+	//	this->cpuWorkers[i]->start();
+	//}
 }
 
 void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
@@ -27,7 +31,7 @@ void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
 	if (process != nullptr)
 	{ 
 		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->addProcess(process);
-		//GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
+		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
 	}
 	else
 	{
@@ -45,6 +49,7 @@ int FCFSScheduler::checkCores()
 			return core;
 		}
 	}
+	return 0;
 }
 
 int FCFSScheduler::checkCoreQueue() {
@@ -201,4 +206,9 @@ void FCFSScheduler::printProcessQueues() {
 void FCFSScheduler::stop()
 {
 	this->isRunning = false;
+}
+
+String FCFSScheduler::getName() const
+{
+	return this->name;
 }

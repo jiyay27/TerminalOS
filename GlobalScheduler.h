@@ -1,11 +1,13 @@
 #pragma once
 #include "AScheduler.h"
 #include "SchedulerWorker.h"
+#include "SchedulerWorkerRR.h"
 #include "FCFSScheduler.h"
 class GlobalScheduler  
 {
 public:
 	typedef std::vector<std::shared_ptr<SchedulerWorker>> CPUWorkers;
+	typedef std::vector<std::shared_ptr<SchedulerWorkerRR>> CPUWorkersRR;
 
 	static GlobalScheduler* getInstance();
 	static void initialize();
@@ -24,7 +26,10 @@ public:
 	std::shared_ptr<AScheduler> getScheduler();
 	bool checkCoreAvailability(int index);
 	std::shared_ptr<SchedulerWorker> getCPUWorker(int index);
+	std::shared_ptr<SchedulerWorkerRR> getCPUWorkerRR(int index);
 	CPUWorkers& getCPUWorkers();
+	CPUWorkersRR& getCPUWorkersRR();
+	
 	int availableCores();
 	void setCoreCount(int coreCount);
 	int getCoreCount() const;
@@ -38,6 +43,7 @@ private:
 
 	std::shared_ptr<AScheduler> scheduler;
 	CPUWorkers cpuWorkers;
+	CPUWorkersRR cpuWorkersRR;
 
 	int coreCount = 4;
 

@@ -19,12 +19,16 @@ public:
 	void assignCore(std::shared_ptr<Process> process, int core) override; // assign core to process
 	int checkCores() override; // check if core is available
 	int checkCoreQueue() override;
+	void assignProcess(std::shared_ptr<Process> process);
 	String getProcessfromQueue(int index) const override;
 	void printCores() override;
 	void printProcessQueues();
+	String getName() const override;
+
 private:
+	String name = "RR";
 	int numCores;
-	int timeQuantum;
+	int timeQuantum = 100;
 	std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
 	std::vector<int> currentIndex;
 };

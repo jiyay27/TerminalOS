@@ -3,27 +3,48 @@
 #include <algorithm>
 void RRScheduler::init()
 {
+
 }
 
 RRScheduler::RRScheduler()
 {
-    this->numCores = 0;
-	this->timeQuantum = 0;
+    this->numCores = GlobalScheduler::getInstance()->getCoreCount();
+	this->timeQuantum = 20;
 	processQueues.resize(numCores);
-	currentIndex.resize(numCores, 0);
 }
 
-RRScheduler::RRScheduler(int numCores)
+RRScheduler::RRScheduler(int qq)
 {
-	this->numCores = numCores;
-    this->timeQuantum = 10000;
+    this->numCores = qq;
+    this->timeQuantum = 20;
 	processQueues.resize(numCores);
-	currentIndex.resize(numCores, 0);
+    processQueues.resize(numCores);
 }
 
 void RRScheduler::addProcess(std::shared_ptr<Process> process, int core)
 {
 	processQueues[core].push_back(process);
+}
+
+void RRScheduler::assignCore(std::shared_ptr<Process> process, int core)
+{
+    process->setCoreID(core);
+    process->setState(Process::RUNNING);
+    addProcess(process, core);
+    assignProcess(process);
+}
+
+void RRScheduler::assignProcess(std::shared_ptr<Process> process)
+{
+    if (process != nullptr)
+    {
+        GlobalScheduler::getInstance()->getCPUWorkerRR(process->getCPUCoreID())->addProcess(process);
+        GlobalScheduler::getInstance()->getCPUWorkerRR(process->getCPUCoreID())->isOccupied();
+    }
+    else
+    {
+        std::cerr << "Process is null." << std::endl;
+    }
 }
 
 int RRScheduler::checkCores()
@@ -38,49 +59,36 @@ int RRScheduler::checkCores()
 	return -1; // No available core
 }
 
-int RRScheduler::checkCoreQueue() 
-{
-    return 0;
-};
+int RRScheduler::checkCoreQueue() {
+    int index = -1;  // Default index when no core is available
+    int minQueueSize = INT_MAX;  // Track the smallest queue size
+
+    for (int i = 0; i < numCores; i++) {
+        if (processQueues[i].empty()) {
+            // Found an empty core, immediately return its index
+            return i;
+        }
+        else if (processQueues[i].size() < minQueueSize) {
+            // Update index and minQueueSize if a smaller queue is found
+            minQueueSize = processQueues[i].size();
+            index = i;
+        }
+    }
+    return index;
+}
 
 String RRScheduler::getProcessfromQueue(int index) const
 {
-    return "";
+    return processQueues[index].front()->getName();
 }
 
-void RRScheduler::assignCore(std::shared_ptr<Process> process, int core)
-{
-	process->setCoreID(core);
-	process->setState(Process::RUNNING);
-	GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
-	GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
-	addProcess(process, core);
-}
 
 void RRScheduler::execute() {
-    while (!allProcessesFinished()) {
-        for (int core = 0; core < numCores; core++) {
-            if (!processQueues[core].empty()) {
-                int index = currentIndex[core];
-                auto process = processQueues[core][index];
-
-                // Execute the process for the time quantum
-                for (int i = 0; i < timeQuantum && !process->isFinished(); i++) {
-                    process->executeInstruction();
-                }
-
-                // Move to the next process in the queue
-                currentIndex[core] = (index + 1) % processQueues[core].size();
-
-                // If the process is finished, remove it from the queue
-                if (process->isFinished()) {
-                    processQueues[core].erase(processQueues[core].begin() + index);
-                    // Adjust the current index if necessary
-                    if (currentIndex[core] >= processQueues[core].size()) {
-                        currentIndex[core] = 0;
-                    }
-                }
-            }
+    for (int i = 0; i < numCores; i++)
+    {
+        if (GlobalScheduler::getInstance()->getCPUWorkerRR(i)->processExists()) {
+            GlobalScheduler::getInstance()->getCPUWorkerRR(i)->update(true);
+            //GlobalScheduler::getInstance()->getCPUWorker(i)->run();
         }
     }
 }
@@ -103,3 +111,8 @@ void RRScheduler::printCores()
 }
 
 void RRScheduler::printProcessQueues() {}
+
+String RRScheduler::getName() const
+{
+    return this->name;
+}

@@ -5,10 +5,12 @@
 #include <queue>
 #include "Process.h"
 #include "AScheduler.h"
+#include "SchedulerWorker.h"
 
 class FCFSScheduler : public AScheduler
 {
 public:
+    typedef std::vector<std::shared_ptr<SchedulerWorker>> CPUWorkers;
     FCFSScheduler();
     FCFSScheduler(int cores);
     ~FCFSScheduler() = default;
@@ -27,9 +29,13 @@ public:
 	bool allProcessesFinished();
     void printProcessQueues();
     void stop();
+    String getName() const override;
 private:
+	String name = "FCFS";
     int isRunning = true;
     int numCores;
+    
+	CPUWorkers cpuWorkers;
     std::vector<std::queue<std::shared_ptr<Process>>> processQueues;
     std::vector<int> currentIndex;
 };

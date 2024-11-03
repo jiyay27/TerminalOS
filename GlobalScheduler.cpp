@@ -76,10 +76,16 @@ std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 GlobalScheduler::GlobalScheduler() // Initialize coreCount
 {
 	cpuWorkers.resize(coreCount);
+	cpuWorkersRR.resize(coreCount);
 	for (int i = 0; i < coreCount; i++)
 	{
 		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i);
 		this->cpuWorkers[i] = worker;
+	}
+	for (int i = 0; i < coreCount; i++)
+	{
+		std::shared_ptr<SchedulerWorkerRR> worker = std::make_shared<SchedulerWorkerRR>(i);
+		this->cpuWorkersRR[i] = worker;
 	}
 }
 
@@ -93,9 +99,23 @@ void GlobalScheduler::startThreads()
 	} else {
 		std::cerr << "Scheduler is not set." << std::endl;
 	}
-	for (int i = 0; i < coreCount; i++)
+	if (this->scheduler->getName() == "FCFS")
 	{
-		this->cpuWorkers[i]->start();
+		for (int i = 0; i < coreCount; i++)
+		{
+			this->cpuWorkers[i]->start();
+		}
+	}
+	else if (this->scheduler->getName() == "RR")
+	{
+		for (int i = 0; i < coreCount; i++)
+		{
+			this->cpuWorkersRR[i]->start();
+		}
+	}
+	else
+	{
+		std::cerr << "Invalid algorithm name." << std::endl;
 	}
 }
 
@@ -114,14 +134,34 @@ bool GlobalScheduler::checkCoreAvailability(int index)
 		return false;
 }
 
+//bool GlobalScheduler::checkCoreAvailability(int index)
+//{
+//	if (this->cpuWorkersRR[index]->isAvailable()) {
+//		//std::cout << "Core is available." << std::endl;
+//		return true;
+//	}
+//	else
+//		return false;
+//}
+
 GlobalScheduler::CPUWorkers& GlobalScheduler::getCPUWorkers()
 {
 	return this->cpuWorkers;
 }
 
+GlobalScheduler::CPUWorkersRR& GlobalScheduler::getCPUWorkersRR()
+{
+	return this->cpuWorkersRR;
+}
+
 std::shared_ptr<SchedulerWorker> GlobalScheduler::getCPUWorker(int index)
 {
 	return this->cpuWorkers[index];
+}
+
+std::shared_ptr<SchedulerWorkerRR> GlobalScheduler::getCPUWorkerRR(int index)
+{
+	return this->cpuWorkersRR[index];
 }
 
 int GlobalScheduler::availableCores() {

@@ -33,9 +33,10 @@ public:
 	virtual void addProcess(std::shared_ptr<Process> process, int core) = 0;
 	virtual void assignCore(std::shared_ptr<Process> process, int core) = 0;
 	virtual int checkCoreQueue() = 0;
-	virtual std::string getProcessfromQueue(int index) const = 0;
+	virtual String getProcessfromQueue(int index) const = 0;
 	virtual void printCores() = 0;
 	virtual void printProcessQueues() = 0;
+	virtual String getName() const = 0;
 
 	friend class GlobalScheduler;
 private:
