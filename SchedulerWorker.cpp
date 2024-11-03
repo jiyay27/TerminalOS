@@ -11,25 +11,28 @@ void SchedulerWorker::update(bool isRunning)
 	this->isRunning = isRunning;
 }
 
+void SchedulerWorker::updateA()
+{
+	this->available = true;
+}
+
 void SchedulerWorker::run()
 {
-	while (this->isRunning) {
-		if (this->process != nullptr) {
-			//GlobalScheduler::getInstance()->tick();
-			
-			if (this->process->isFinished()) {
+	while (this->isRunning) 
+	{
+		if (this->process != nullptr) 
+		{
+			if (this->process->isFinished()) 
+			{
 				this->available = true;
 				this->process->setState(Process::FINISHED);
 				stop();
 				this->process = nullptr;
-
 			}
-			else {
+			else 
+			{
 				this->process->executeInstruction();
 			}	
-		}
-		else {
-			//std::cerr << "IIIIIIIII" << std::endl;
 		}
 	}
 }

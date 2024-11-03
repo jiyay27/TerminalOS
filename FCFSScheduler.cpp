@@ -15,15 +15,14 @@ void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
 // TODO: SEPARATE CHECKING OF CORE AVAILABILITY
 void FCFSScheduler::assignCore(std::shared_ptr<Process> process, int core) 
 { 
-	addProcess(process, core);
 	process->setCoreID(core);
 	process->setState(Process::RUNNING);
+	addProcess(process, core);
 }
 
 // assign process from queue to core
 void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
 {
-
 	GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->addProcess(process);
 	GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
 }
@@ -40,30 +39,27 @@ int FCFSScheduler::checkCores()
 	}
 }
 
-int FCFSScheduler::checkCoreQueue()
-{
-	int index = -1;
-	for (int i = 0; i < numCores; i++)
-	{
-		if (processQueues[i].empty())
-		{
-			std::cout << "PRINTING base case" << i << std::endl;
+int FCFSScheduler::checkCoreQueue() {
+	int index = -1;  // Default index when no core is available
+	int minQueueSize = INT_MAX;  // Track the smallest queue size
+
+	for (int i = 0; i < numCores; i++) {
+		if (processQueues[i].empty()) {
+			// Found an empty core, immediately return its index
+			return i;
+		}
+		else if (processQueues[i].size() < minQueueSize) {
+			// Update index and minQueueSize if a smaller queue is found
+			minQueueSize = processQueues[i].size();
 			index = i;
 		}
-		//Check size of each process queue 
-		else if (processQueues[i].size() == processQueues[0].size() && i != 0)
-		{
-			std::cout << "PRINTING process(i) == process(0)" << i << std::endl;
-			index = 0;
-		}
-		else if (processQueues[i].size() < processQueues[0].size() && i != 0)
-		{
-			std::cout << "PRINTING process() < process(0)" << i <<std::endl;
-			index = i;
-		}
-	
 	}
 	return index;
+}
+
+String FCFSScheduler::getProcessfromQueue(int index) const
+{
+	return processQueues[index].front()->getName();
 }
 
 //void FCFSScheduler::execute() 
@@ -77,18 +73,32 @@ int FCFSScheduler::checkCoreQueue()
 //	}
 //}
 
-void FCFSScheduler::execute() {
-	while (!allProcessesFinished()) {
-		for (int core = 0; core < numCores; core++) {
-			if (!processQueues[core].empty()) {
-				auto process = processQueues[core].front();
-				if (GlobalScheduler::getInstance()->getCPUWorker(core)->isAvailable()) {
+void FCFSScheduler::execute() 
+{
+	while (!allProcessesFinished()) 
+	{
+		for (int core = 0; core < numCores; core++) 
+		{
+			if (!processQueues[core].empty()) 
+			{
+				std::shared_ptr<Process> process = processQueues[core].front();
+
+				if (GlobalScheduler::getInstance()->getCPUWorker(core)->isAvailable()) 
+				{
 					assignProcess(process);
-					GlobalScheduler::getInstance()->getCPUWorker(core)->update(true);
 				}
-				GlobalScheduler::getInstance()->getCPUWorker(core)->run();
-				if (process->isFinished()) {
+
+				if (process->isFinished())
+				{
+					GlobalScheduler::getInstance()->getCPUWorker(core)->updateA();
+					GlobalScheduler::getInstance()->getCPUWorker(core)->run();
 					processQueues[core].erase(processQueues[core].begin());
+				}
+
+				if (GlobalScheduler::getInstance()->getCPUWorker(core)->processExists())
+				{
+					GlobalScheduler::getInstance()->getCPUWorker(core)->update(true);
+					GlobalScheduler::getInstance()->getCPUWorker(core)->run();
 				}
 			}
 		}

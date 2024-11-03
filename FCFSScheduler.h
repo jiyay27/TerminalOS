@@ -21,6 +21,7 @@ public:
     int checkCores() override; // check if core is available
     int checkCoreQueue() override;
 	void printCores() override;
+    String getProcessfromQueue(int index) const override;
 	bool allProcessesFinished();
 private:
     int numCores;

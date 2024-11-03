@@ -43,6 +43,11 @@ int RRScheduler::checkCoreQueue()
     return 0;
 };
 
+String RRScheduler::getProcessfromQueue(int index) const
+{
+    return "";
+}
+
 void RRScheduler::assignCore(std::shared_ptr<Process> process, int core)
 {
 	process->setCoreID(core);

@@ -19,6 +19,7 @@ public:
 	void assignCore(std::shared_ptr<Process> process, int core) override; // assign core to process
 	int checkCores() override; // check if core is available
 	int checkCoreQueue() override;
+	String getProcessfromQueue(int index) const override;
 	void printCores() override;
 private:
 	int numCores;

@@ -68,10 +68,8 @@ void MainConsole::display() // Displays output
         {
             outputMessage = "";
             ConsoleManager::getInstance()->createBaseScreen(outputArg2);
-            int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCores();
+            int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
             GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-            std::cout << "Core: " << newCore << std::endl;
-            //GlobalScheduler::getInstance()->getScheduler()->addProcess(GlobalScheduler::getInstance()->getMostRecentProcess(),cor);
         }
 
         if (outputMessage == "screenls")
@@ -95,7 +93,6 @@ void MainConsole::display() // Displays output
                 ConsoleManager::getInstance()->createBaseScreen2(procName);
                 int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
                 GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-
             }
 			outputMessage = "";
 		}
@@ -197,6 +194,7 @@ void MainConsole::displayRunning() const
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
+    std::cout << "" << std::endl;
 }
 
 void MainConsole::displayFinished() const
@@ -213,6 +211,7 @@ void MainConsole::displayFinished() const
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
         }
     }
+    std::cout << "" << std::endl;
 }
 
 string MainConsole::getName() const 

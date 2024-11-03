@@ -11,6 +11,7 @@ public:
 	~SchedulerWorker() = default;
 
 	void update(bool isRunning);
+	void updateA();
 	void run() override;
 	void addProcess(std::shared_ptr<Process> process);
 	bool isAvailable() const;
@@ -19,7 +20,7 @@ public:
 	bool processExists() const;
 private:
 	bool isRunning = true;
-	bool available = true; //kung gamit na ung cpu
+	bool available = true;
 	int coreNum;
 	std::shared_ptr<Process> process;
 };
