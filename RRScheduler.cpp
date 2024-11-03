@@ -1,18 +1,20 @@
 #include "RRScheduler.h"
 #include "GlobalScheduler.h"
-
+#include <algorithm>
 void RRScheduler::init()
 {
 }
 RRScheduler::RRScheduler()
 {
-	//this->timeQuantum = tq from config;
+    this->numCores = 0;
+	this->timeQuantum = 0;
 	processQueues.resize(numCores);
 	currentIndex.resize(numCores, 0);
 }
 RRScheduler::RRScheduler(int numCores)
-	: numCores(numCores){
-    //this->timeQuantum = tq from config;
+{
+	this->numCores = numCores;
+    this->timeQuantum = 10000;
 	processQueues.resize(numCores);
 	currentIndex.resize(numCores, 0);
 }
@@ -34,7 +36,7 @@ int RRScheduler::checkCores()
 	return -1; // No available core
 }
 
-void FCFSScheduler::assignCore(std::shared_ptr<Process> process, int core)
+void RRScheduler::assignCore(std::shared_ptr<Process> process, int core)
 {
 	process->setCoreID(core);
 	process->setState(Process::RUNNING);
@@ -78,4 +80,12 @@ bool RRScheduler::allProcessesFinished() {
         }
     }
     return true;
+}
+
+void RRScheduler::printCores()
+{
+	for (int i = 0; i < numCores; i++)
+	{
+		std::cout << "Core " << i << ": ";
+	}
 }
