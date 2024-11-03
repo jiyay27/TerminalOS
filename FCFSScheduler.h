@@ -17,9 +17,12 @@ public:
 
     void addProcess(std::shared_ptr<Process>, int core) override; // add process to core worker
 	void assignCore(std::shared_ptr<Process> process, int core) override; // assign core to process
-	int checkCores() override; // check if core is available
+    void assignProcess(std::shared_ptr<Process> process);
+    int checkCores() override; // check if core is available
+    int checkCoreQueue();
 	void printCores() override;
 private:
     int numCores;
     std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
+    std::vector<int> currentIndex;
 };

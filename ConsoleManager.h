@@ -32,10 +32,12 @@ public:
     bool isRunning() const;
 
     void registerScreen(std::shared_ptr<BaseScreen> screenRef);
+    void registerScreen2(std::shared_ptr<BaseScreen> screenRef);
     void switchToScreen(String screenName);
     void unregisterScreen(String screenName);
 
     void createBaseScreen(String screenName);
+    void createBaseScreen2(String screenName);
 
     HANDLE getConsoleHandle() const;
 

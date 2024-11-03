@@ -17,9 +17,15 @@ void FCFSScheduler::assignCore(std::shared_ptr<Process> process, int core)
 { 
 	process->setCoreID(core);
 	process->setState(Process::RUNNING);
-	GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
-	GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
 	addProcess(process, core);
+}
+
+// assign process from queue to core
+void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
+{
+
+	GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->addProcess(process);
+	GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
 }
 
 //returns first core that is available
@@ -30,6 +36,20 @@ int FCFSScheduler::checkCores()
 		if (GlobalScheduler::getInstance()->checkCoreAvailability(core) == true)
 		{
 			return core;
+		}
+	}
+}
+
+int FCFSScheduler::checkCoreQueue()
+{
+	for (int i = 0; i < numCores; i++)
+	{
+		for (std::shared_ptr<Process> proc : processQueues[i])
+		{
+			if (proc->getState() == Process::FINISHED)
+				{
+					return i;
+				}
 		}
 	}
 }

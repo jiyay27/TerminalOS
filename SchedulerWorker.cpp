@@ -19,12 +19,14 @@ void SchedulerWorker::run()
 			
 			if (this->process->isFinished()) {
 				this->available = true;
+				this->process->setState(Process::FINISHED);
 				stop();
 				this->process = nullptr;
+
 			}
 			else {
 				this->process->executeInstruction();
-			}
+			}	
 		}
 		else {
 			//std::cerr << "IIIIIIIII" << std::endl;

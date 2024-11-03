@@ -83,6 +83,23 @@ void MainConsole::display() // Displays output
             std::cout << "" << std::endl;
             this->displayFinished();
         }
+
+		if (outputMessage == "sched-test")
+		{
+            
+            for (int i = 1; i <= 20; ++i) {
+                std::ostringstream oss;  
+                oss << "proc-" << std::setw(2) << std::setfill('0') << i;
+                std::string procName = oss.str();
+
+                ConsoleManager::getInstance()->createBaseScreen2(procName);
+                int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
+                GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
+
+            }
+			outputMessage = "";
+		}
+
         if (outputMessage == "invalid")
         {
 			outputMessage = "";
@@ -113,8 +130,7 @@ void MainConsole::process() // Takes in input and processes it
         isInitialized = 1;
     }
     else if (command == "scheduler-test") {
-       // schedulertest();  // Assuming schedulertest function is defined
-        outputMessage = "Scheduler test started.";
+        outputMessage = "sched-test";
     }
     else if (command == "scheduler-stop") {
       //  schedulerstop();  // Assuming schedulerstop function is defined

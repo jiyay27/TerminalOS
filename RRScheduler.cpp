@@ -4,6 +4,7 @@
 void RRScheduler::init()
 {
 }
+
 RRScheduler::RRScheduler()
 {
     this->numCores = 0;
@@ -11,6 +12,7 @@ RRScheduler::RRScheduler()
 	processQueues.resize(numCores);
 	currentIndex.resize(numCores, 0);
 }
+
 RRScheduler::RRScheduler(int numCores)
 {
 	this->numCores = numCores;
@@ -35,6 +37,11 @@ int RRScheduler::checkCores()
 	}
 	return -1; // No available core
 }
+
+int RRScheduler::checkCoreQueue() 
+{
+    return 0;
+};
 
 void RRScheduler::assignCore(std::shared_ptr<Process> process, int core)
 {

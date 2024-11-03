@@ -93,6 +93,17 @@ void ConsoleManager::registerScreen(std::shared_ptr<BaseScreen> screenRef)
     this->switchConsole(screenRef->getName());
 }
 
+void ConsoleManager::registerScreen2(std::shared_ptr<BaseScreen> screenRef)
+{
+    if (this->consoleTable.contains(screenRef->getName()))
+    {
+        std::cerr << "Screen name " << screenRef->getName() << " already exists." << std::endl;
+        return;
+    }
+
+    GlobalScheduler::getInstance()->addProcess(screenRef->getProcess());
+}
+
 void ConsoleManager::switchToScreen(String screenName)
 {
     if (this->consoleTable.contains(screenName))
@@ -137,6 +148,13 @@ void ConsoleManager::createBaseScreen(String screenName)
     std::shared_ptr<Process> process = std::make_shared<Process>(screenName);
     std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process, screenName);
     this->registerScreen(baseScreen);
+}
+
+void ConsoleManager::createBaseScreen2(String screenName)
+{
+    std::shared_ptr<Process> process = std::make_shared<Process>(screenName);
+    std::shared_ptr<BaseScreen> baseScreen = std::make_shared<BaseScreen>(process, screenName);
+    this->registerScreen2(baseScreen);
 }
 
 HANDLE ConsoleManager::getConsoleHandle() const

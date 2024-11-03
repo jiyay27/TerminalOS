@@ -18,7 +18,7 @@ using std::string;
 int main() {
     ConsoleManager::initialize();
     GlobalScheduler::initialize();
-    GlobalScheduler::getInstance()->selectScheduler("RR");
+    GlobalScheduler::getInstance()->selectScheduler("FCFS");
     GlobalScheduler::getInstance()->startThreads();
     bool running = true;
     while (running)
