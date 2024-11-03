@@ -19,8 +19,9 @@ public:
 	void assignCore(std::shared_ptr<Process> process, int core) override; // assign core to process
     void assignProcess(std::shared_ptr<Process> process);
     int checkCores() override; // check if core is available
-    int checkCoreQueue();
+    int checkCoreQueue() override;
 	void printCores() override;
+	bool allProcessesFinished();
 private:
     int numCores;
     std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
