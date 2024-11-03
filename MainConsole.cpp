@@ -38,10 +38,10 @@ void MainConsole::display() // Displays output
         if (outputMessage == "initialize") {
             // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
             //GlobalScheduler::getInstance()->setCoreCount(4);
-			std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
-            cout << "Console has been initialized..." << endl;
+			//std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
+            //cout << "Console has been initialized..." << endl;
             //GlobalScheduler::getInstance()->getScheduler()->init();
-			GlobalScheduler::getInstance()->getScheduler()->printCores();
+			//GlobalScheduler::getInstance()->getScheduler()->printCores();
 
 			outputMessage = "";
 
@@ -55,6 +55,11 @@ void MainConsole::display() // Displays output
         if (outputMessage == "exit")
         {
             outputMessage = "";
+            for (size_t i = 0; i < GlobalScheduler::getInstance()->getCoreCount(); i++)
+            {
+                GlobalScheduler::getInstance()->getCPUWorker(i)->stop();
+            }
+			GlobalScheduler::getInstance()->getScheduler()->stop();
             ConsoleManager::getInstance()->exitConsole();
         }
 
@@ -84,8 +89,8 @@ void MainConsole::display() // Displays output
 
 		if (outputMessage == "sched-test")
 		{
-            
-            for (int i = 1; i <= 20; ++i) {
+            srand(static_cast<unsigned int>(time(0)));
+            for (int i = 1; i <= 10; ++i) {
                 std::ostringstream oss;  
                 oss << "proc-" << std::setw(2) << std::setfill('0') << i;
                 std::string procName = oss.str();
@@ -174,6 +179,7 @@ void MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
 {
     int coresUsed = coresTotal - coresAvail;
     float cpuUtil = coresUsed * 100 / coresTotal;
+    std::cout << "" << std::endl;
     std::cout << "CPU Utilization: " << cpuUtil << "%" << std::endl;
     std::cout << "Cores used: " << coresUsed << std::endl;
     std::cout << "Cores available: " << coresAvail << std::endl;

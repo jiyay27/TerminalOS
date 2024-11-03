@@ -21,6 +21,7 @@ public:
 	int checkCoreQueue() override;
 	String getProcessfromQueue(int index) const override;
 	void printCores() override;
+	void printProcessQueues();
 private:
 	int numCores;
 	int timeQuantum;

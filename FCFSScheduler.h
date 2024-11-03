@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include "Process.h"
 #include "AScheduler.h"
 
@@ -20,11 +21,15 @@ public:
     void assignProcess(std::shared_ptr<Process> process);
     int checkCores() override; // check if core is available
     int checkCoreQueue() override;
+	std::shared_ptr<Process> getProcess(int core) const;
 	void printCores() override;
     String getProcessfromQueue(int index) const override;
 	bool allProcessesFinished();
+    void printProcessQueues();
+    void stop();
 private:
+    int isRunning = true;
     int numCores;
-    std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
+    std::vector<std::queue<std::shared_ptr<Process>>> processQueues;
     std::vector<int> currentIndex;
 };

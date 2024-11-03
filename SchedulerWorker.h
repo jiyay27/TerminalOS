@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <queue>
 #include "Process.h"
 
 class SchedulerWorker : public IETThread
@@ -23,5 +24,6 @@ private:
 	bool available = true;
 	int coreNum;
 	std::shared_ptr<Process> process;
+	std::queue<std::shared_ptr<Process>> processQueue;
 };
 

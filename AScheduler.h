@@ -35,6 +35,7 @@ public:
 	virtual int checkCoreQueue() = 0;
 	virtual std::string getProcessfromQueue(int index) const = 0;
 	virtual void printCores() = 0;
+	virtual void printProcessQueues() = 0;
 
 	friend class GlobalScheduler;
 private:

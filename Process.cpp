@@ -7,9 +7,9 @@
 
 Process::Process(String name)
 {
-	srand(time(0));
-	int min = 10010;
-	int max = 15010;
+	//srand(time(0));
+	int min = 1001;
+	int max = 1501;
 	int randomNum = min + rand() % (max - min + 1);
 
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();

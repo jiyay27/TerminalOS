@@ -20,14 +20,22 @@ void SchedulerWorker::run()
 {
 	while (this->isRunning) 
 	{
+		this->isOccupied();
 		if (this->process != nullptr) 
 		{
 			if (this->process->isFinished()) 
 			{
 				this->available = true;
 				this->process->setState(Process::FINISHED);
-				stop();
-				this->process = nullptr;
+				this->processQueue.pop();
+				if (!this->processQueue.empty())
+				{
+					this->process = this->processQueue.front();
+				}
+				else
+				{
+					this->stop();
+				}
 			}
 			else 
 			{
@@ -39,7 +47,9 @@ void SchedulerWorker::run()
 
 void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 {
-	this->process = process;
+	//this->process = process;
+	this->processQueue.push(process);
+	this->process = processQueue.front();
 }
 
 

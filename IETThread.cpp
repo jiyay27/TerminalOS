@@ -2,7 +2,7 @@
 
 void IETThread::start()
 {
-	std::cout << "Thread running." << std::endl;
+	//std::cout << "Thread running." << std::endl;
 	std::thread(&IETThread::run, this).detach();
 }
 

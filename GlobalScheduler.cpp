@@ -107,7 +107,7 @@ std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 bool GlobalScheduler::checkCoreAvailability(int index) 
 {
 	if (this->cpuWorkers[index]->isAvailable()) {
-		std::cout << "Core is available." << std::endl;
+		//std::cout << "Core is available." << std::endl;
 		return true;
 	}
 	else

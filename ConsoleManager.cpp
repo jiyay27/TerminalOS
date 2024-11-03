@@ -102,6 +102,7 @@ void ConsoleManager::registerScreen2(std::shared_ptr<BaseScreen> screenRef)
     }
 
     GlobalScheduler::getInstance()->addProcess(screenRef->getProcess());
+    this->consoleTable[screenRef->getName()] = screenRef;
 }
 
 void ConsoleManager::switchToScreen(String screenName)
