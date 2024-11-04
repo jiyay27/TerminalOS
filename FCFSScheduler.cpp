@@ -1,6 +1,8 @@
 #include "FCFSScheduler.h"
 #include "GlobalScheduler.h"
+#include "ConsoleManager.h"
 #include <algorithm>
+#include <iomanip>
 
 void FCFSScheduler::init()
 {
@@ -91,82 +93,47 @@ void FCFSScheduler::execute()
 	}
 }
 
-//void FCFSScheduler::execute()
-//{
-//	for (int i = 0; i < numCores; i++)
-//	{
-//		if (!processQueues[i].empty())
-//		{
-//			if (getProcess(i)->isFinished())
-//			{
-//				GlobalScheduler::getInstance()->getCPUWorker(i)->updateA();
-//				processQueues[i].pop();
-//			}
-//
-//			FCFSScheduler::assignProcess(getProcess(i));
-//			std::cout << "Process " << getProcess(i)->getName() << " assigned to core " << i << std::endl;
-//		}
-//	}
-//
-//	for (int i = 0; i < numCores; i++)
-//	{
-//		if (GlobalScheduler::getInstance()->getCPUWorker(i)->processExists()) 
-//		{
-//			GlobalScheduler::getInstance()->getCPUWorker(i)->update(true);
-//			GlobalScheduler::getInstance()->getCPUWorker(i)->run();
-//		}
-//	}
-//}
+void FCFSScheduler::run()
+{
+	while (this->schedulerRun == true)
+	{
+		srand(static_cast<unsigned int>(time(0)));
+		std::ostringstream oss;
+		oss << "proc-" << std::setw(2) << std::setfill('0') << this->i;
+		std::string procName = oss.str();
 
-//void FCFSScheduler::execute() 
-//{
-//	//while (!allProcessesFinished()) 
-//	//{
-//		for (int core = 0; core < numCores; core++) 
-//		{
-//			if (!processQueues[core].empty()) 
-//			{
-//				std::shared_ptr<Process> process = getProcess(core);
-//				
-//				if (GlobalScheduler::getInstance()->getCPUWorker(core)->isAvailable()) 
-//				{
-//					assignProcess(process);
-//				}
-//
-//				if (process->isFinished())
-//				{
-//					GlobalScheduler::getInstance()->getCPUWorker(core)->updateA();
-//					GlobalScheduler::getInstance()->getCPUWorker(core)->run();
-//					processQueues[core].erase(processQueues[core].begin());
-//				}
-//				else
-//				{
-//					GlobalScheduler::getInstance()->getCPUWorker(core)->addProcess(process);
-//					GlobalScheduler::getInstance()->getCPUWorker(core)->isOccupied();
-//
-//					if (GlobalScheduler::getInstance()->getCPUWorker(core)->processExists())
-//					{
-//						GlobalScheduler::getInstance()->getCPUWorker(core)->update(true);
-//						GlobalScheduler::getInstance()->getCPUWorker(core)->run();
-//					}
-//				}				
-//			}
-//		}
-//	//}
-//}
+		this->i++;
+		ConsoleManager::getInstance()->createBaseScreen2(procName);
+		int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
+		GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
+		this->sleep(1000);
+	}
+}
 
+void FCFSScheduler::schedulerStart()
+{
+	this->schedulerRun = true;
+	this->start();
+	this->sleep(10);
+}
+
+void FCFSScheduler::schedulerStop()
+{
+	this->schedulerRun = false;
+}
 
 FCFSScheduler::FCFSScheduler()
 {
     this->numCores = GlobalScheduler::getInstance()->getCoreCount();
 	processQueues.resize(numCores);
-    std::cout << "SIZE NG VECTOR " << processQueues.size() << std::endl;
+	this->schedulerRun = false;
 }
 
 FCFSScheduler::FCFSScheduler(int numCores)
 {
     this->numCores = numCores;
 	processQueues.resize(numCores);
+	this->schedulerRun = false;
 }
 
 void FCFSScheduler::printCores() {

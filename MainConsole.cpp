@@ -78,30 +78,29 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            int coreTotal;
+            int coresTotal;
             int coresAvail;
 
             if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
             {
-                coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+                coresTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
                 coresAvail = GlobalScheduler::getInstance()->availableCores();
             } 
             else
             {
-                coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
+                coresTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
                 coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
             }
-            
-            std::cout << this->displayCPUUtil(coresAvail, coreTotal);
+
+            std::cout << this->displayCPUUtil(coresAvail, coresTotal);
             std::cout << this->displayRunning();
-            std::cout << "" << std::endl;
             std::cout << this->displayFinished();
         }
 
 		if (outputMessage == "sched-test")
 		{
-            srand(static_cast<unsigned int>(time(0)));
-            for (int i = 1; i <= 10; ++i) {
+            //srand(static_cast<unsigned int>(time(0)));
+            /*for (int i = 1; i <= 10; ++i) {
                 std::ostringstream oss;  
                 oss << "proc-" << std::setw(2) << std::setfill('0') << i;
                 std::string procName = oss.str();
@@ -109,22 +108,36 @@ void MainConsole::display() // Displays output
                 ConsoleManager::getInstance()->createBaseScreen2(procName);
                 int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
                 GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-            }
-			outputMessage = "";
+            }*/
+            outputMessage = "";
+            GlobalScheduler::getInstance()->getScheduler()->schedulerStart();
 		}
         //stops scheduler test
         if (outputMessage == "sched-stop")
         {
+            GlobalScheduler::getInstance()->getScheduler()->schedulerStop();
 			outputMessage = "";
         }
 		//puts displayCPUUtil, displayRunning, displayFinished into a txt file
         if (outputMessage == "report-util")
         {
+            int coreTotal;
+            int coresAvail;
+
+            if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
+            {
+                coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+                coresAvail = GlobalScheduler::getInstance()->availableCores();
+            }
+            else
+            {
+                coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
+                coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
+            }
+
             std::ofstream outFile("csopesy-log.txt");
             if (outFile.is_open())
             {
-                int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
-                int coresAvail = GlobalScheduler::getInstance()->availableCores();
                 outFile << this->displayCPUUtil(coresAvail, coreTotal);
                 outFile << this->displayRunning();
                 outFile << this->displayFinished();
@@ -213,7 +226,10 @@ void MainConsole::header() const {
 std::string MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
 {
     int coresUsed = coresTotal - coresAvail;
-    float cpuUtil = coresUsed * 100 / coresTotal;
+
+
+    float cpuUtil = coresUsed  * 100  / coresTotal;
+
     std::ostringstream oss;
     oss << "\nCPU Utilization: " << cpuUtil << "%\n";
     oss << "Cores used: " << coresUsed << "\n";

@@ -15,6 +15,7 @@ public:
     FCFSScheduler(int cores);
     ~FCFSScheduler() = default;
 
+    void run() override;
     void init() override;
     void execute() override;
 
@@ -29,12 +30,19 @@ public:
 	bool allProcessesFinished();
     void printProcessQueues();
     void stop();
+
+    virtual void schedulerStart();
+    virtual void schedulerStop();
+
     String getName() const override;
 private:
 	String name = "FCFS";
     int isRunning = true;
     int numCores;
     
+    bool schedulerRun;
+    int i = 1;
+
 	CPUWorkers cpuWorkers;
     std::vector<std::queue<std::shared_ptr<Process>>> processQueues;
     std::vector<int> currentIndex;

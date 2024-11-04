@@ -36,6 +36,10 @@ public:
 	virtual String getProcessfromQueue(int index) const = 0;
 	virtual void printCores() = 0;
 	virtual void printProcessQueues() = 0;
+	
+	virtual void schedulerStart() = 0;
+	virtual void schedulerStop() = 0;
+	
 	virtual String getName() const = 0;
 
 	friend class GlobalScheduler;

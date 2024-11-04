@@ -1,6 +1,9 @@
 #include "RRScheduler.h"
 #include "GlobalScheduler.h"
+#include "ConsoleManager.h"
 #include <algorithm>
+#include <iomanip>
+
 void RRScheduler::init()
 {
 
@@ -91,6 +94,28 @@ void RRScheduler::execute() {
             //GlobalScheduler::getInstance()->getCPUWorker(i)->run();
         }
     }
+}
+
+void RRScheduler::schedulerStart()
+{
+    this->schedulerRun = true;
+    srand(static_cast<unsigned int>(time(0)));
+    int i = 0;
+    while (this->schedulerRun)
+    {
+        std::ostringstream oss;
+        oss << "proc-" << std::setw(2) << std::setfill('0') << i;
+        std::string procName = oss.str();
+
+        ConsoleManager::getInstance()->createBaseScreen2(procName);
+        int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
+        GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
+    }
+}
+
+void RRScheduler::schedulerStop()
+{
+    this->schedulerRun = false;
 }
 
 bool RRScheduler::allProcessesFinished() {

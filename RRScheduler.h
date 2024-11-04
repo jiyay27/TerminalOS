@@ -23,12 +23,17 @@ public:
 	String getProcessfromQueue(int index) const override;
 	void printCores() override;
 	void printProcessQueues();
+
+	void schedulerStart();
+	void schedulerStop();
+
 	String getName() const override;
 
 private:
 	String name = "RR";
 	int numCores;
 	int timeQuantum = 100;
+	bool schedulerRun = false;
 	std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
 	std::vector<int> currentIndex;
 };
