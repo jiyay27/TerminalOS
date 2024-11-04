@@ -22,9 +22,9 @@ public:
 	void header() const;
 	void asciiart() const;
 
-	void displayCPUUtil(int coresUsed, int cores) const;
-	void displayRunning() const;
-	void displayFinished() const;
+	std::string displayCPUUtil(int coresUsed, int cores) const;
+	std::string displayRunning() const;
+	std::string displayFinished() const;
 
 	String name;
 	friend class ConsoleManager;
