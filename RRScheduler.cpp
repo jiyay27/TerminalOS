@@ -96,21 +96,28 @@ void RRScheduler::execute() {
     }
 }
 
-void RRScheduler::schedulerStart()
+void RRScheduler::run()
 {
-    this->schedulerRun = true;
-    srand(static_cast<unsigned int>(time(0)));
-    int i = 0;
-    while (this->schedulerRun)
+    while (this->schedulerRun == true)
     {
+        srand(static_cast<unsigned int>(time(0)));
         std::ostringstream oss;
-        oss << "proc-" << std::setw(2) << std::setfill('0') << i;
+        oss << "proc-" << std::setw(2) << std::setfill('0') << this->i;
         std::string procName = oss.str();
 
+        this->i++;
         ConsoleManager::getInstance()->createBaseScreen2(procName);
         int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
         GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
+        this->sleep(1000);
     }
+}
+
+void RRScheduler::schedulerStart()
+{
+    this->schedulerRun = true;
+    this->start();
+    this->sleep(10);
 }
 
 void RRScheduler::schedulerStop()

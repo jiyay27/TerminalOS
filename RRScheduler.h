@@ -11,7 +11,10 @@ public:
 	RRScheduler();
 	RRScheduler(int cores);
 	~RRScheduler() = default;
+
 	bool allProcessesFinished();
+
+	void run() override;
 	void init() override;
 	void execute() override;
 
@@ -33,7 +36,10 @@ private:
 	String name = "RR";
 	int numCores;
 	int timeQuantum = 100;
+
 	bool schedulerRun = false;
+	int i = 1;
+
 	std::vector<std::vector<std::shared_ptr<Process>>> processQueues;
 	std::vector<int> currentIndex;
 };
