@@ -31,6 +31,7 @@ public:
 	CPUWorkersRR& getCPUWorkersRR();
 	
 	int availableCores();
+	int availableCoresRR();
 	void setCoreCount(int coreCount);
 	int getCoreCount() const;
 

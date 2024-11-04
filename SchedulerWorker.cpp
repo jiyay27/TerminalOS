@@ -20,12 +20,12 @@ void SchedulerWorker::run()
 {
 	while (this->isRunning) 
 	{
-		this->isOccupied();
+		this->updateA();
 		if (this->process != nullptr) 
 		{
 			if (this->process->isFinished()) 
 			{
-				this->available = true;
+				this->updateA();
 				this->process->setState(Process::FINISHED);
 				this->processQueue.pop();
 				if (!this->processQueue.empty())
@@ -39,6 +39,7 @@ void SchedulerWorker::run()
 			}
 			else
 			{
+				this->isOccupied();
 				this->process->executeInstruction();
 			}
 		}

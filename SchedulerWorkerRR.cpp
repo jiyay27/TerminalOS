@@ -27,8 +27,7 @@ void SchedulerWorkerRR::run()
 {
     while (this->isRunning)
     {
-        this->isOccupied();
-
+        this->updateA();
         if (this->process != nullptr)
         {
             if (this->process->isFinished())
@@ -72,6 +71,7 @@ void SchedulerWorkerRR::run()
                 // Execute for the duration of the quantum
                 for (int i = 0; i < this->quantum && !this->process->isFinished(); i++)
                 {
+                    this->isOccupied();
                     this->process->executeInstruction();
                 }
 

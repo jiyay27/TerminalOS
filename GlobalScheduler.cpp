@@ -170,11 +170,25 @@ std::shared_ptr<SchedulerWorkerRR> GlobalScheduler::getCPUWorkerRR(int index)
 	return this->cpuWorkersRR[index];
 }
 
-int GlobalScheduler::availableCores() {
+int GlobalScheduler::availableCores() 
+{
 	int count = 0;
 	for (int i = 0; i < this->coreCount; i++)
 	{
 		if (this->cpuWorkers[i]->isAvailable())
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+int GlobalScheduler::availableCoresRR() 
+{
+	int count = 0;
+	for (int i = 0; i < this->coreCount; i++)
+	{
+		if (this->cpuWorkersRR[i]->isAvailable())
 		{
 			count++;
 		}

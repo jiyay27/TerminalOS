@@ -78,8 +78,20 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
-            int coresAvail = GlobalScheduler::getInstance()->availableCores();
+            int coreTotal;
+            int coresAvail;
+
+            if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
+            {
+                coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+                coresAvail = GlobalScheduler::getInstance()->availableCores();
+            } 
+            else
+            {
+                coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
+                coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
+            }
+            
             std::cout << this->displayCPUUtil(coresAvail, coreTotal);
             std::cout << this->displayRunning();
             std::cout << "" << std::endl;
