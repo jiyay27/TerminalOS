@@ -2,7 +2,11 @@
 #include "ConsoleManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
+#include "Config.h"
 #include <iomanip>
+#include <fstream>
+#include <filesystem>
+
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -36,13 +40,7 @@ void MainConsole::display() // Displays output
 
     if (isInitialized == 1) {
         if (outputMessage == "initialize") {
-            // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
-            //GlobalScheduler::getInstance()->setCoreCount(4);
-			//std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
-            //cout << "Console has been initialized..." << endl;
-            //GlobalScheduler::getInstance()->getScheduler()->init();
-			//GlobalScheduler::getInstance()->getScheduler()->printCores();
-
+            config.setParamList(this->fileName);
 			outputMessage = "";
 
         }
@@ -58,6 +56,7 @@ void MainConsole::display() // Displays output
             for (size_t i = 0; i < GlobalScheduler::getInstance()->getCoreCount(); i++)
             {
                 GlobalScheduler::getInstance()->getCPUWorker(i)->stop();
+				GlobalScheduler::getInstance()->getCPUWorkerRR(i)->stop();
             }
 			GlobalScheduler::getInstance()->getScheduler()->stop();
             ConsoleManager::getInstance()->exitConsole();
@@ -81,10 +80,10 @@ void MainConsole::display() // Displays output
         {
             int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
             int coresAvail = GlobalScheduler::getInstance()->availableCores();
-            this->displayCPUUtil(coresAvail, coreTotal);
-            this->displayRunning();
+            std::cout << this->displayCPUUtil(coresAvail, coreTotal);
+            std::cout << this->displayRunning();
             std::cout << "" << std::endl;
-            this->displayFinished();
+            std::cout << this->displayFinished();
         }
 
 		if (outputMessage == "sched-test")
@@ -101,6 +100,32 @@ void MainConsole::display() // Displays output
             }
 			outputMessage = "";
 		}
+        //stops scheduler test
+        if (outputMessage == "sched-stop")
+        {
+			outputMessage = "";
+        }
+		//puts displayCPUUtil, displayRunning, displayFinished into a txt file
+        if (outputMessage == "report-util")
+        {
+            std::ofstream outFile("csopesy-log.txt");
+            if (outFile.is_open())
+            {
+                int coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+                int coresAvail = GlobalScheduler::getInstance()->availableCores();
+                outFile << this->displayCPUUtil(coresAvail, coreTotal);
+                outFile << this->displayRunning();
+                outFile << this->displayFinished();
+                outFile.close();
+                std::cout << "Report generated: report.txt" << std::endl;
+                std::cout << "File path: " << std::filesystem::current_path() / "csopesy-log.txt" << std::endl;
+            }
+            else
+            {
+                std::cerr << "Unable to open file for writing." << std::endl;
+            }
+            outputMessage = "";
+        }
 
         if (outputMessage == "invalid")
         {
@@ -135,12 +160,10 @@ void MainConsole::process() // Takes in input and processes it
         outputMessage = "sched-test";
     }
     else if (command == "scheduler-stop") {
-      //  schedulerstop();  // Assuming schedulerstop function is defined
-        outputMessage = "Scheduler stopped.";
+        outputMessage = "sched-stop";
     }
     else if (command == "report-util") {
-        //reportutil();  // Assuming reportutil function is defined
-        outputMessage = "Utility report generated.";
+        outputMessage = "report-util";
     }
     else if (command == "screen" && arg1 == "-r" && !arg2.empty()) {
         outputMessage = "screenr";
@@ -175,49 +198,53 @@ void MainConsole::header() const {
     SetConsoleTextAttribute(hConsole, 15);
 }
 
-void MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
+std::string MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
 {
     int coresUsed = coresTotal - coresAvail;
     float cpuUtil = coresUsed * 100 / coresTotal;
-    std::cout << "" << std::endl;
-    std::cout << "CPU Utilization: " << cpuUtil << "%" << std::endl;
-    std::cout << "Cores used: " << coresUsed << std::endl;
-    std::cout << "Cores available: " << coresAvail << std::endl;
-    std::cout << "" << std::endl;
+    std::ostringstream oss;
+    oss << "\nCPU Utilization: " << cpuUtil << "%\n";
+    oss << "Cores used: " << coresUsed << "\n";
+    oss << "Cores available: " << coresAvail << "\n\n";
+    return oss.str();
 }
 
-void MainConsole::displayRunning() const
+std::string MainConsole::displayRunning() const
 {
-    std::cout << "Running processes:" << std::endl;
+    std::ostringstream oss;
+    oss << "Running processes:\n";
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
         if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
-            std::cout << std::left 
-                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName() 
-                << std::setw(4) << "Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID() 
+            oss << std::left
+                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName()
+                << std::setw(4) << "Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID()
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
-                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";
         }
     }
-    std::cout << "" << std::endl;
+    oss << "\n";
+    return oss.str();
 }
 
-void MainConsole::displayFinished() const
+std::string MainConsole::displayFinished() const
 {
-    std::cout << "Finished processes:" << std::endl;
+    std::ostringstream oss;
+    oss << "Finished processes:\n";
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
         if (GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
-            std::cout << std::left
-                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName() 
-                << std::setw(4) << "FINISHED" 
+            oss << std::left
+                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName()
+                << std::setw(4) << "FINISHED"
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
-                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << std::endl;
+                << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";
         }
     }
-    std::cout << "" << std::endl;
+    oss << "\n";
+    return oss.str();
 }
 
 string MainConsole::getName() const 

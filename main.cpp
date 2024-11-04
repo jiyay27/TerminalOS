@@ -8,6 +8,8 @@
 #include "InputManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
+#include "Config.h"
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -18,8 +20,10 @@ using std::string;
 int main() {
     ConsoleManager::initialize();
     GlobalScheduler::initialize();
-    GlobalScheduler::getInstance()->selectScheduler("RR");
-    GlobalScheduler::getInstance()->startThreads();
+    Config config;
+	config.setParamList("config.txt");
+	GlobalScheduler::getInstance()->selectScheduler(config.getSchedulerAlg());
+	GlobalScheduler::getInstance()->startThreads();
     bool running = true;
     while (running)
     {
@@ -28,7 +32,7 @@ int main() {
 
         running = ConsoleManager::getInstance()->isRunning();
     }
-
+	
     ConsoleManager::destroy();
 	GlobalScheduler::destroy(); 
     return 0;

@@ -45,7 +45,7 @@ private:
 	CPUWorkers cpuWorkers;
 	CPUWorkersRR cpuWorkersRR;
 
-	int coreCount = 4;
+	int coreCount;
 
 	std::vector<std::shared_ptr<Process>> processList;
 };

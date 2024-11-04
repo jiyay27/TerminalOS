@@ -37,10 +37,10 @@ void SchedulerWorker::run()
 					this->stop();
 				}
 			}
-			else 
+			else
 			{
 				this->process->executeInstruction();
-			}	
+			}
 		}
 	}
 }

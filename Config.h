@@ -21,7 +21,11 @@ public:
 
         std::string line;
         while (std::getline(file, line)) {  // Read line by line
-            lines.push_back(line);  // Add each line to the vector
+            std::istringstream iss(line);
+            std::string varName, varValue;
+            if (iss >> varName >> varValue) {
+                lines.push_back(varValue);  // Add only the value to the vector
+            }
         }
 
         file.close();  // Close the file
@@ -37,33 +41,76 @@ public:
     }
 
     void assignParameter(int index) {
-        if (index == 2) {// no need conversion
-            this->schedulerAlg = paramList[2];
+        try {
+            if (index == 1) { // no need conversion
+                this->schedulerAlg =paramList[1];
+            }
+            else if (index == 0) {
+                this->numCPU = std::stoi(paramList[0]);
+            }
+            else if (index == 2) {
+                this->quantum = std::stoi(paramList[index]);
+            }
+            else if (index == 3) {
+                this->bpFrequency = std::stoi(paramList[index]);
+            }
+            else if (index == 4) {
+                this->minIns = std::stoi(paramList[index]);
+            }
+            else if (index == 5) {
+                this->maxIns = std::stoi(paramList[index]);
+            }
+            else if (index == 6) {
+                this->delays = std::stoi(paramList[index]);
+            }
         }
-        else if(index == 0){
-            this->numCPU = std::stoi(paramList[0]);
+        catch (const std::invalid_argument& e) {
+            std::cerr << "Invalid argument: " << paramList[index] << " at index " << index << std::endl;
         }
-        else if (index == 1) {
-            this->quantum = std::stoi(paramList[index]);
+        catch (const std::out_of_range& e) {
+            std::cerr << "Out of range: " << paramList[index] << " at index " << index << std::endl;
         }
-        else if (index == 3) {
-            this->bpFrequency = std::stoi(paramList[index]);
+    }
+
+    int getNumCPU (){
+        return this->numCPU;
+    }
+
+    int getQuantum() {
+        return this->quantum;
+    }
+
+    String getSchedulerAlg() {
+        return this->schedulerAlg;
+    }
+
+    int getBpFrequency() {
+		return this->bpFrequency;
+    }
+
+	int getMinIns() {
+		return this->minIns;
+	}
+
+	int getMaxIns() {
+		return this->maxIns;
+	}
+
+	int getDelays() {
+		return this->delays;
+	}
+
+    std::string removeQuotes(const std::string& str) {
+        if (str.size() >= 2 && str.front() == '"' && str.back() == '"') {
+            return str.substr(1, str.size() - 2);
         }
-        else if (index == 4) {
-            this->minIns = std::stoi(paramList[index]);
-        }
-        else if (index == 5) {
-            this->maxIns = std::stoi(paramList[index]);
-        }
-        else if (index == 6) {
-            this->delays = std::stoi(paramList[index]);
-        }
+        return str;
     }
 private:
     std::vector<std::string> paramList;
 	int numCPU; // 0
-	int quantum; // 1
-	String schedulerAlg; // 2
+    String schedulerAlg; // 1
+	int quantum; // 2
 	int bpFrequency; // 3
 	int minIns; // 4
 	int maxIns; // 5

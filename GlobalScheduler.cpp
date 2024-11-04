@@ -2,6 +2,7 @@
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
 #include "RRScheduler.h"
+#include "Config.h"
 GlobalScheduler* GlobalScheduler::sharedInstance = nullptr;
 GlobalScheduler* GlobalScheduler::getInstance()
 {
@@ -20,11 +21,13 @@ void GlobalScheduler::destroy()
 
 void GlobalScheduler::selectScheduler(String algoName)
 {
-	if (algoName == "FCFS")
+	std::cout << "Selected algorithm: " << algoName << std::endl;
+	if (algoName == "fcfs")
 	{
+		std::cout << "FCFS Scheduler selected." << std::endl;
 		this->scheduler = std::make_shared<FCFSScheduler>(GlobalScheduler::getInstance()->getCoreCount());
 	}
-	else if (algoName == "RR")
+	else if (algoName == "rr")
 	{
 		this->scheduler = std::make_shared<RRScheduler>(GlobalScheduler::getInstance()->getCoreCount());
 	}
@@ -75,6 +78,9 @@ std::shared_ptr<Process>& GlobalScheduler::getProcess(int index)
 //ASSIGNED NA YUNG CORE SA WORKER
 GlobalScheduler::GlobalScheduler() // Initialize coreCount
 {
+	Config config;
+	config.setParamList("config.txt");
+	this->coreCount = config.getNumCPU();
 	cpuWorkers.resize(coreCount);
 	cpuWorkersRR.resize(coreCount);
 	for (int i = 0; i < coreCount; i++)

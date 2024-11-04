@@ -25,6 +25,9 @@
     <Filter Include="Command">
       <UniqueIdentifier>{6fef1cf0-81b3-48f0-8c1e-554dfd4f5811}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Keyboard\Config">
+      <UniqueIdentifier>{f53bb937-595c-463c-a939-fa12b06cbcc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,5 +131,11 @@
     <ClInclude Include="SchedulerWorkerRR.h">
       <Filter>Scheduler</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Keyboard\Config</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
   </ItemGroup>
 </Project>
