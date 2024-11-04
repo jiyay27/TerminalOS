@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="AConsole.h" />
     <ClInclude Include="AScheduler.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="FCFSScheduler.h" />
     <ClInclude Include="GlobalScheduler.h">
@@ -167,6 +168,9 @@
     <ClInclude Include="SchedulerWorker.h" />
     <ClInclude Include="SchedulerWorkerRR.h" />
     <ClInclude Include="TypedefRepo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

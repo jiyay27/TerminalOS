@@ -2,9 +2,11 @@
 #include "ConsoleManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
+#include "Config.h"
 #include <iomanip>
 #include <fstream>
 #include <filesystem>
+
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 string response = "";
@@ -38,13 +40,7 @@ void MainConsole::display() // Displays output
 
     if (isInitialized == 1) {
         if (outputMessage == "initialize") {
-            // LAGAY DITO UNG CONFIG CHAKA PAG START NG SCHEDULER
-            //GlobalScheduler::getInstance()->setCoreCount(4);
-			//std::cout << GlobalScheduler::getInstance()->getCoreCount() << " cores available." << std::endl;
-            //cout << "Console has been initialized..." << endl;
-            //GlobalScheduler::getInstance()->getScheduler()->init();
-			//GlobalScheduler::getInstance()->getScheduler()->printCores();
-
+            config.setParamList(this->fileName);
 			outputMessage = "";
 
         }
