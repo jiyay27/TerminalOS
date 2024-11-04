@@ -7,10 +7,11 @@ SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
 }
 
 
-SchedulerWorkerRR::SchedulerWorkerRR(int numCore, int qq)
+SchedulerWorkerRR::SchedulerWorkerRR(int numCore, int qq, int delay)
 {
 	this->coreNum = numCore;
 	this->quantum = qq;
+    this->delay = delay;
 }
 
 void SchedulerWorkerRR::update(bool isRunning)
@@ -72,6 +73,7 @@ void SchedulerWorkerRR::run()
                 for (int i = 0; i < this->quantum && !this->process->isFinished(); i++)
                 {
                     this->isOccupied();
+                    this->sleep(delay);
                     this->process->executeInstruction();
                 }
 

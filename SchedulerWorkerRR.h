@@ -9,7 +9,7 @@ class SchedulerWorkerRR : public IETThread
 {
 public:
 	SchedulerWorkerRR(int coreNum);
-	SchedulerWorkerRR(int coreNum, int qq);
+	SchedulerWorkerRR(int coreNum, int qq, int delay);
 	~SchedulerWorkerRR() = default;
 
 	void update(bool isRunning);
@@ -24,7 +24,8 @@ private:
 	bool isRunning = true;
 	bool available = true;
 	int coreNum;
-	int quantum = 100;
+	int quantum;
+	int delay;
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 };

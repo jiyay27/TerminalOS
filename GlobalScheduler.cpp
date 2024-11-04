@@ -81,16 +81,18 @@ GlobalScheduler::GlobalScheduler() // Initialize coreCount
 	Config config;
 	config.setParamList("config.txt");
 	this->coreCount = config.getNumCPU();
+	int qq = config.getQuantum();
+	int delay = config.getDelays();
 	cpuWorkers.resize(coreCount);
 	cpuWorkersRR.resize(coreCount);
 	for (int i = 0; i < coreCount; i++)
 	{
-		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i);
+		std::shared_ptr<SchedulerWorker> worker = std::make_shared<SchedulerWorker>(i, delay);
 		this->cpuWorkers[i] = worker;
 	}
 	for (int i = 0; i < coreCount; i++)
 	{
-		std::shared_ptr<SchedulerWorkerRR> worker = std::make_shared<SchedulerWorkerRR>(i);
+		std::shared_ptr<SchedulerWorkerRR> worker = std::make_shared<SchedulerWorkerRR>(i, qq, delay);
 		this->cpuWorkersRR[i] = worker;
 	}
 }

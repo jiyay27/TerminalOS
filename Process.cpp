@@ -4,12 +4,14 @@
 #include <string>
 #include <iostream>
 #include "GlobalScheduler.h"
-
+#include "Config.h"
 Process::Process(String name)
 {
 	//srand(time(0));
-	int min = 1001;
-	int max = 1501;
+	Config config;
+	config.setParamList("config.txt");
+	int min = config.getMinIns();
+	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
 
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();

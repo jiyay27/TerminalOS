@@ -1,9 +1,10 @@
 #include "SchedulerWorker.h"
 #include "GlobalScheduler.h"
 
-SchedulerWorker::SchedulerWorker(int numCore)
+SchedulerWorker::SchedulerWorker(int numCore,int delay)
 {
 	this->coreNum = numCore;
+	this->delay = delay;
 }
 
 void SchedulerWorker::update(bool isRunning)
@@ -40,6 +41,7 @@ void SchedulerWorker::run()
 			else
 			{
 				this->isOccupied();
+				this->sleep(delay);
 				this->process->executeInstruction();
 			}
 		}
