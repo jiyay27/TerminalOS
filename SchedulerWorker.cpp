@@ -50,7 +50,6 @@ void SchedulerWorker::run()
 
 void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 {
-	//this->process = process;
 	this->processQueue.push(process);
 	this->process = processQueue.front();
 }

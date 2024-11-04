@@ -36,7 +36,8 @@ private:
 	String name = "RR";
 	int numCores;
 	int timeQuantum = 100;
-
+	
+	int batch;
 	bool schedulerRun = false;
 	int i = 1;
 

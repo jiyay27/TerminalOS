@@ -1,16 +1,12 @@
 #include "FCFSScheduler.h"
 #include "GlobalScheduler.h"
 #include "ConsoleManager.h"
+#include "Config.h"
 #include <algorithm>
 #include <iomanip>
 
 void FCFSScheduler::init()
 {
-	//for (int i = 0; i < numCores; i++)
-	//{
-	//	std::cout << "init work" << std::endl;
-	//	this->cpuWorkers[i]->start();
-	//}
 }
 
 void FCFSScheduler::addProcess(std::shared_ptr<Process> process, int core)
@@ -88,13 +84,15 @@ void FCFSScheduler::execute()
     {
 		if (GlobalScheduler::getInstance()->getCPUWorker(i)->processExists()) {
 			GlobalScheduler::getInstance()->getCPUWorker(i)->update(true);
-			//GlobalScheduler::getInstance()->getCPUWorker(i)->run();
 		}
 	}
 }
 
 void FCFSScheduler::run()
 {
+	Config config;
+	config.setParamList("config.txt");
+	this->batch = config.getBpFrequency();
 	while (this->schedulerRun == true)
 	{
 		srand(static_cast<unsigned int>(time(0)));
@@ -106,7 +104,7 @@ void FCFSScheduler::run()
 		ConsoleManager::getInstance()->createBaseScreen2(procName);
 		int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
 		GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-		this->sleep(1000);
+		this->sleep(batch);
 	}
 }
 

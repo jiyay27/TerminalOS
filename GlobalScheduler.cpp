@@ -21,7 +21,6 @@ void GlobalScheduler::destroy()
 
 void GlobalScheduler::selectScheduler(String algoName)
 {
-	std::cout << "Selected algorithm: " << algoName << std::endl;
 	if (algoName == "fcfs")
 	{
 		std::cout << "FCFS Scheduler selected." << std::endl;
@@ -97,9 +96,7 @@ GlobalScheduler::GlobalScheduler() // Initialize coreCount
 	}
 }
 
-//pag initialize ng console
-//read config file, get core count, create workers, start workers
-//dito palang naka bukas na ung threads
+
 void GlobalScheduler::startThreads()
 {
 	if (this->scheduler) {
@@ -135,22 +132,12 @@ std::shared_ptr<Process> GlobalScheduler::getMostRecentProcess()
 bool GlobalScheduler::checkCoreAvailability(int index) 
 {
 	if (this->cpuWorkers[index]->isAvailable()) {
-		//std::cout << "Core is available." << std::endl;
 		return true;
 	}
 	else
 		return false;
 }
 
-//bool GlobalScheduler::checkCoreAvailability(int index)
-//{
-//	if (this->cpuWorkersRR[index]->isAvailable()) {
-//		//std::cout << "Core is available." << std::endl;
-//		return true;
-//	}
-//	else
-//		return false;
-//}
 
 GlobalScheduler::CPUWorkers& GlobalScheduler::getCPUWorkers()
 {

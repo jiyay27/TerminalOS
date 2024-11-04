@@ -7,11 +7,6 @@ AScheduler::AScheduler(SchedulingAlgorithm schedulingAlgo, int pid, String proce
 	this->processName = processName;
 }
 
-//void AScheduler::addProcess(const Process& process, int core)
-//{
-//	//this->processes.push_back(process);
-//}
-
 std::shared_ptr<Process> AScheduler::findProcess(String processName)
 {
 	for (auto process : this->processes)

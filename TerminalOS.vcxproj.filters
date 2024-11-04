@@ -48,9 +48,6 @@
     <ClCompile Include="MarqueeConsole.cpp">
       <Filter>ConsoleScreen</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Keyboard</Filter>
-    </ClCompile>
     <ClCompile Include="Process.cpp">
       <Filter>Process</Filter>
     </ClCompile>
@@ -94,9 +91,6 @@
     </ClInclude>
     <ClInclude Include="MarqueeConsole.h">
       <Filter>ConsoleScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Keyboard</Filter>
     </ClInclude>
     <ClInclude Include="Process.h">
       <Filter>Process</Filter>

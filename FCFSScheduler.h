@@ -40,6 +40,7 @@ private:
     int isRunning = true;
     int numCores;
     
+    int batch;
     bool schedulerRun;
     int i = 1;
 

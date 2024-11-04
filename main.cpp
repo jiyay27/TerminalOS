@@ -5,7 +5,6 @@
 #include <time.h>
 #include <windows.h>
 #include "ConsoleManager.h"
-#include "InputManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
 #include "Config.h"

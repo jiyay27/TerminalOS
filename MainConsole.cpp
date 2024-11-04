@@ -99,16 +99,6 @@ void MainConsole::display() // Displays output
 
 		if (outputMessage == "sched-test")
 		{
-            //srand(static_cast<unsigned int>(time(0)));
-            /*for (int i = 1; i <= 10; ++i) {
-                std::ostringstream oss;  
-                oss << "proc-" << std::setw(2) << std::setfill('0') << i;
-                std::string procName = oss.str();
-
-                ConsoleManager::getInstance()->createBaseScreen2(procName);
-                int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
-                GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-            }*/
             outputMessage = "";
             GlobalScheduler::getInstance()->getScheduler()->schedulerStart();
 		}
