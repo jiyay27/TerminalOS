@@ -152,11 +152,13 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="FCFSScheduler.h" />
+    <ClInclude Include="FlatMemoryAllocator.h" />
     <ClInclude Include="GlobalScheduler.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IETThread.h" />
+    <ClInclude Include="IMemoryAllocator.h" />
     <ClInclude Include="MainConsole.h" />
     <ClInclude Include="MarqueeConsole.h" />
     <ClInclude Include="BaseScreen.h" />

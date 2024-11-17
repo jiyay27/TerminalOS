@@ -128,6 +128,12 @@
     <ClInclude Include="Config.h">
       <Filter>Keyboard\Config</Filter>
     </ClInclude>
+    <ClInclude Include="FlatMemoryAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="IMemoryAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
