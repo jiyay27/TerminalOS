@@ -33,6 +33,7 @@ public:
 	bool isFinished() const;
 	void setCoreID(int coreID);
 	void setState(ProcessState state);
+	size_t getMemoryRequired();
 private:
 	int pid;
 	String name;
@@ -41,5 +42,5 @@ private:
 	int commandCounter = 0;
 	int cpuCoreID = -1;
 	ProcessState currentState;
-
+	size_t memoryRequired;
 };

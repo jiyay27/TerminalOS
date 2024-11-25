@@ -14,6 +14,7 @@ Process::Process(String name)
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
 
+	this->memoryRequired = 50; //garbage value
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
@@ -127,3 +128,7 @@ void Process::setState(ProcessState state)
 	this->currentState = state;
 }
 
+size_t Process::getMemoryRequired()
+{
+	return this->memoryRequired;
+}

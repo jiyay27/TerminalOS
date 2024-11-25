@@ -3,6 +3,8 @@
 #include <string>
 #include <thread>
 #include <queue>
+#include <mutex>
+#include "IMemoryAllocator.h"
 #include "Process.h"
 
 class SchedulerWorker : public IETThread
@@ -20,10 +22,13 @@ public:
 	void isOccupied();
 	bool processExists() const;
 private:
+	std::mutex CPUWorkerMutex;
+	int cpuClock = 0;
 	bool isRunning = true;
 	bool available = true;
 	int coreNum;
 	int delay;
+	std::shared_ptr <IMemoryAllocator> memoryAllocator;
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 };

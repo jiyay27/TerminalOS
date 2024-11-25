@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <mutex>
 #include "Process.h"
 #include "AScheduler.h"
 #include "SchedulerWorker.h"
@@ -40,6 +41,8 @@ private:
     int isRunning = true;
     int numCores;
     
+	std::mutex schedulerMutex;
+
     int batch;
     bool schedulerRun;
     int i = 1;

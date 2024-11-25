@@ -23,13 +23,14 @@ int main() {
 	config.setParamList("config.txt");
 	GlobalScheduler::getInstance()->selectScheduler(config.getSchedulerAlg());
 	GlobalScheduler::getInstance()->startThreads();
+    int mainClock = 0;
     bool running = true;
     while (running)
     {
         ConsoleManager::getInstance()->process();
         ConsoleManager::getInstance()->drawConsole();
-
         running = ConsoleManager::getInstance()->isRunning();
+        mainClock++;
     }
 	
     ConsoleManager::destroy();
