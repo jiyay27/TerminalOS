@@ -6,6 +6,7 @@
 #include <mutex>
 #include "IMemoryAllocator.h"
 #include "Process.h"
+#include "IETThread.h"
 
 class SchedulerWorker : public IETThread
 {

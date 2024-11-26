@@ -13,8 +13,8 @@ Process::Process(String name)
 	int min = config.getMinIns();
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
-
-	this->memoryRequired = 50; //garbage value
+	//TODO: Add memory randomizer
+	//this->memoryRequired = 50; //garbage value
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
@@ -29,6 +29,7 @@ Process::Process(int pid, String name, int remainingInstructions)
 {
 	this->pid = pid;
 	this->name = name;
+	this->memoryRequired = 50;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
 	for (int i = 0; i < remainingInstructions; i++)

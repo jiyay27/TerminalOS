@@ -28,31 +28,31 @@ void SchedulerWorker::run()
 	while (this->isRunning) 
 	{
 		cpuClock++;
-		std::lock_guard<std::mutex> lock(CPUWorkerMutex);
-		if (!processExists()) {
+		//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
+		/*if (!processExists()) {
 			std::cout << "No process in queue. Worker is idle." << std::endl;
 			stop();
 			continue;
-		}
-
-		void* memory = memoryAllocator->allocate(process->getMemoryRequired());
-
-		if (memory != nullptr) {
-			std::cout << "Allocated memory for process " << this->process->getName() << std::endl;
-			std::cout << "Memory state: " << memoryAllocator->visualizeMemory() << std::endl;
-			memoryAllocator->deallocate(memory);
-		}
-		else
-		{
-			std::cout << "Memory allocation failed for process " << this->process->getName() << std::endl;
-			this->sleep(delay);
-			continue;
-		}
+		}*/
 
 		this->updateA();
 
 		if (this->process != nullptr) 
 		{
+			void* memory = memoryAllocator->allocate(process->getMemoryRequired());
+
+			if (memory != nullptr) {
+				std::cout << "Allocated memory for process " << this->process->getName() << std::endl;
+				std::cout << "Memory state: " << memoryAllocator->visualizeMemory() << std::endl;
+				memoryAllocator->deallocate(memory);
+			}
+			else
+			{
+				std::cout << "Memory allocation failed for process " << this->process->getName() << std::endl;
+				this->sleep(delay);
+				continue;
+			}
+
 			if (this->process->isFinished()) 
 			{
 				this->updateA();
@@ -77,9 +77,10 @@ void SchedulerWorker::run()
 	}
 }
 
+//adds the process into the queue
 void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 {
-	std::lock_guard<std::mutex> lock(CPUWorkerMutex);
+	//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
 
 	this->processQueue.push(process);
 	this->process = processQueue.front();
@@ -88,7 +89,7 @@ void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 
 void SchedulerWorker::stop()
 {
-	std::lock_guard<std::mutex> lock(CPUWorkerMutex);
+	//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
 
 	this->isRunning = false;
 }
@@ -99,7 +100,7 @@ bool SchedulerWorker::isAvailable() const
 }
 
 void SchedulerWorker::isOccupied() {
-	std::lock_guard<std::mutex> lock(CPUWorkerMutex);
+	//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
 
 	this->available = false;
 }
