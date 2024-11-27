@@ -33,9 +33,10 @@ void FlatMemoryAllocator::initializeMemory() {
 // Allocate Memory
 void* FlatMemoryAllocator::allocate(size_t size) {
     std::lock_guard<std::mutex> lock(allocatorMutex);
-
+    //debugger
+	//std::cout << "Allocating memory of size " << size << std::endl;
     // Try to allocate in main memory
-    for (size_t i = 0; i <= maximumSize - size; i++) {
+    for (size_t i = 0; i <= maximumSize - size + 1; i++) {
         if (!allocationMap[i] && canAllocateAt(i, size)) {
             allocateAt(i, size);
             return &memory[i];
@@ -45,14 +46,14 @@ void* FlatMemoryAllocator::allocate(size_t size) {
     // Allocate in backing store if main memory fails
     void* backingPtr = createBackingStoreEntry(size);
     if (backingPtr != nullptr) {
-        std::cout << "Allocated memory in backing store. Pointer: " << backingPtr << std::endl;
+        return backingPtr;
     }
-    return backingPtr;
+    return nullptr;
 }
 
 // Deallocate Memory
 void FlatMemoryAllocator::deallocate(void* ptr) {
-    std::lock_guard<std::mutex> lock(allocatorMutex);
+    //std::lock_guard<std::mutex> lock(allocatorMutex);
 
     if (ptr == nullptr) return;
 
@@ -64,7 +65,7 @@ void FlatMemoryAllocator::deallocate(void* ptr) {
         if (index < maximumSize && allocationMap[index]) {
             size_t blockSize = findAllocationSize(index);
             deallocateAt(index, blockSize);
-            std::cout << "Deallocated memory in main memory at index " << index << " with size " << blockSize << std::endl;
+            //std::cout << "Deallocated memory in main memory at index " << index << " with size " << blockSize << std::endl;
         }
         else {
             std::cerr << "Attempted to deallocate an unallocated or invalid pointer in main memory." << std::endl;
@@ -74,7 +75,7 @@ void FlatMemoryAllocator::deallocate(void* ptr) {
     else if (backingStoreAllocations.find(ptr) != backingStoreAllocations.end()) {
         delete[] static_cast<char*>(ptr);
         backingStoreAllocations.erase(ptr);
-        std::cout << "Deallocated memory from backing store. Pointer: " << ptr << std::endl;
+        //std::cout << "Deallocated memory from backing store. Pointer: " << ptr << std::endl;
     }
     else {
         std::cerr << "Attempted to deallocate a pointer that is neither in main memory nor in backing store." << std::endl;
@@ -91,6 +92,40 @@ std::string FlatMemoryAllocator::visualizeMemory() {
         visualization += "[" + pointerToString(ptr) + " - Size: " + std::to_string(size) + "] ";
     }
     return visualization;
+}
+
+// Check if pointer is in backing store
+bool FlatMemoryAllocator::isInBackingStore(void* ptr) const {
+	return backingStoreAllocations.find(ptr) != backingStoreAllocations.end();
+}
+
+// Try allocating memory from backing store to main memory
+void* FlatMemoryAllocator::backingToMain(void* ptr) {
+    std::lock_guard<std::mutex> lock(allocatorMutex);
+
+    if (ptr == nullptr) return nullptr;
+
+    // Check if the pointer is in the backing store
+    auto it = backingStoreAllocations.find(ptr);
+    if (it != backingStoreAllocations.end()) {
+        size_t size = it->second; // Retrieve the size from the map
+
+        // Try to allocate in main memory
+        for (size_t i = 0; i <= maximumSize - size; i++) {
+            if (!allocationMap[i] && canAllocateAt(i, size)) {
+                allocateAt(i, size);
+                //std::cout << "Allocated memory from backing store to main memory. Pointer: " << ptr << std::endl;
+
+                // Remove from the backing store map
+                backingStoreAllocations.erase(it);
+                return &memory[i];
+            }
+        }
+
+        //std::cout << "Failed to allocate memory in main memory for pointer: " << ptr << std::endl;
+    }
+
+    return nullptr; // Return null if allocation fails or pointer is not in backing store
 }
 
 // Private: Check if allocation is possible

@@ -29,7 +29,6 @@ private:
 	bool available = true;
 	int coreNum;
 	int delay;
-	std::shared_ptr <IMemoryAllocator> memoryAllocator;
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 };

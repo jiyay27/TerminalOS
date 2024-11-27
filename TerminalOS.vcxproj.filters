@@ -75,6 +75,9 @@
     <ClCompile Include="SchedulerWorkerRR.cpp">
       <Filter>Scheduler</Filter>
     </ClCompile>
+    <ClCompile Include="FlatMemoryAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h">

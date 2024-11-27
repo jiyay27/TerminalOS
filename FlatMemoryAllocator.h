@@ -16,6 +16,10 @@ public:
     void deallocate(void* ptr) override;
     std::string visualizeMemory() override;
 
+    //Backing store checking
+	bool isInBackingStore(void* ptr) const;
+	void* backingToMain(void* ptr);
+
     // Delete copy and move constructors to enforce singleton behavior
     FlatMemoryAllocator(const FlatMemoryAllocator&) = delete;
     FlatMemoryAllocator& operator=(const FlatMemoryAllocator&) = delete;

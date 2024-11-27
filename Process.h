@@ -33,7 +33,13 @@ public:
 	bool isFinished() const;
 	void setCoreID(int coreID);
 	void setState(ProcessState state);
+
+	//memory related
 	size_t getMemoryRequired();
+	void setAllocationState(bool state);
+	bool getAllocationState();
+	void setAssignedAt(void* ptr);
+	void* getAssignedAt();
 private:
 	int pid;
 	String name;
@@ -42,5 +48,9 @@ private:
 	int commandCounter = 0;
 	int cpuCoreID = -1;
 	ProcessState currentState;
+
+	//memory related
 	size_t memoryRequired;
+	bool memoryAllocated = false;
+	void* assignedAt;
 };

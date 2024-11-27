@@ -26,9 +26,10 @@ void FCFSScheduler::assignCore(std::shared_ptr<Process> process, int core)
 // assign process from queue to core
 void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	if (process != nullptr)
 	{ 
+		std::cout << "KAKAKAKAKKA" << std::endl;
 		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->addProcess(process);
 		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
 	}
@@ -41,7 +42,7 @@ void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
 //returns first core that is available
 int FCFSScheduler::checkCores()
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	for (int core = 0; core < numCores; core++)
 	{
 		if (GlobalScheduler::getInstance()->checkCoreAvailability(core) == true)
@@ -53,7 +54,7 @@ int FCFSScheduler::checkCores()
 }
 
 int FCFSScheduler::checkCoreQueue() {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	int index = -1;  // Default index when no core is available
 	int minQueueSize = INT_MAX;  // Track the smallest queue size
 
@@ -83,7 +84,7 @@ std::shared_ptr<Process> FCFSScheduler::getProcess(int core) const
 
 void FCFSScheduler::execute() 
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
     for (int i = 0; i < numCores; i++)
     {
 		if (GlobalScheduler::getInstance()->getCPUWorker(i)->processExists()) {
@@ -94,7 +95,7 @@ void FCFSScheduler::execute()
 
 void FCFSScheduler::run()
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	Config config;
 	config.setParamList("config.txt");
 	this->batch = config.getBpFrequency();
@@ -115,7 +116,7 @@ void FCFSScheduler::run()
 
 void FCFSScheduler::schedulerStart()
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	this->schedulerRun = true;
 	this->start();
 	this->sleep(10);
@@ -123,7 +124,7 @@ void FCFSScheduler::schedulerStart()
 
 void FCFSScheduler::schedulerStop()
 {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	this->schedulerRun = false;
 }
 
@@ -146,7 +147,7 @@ void FCFSScheduler::printCores() {
 }
 
 bool FCFSScheduler::allProcessesFinished() {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	for (const auto& queue : processQueues) {
 		if (!queue.empty()) {
 			return false;
@@ -156,7 +157,7 @@ bool FCFSScheduler::allProcessesFinished() {
 }
 
 void FCFSScheduler::printProcessQueues() {
-	std::lock_guard<std::mutex> lock(schedulerMutex);
+	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	for (size_t i = 0; i < processQueues.size(); ++i) 
 	{
 		std::cout << "Queue " << i << ":\n";

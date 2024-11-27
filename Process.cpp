@@ -13,8 +13,11 @@ Process::Process(String name)
 	int min = config.getMinIns();
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
+
 	//TODO: Add memory randomizer
-	//this->memoryRequired = 50; //garbage value
+	this->memoryRequired = 50; //garbage value
+	this->memoryAllocated = false;
+
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
@@ -132,4 +135,24 @@ void Process::setState(ProcessState state)
 size_t Process::getMemoryRequired()
 {
 	return this->memoryRequired;
+}
+
+void Process::setAllocationState(bool state)
+{
+	this->memoryAllocated = state;
+}
+
+bool Process::getAllocationState()
+{
+	return this->memoryAllocated;
+}
+
+void Process::setAssignedAt(void* ptr)
+{
+	this->assignedAt = ptr;
+}
+
+void* Process::getAssignedAt()
+{
+	return this->assignedAt;
 }

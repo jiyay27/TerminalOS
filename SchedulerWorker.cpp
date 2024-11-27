@@ -3,13 +3,12 @@
 #include "IMemoryAllocator.h"
 #include "FlatMemoryAllocator.h"
 
-int maximumSize = 5000;
+int maximumSize = 100;
 
 SchedulerWorker::SchedulerWorker(int numCore, int delay)
 {
 	this->coreNum = numCore;
 	this->delay = delay;
-	this->memoryAllocator = std::make_shared<FlatMemoryAllocator>(maximumSize);
 }
 
 void SchedulerWorker::update(bool isRunning)
@@ -25,57 +24,82 @@ void SchedulerWorker::updateA()
 //implement memory allocation and deallocation
 void SchedulerWorker::run()
 {
+	auto& memoryAllocator = FlatMemoryAllocator::getInstance(maximumSize);
 	while (this->isRunning) 
 	{
-		cpuClock++;
+		//cpuClock++;
 		//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
-		/*if (!processExists()) {
-			std::cout << "No process in queue. Worker is idle." << std::endl;
-			stop();
-			continue;
-		}*/
-
 		this->updateA();
 
 		if (this->process != nullptr) 
 		{
-			void* memory = memoryAllocator->allocate(process->getMemoryRequired());
-
-			if (memory != nullptr) {
-				std::cout << "Allocated memory for process " << this->process->getName() << std::endl;
-				std::cout << "Memory state: " << memoryAllocator->visualizeMemory() << std::endl;
-				memoryAllocator->deallocate(memory);
-			}
-			else
+			//check if the process is allocated in memory 
+			//if not, allocate memory for the process and run the process
+			//if the process is finished, deallocate the memory
+			//else, run the process
+			if (this->process->getAllocationState() == false)
 			{
-				std::cout << "Memory allocation failed for process " << this->process->getName() << std::endl;
-				this->sleep(delay);
-				continue;
-			}
-
-			if (this->process->isFinished()) 
-			{
-				this->updateA();
-				this->process->setState(Process::FINISHED);
-				this->processQueue.pop();
-				if (!this->processQueue.empty())
-				{
-					this->process = this->processQueue.front();
+				//allocate memory for the process and set its internal memory address so that it can be accessed
+				void* memory = memoryAllocator.allocate(this->process->getMemoryRequired());
+				std::cout << "Memory allocated for process " << this->process->getName() << " on core: " << this->coreNum << std::endl;
+				if (memory) {
+					this->process->setAssignedAt(memory);
+					this->process->setAllocationState(true);
 				}
-				else
-				{
-					this->stop();
-				}
+				else { std::cout<<"ERROR RRERERER" << std::endl; }
 			}
-			else
+			else 
 			{
-				this->isOccupied();
-				this->sleep(delay);
-				this->process->executeInstruction();
+				if (this->process->isFinished() && this->process->getAssignedAt() != nullptr)
+				{
+					std::cout << "address: " << this->process->getAssignedAt() << std::endl;
+					memoryAllocator.deallocate(this->process->getAssignedAt());
+					this->process->setAllocationState(false);
+					this->process->setAssignedAt(nullptr);	
+					this->updateA();
+					this->process->setState(Process::FINISHED);
+					this->processQueue.pop();
+
+					if (!this->processQueue.empty())
+					{
+						this->process = this->processQueue.front();
+						//std::cout << "next process " << this->process->getName() << " on core: " << this->coreNum << std::endl;
+					}
+					else
+					{
+						std::cout << "NOOOOO" << std::endl;
+						this->stop();
+					}
+					
+				}
+				//when process not finished
+				else 
+				{
+					//if not in backing store, then g!
+					if (this->process->getAssignedAt() != nullptr && !memoryAllocator.isInBackingStore(this->process->getAssignedAt()))
+					{
+						this->isOccupied();
+						this->sleep(delay);
+						this->process->executeInstruction();
+					}
+					//if in backing store, try to assign to main mem
+					else if (memoryAllocator.isInBackingStore(this->process->getAssignedAt()))
+					{
+						void* memory = memoryAllocator.backingToMain(this->process->getAssignedAt());
+						if (memory)
+						{
+							this->process->setAssignedAt(memory);
+							this->process->setAllocationState(true);
+						}
+						else { this->sleep(delay); 
+						}
+					}
+				}	
 			}
 		}
 	}
 }
+
 
 //adds the process into the queue
 void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
@@ -90,7 +114,6 @@ void SchedulerWorker::addProcess(std::shared_ptr<Process> process)
 void SchedulerWorker::stop()
 {
 	//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
-
 	this->isRunning = false;
 }
 
