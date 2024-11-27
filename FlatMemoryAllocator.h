@@ -3,71 +3,43 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <mutex>
+#include <sstream>
 
-class FlatMemoryAllocator : public IMemoryAllocator
-{
+// Singleton Memory Allocator Class
+class FlatMemoryAllocator : public IMemoryAllocator {
 public:
-    FlatMemoryAllocator(size_t maximumSize) : maximumSize(maximumSize), allocatedSize(0) {
-        memory.resize(maximumSize, '.'); // Use resize instead of reserve
-        initializeMemory();
-    }
+    static FlatMemoryAllocator& getInstance(size_t maximumSize = 1024);
 
-    ~FlatMemoryAllocator() {
-        memory.clear();
-    }
+    // Public Interface
+    void* allocate(size_t size) override;
+    void deallocate(void* ptr) override;
+    std::string visualizeMemory() override;
 
-    void* allocate(size_t size) override {
-        for (size_t i = 0; i < maximumSize - size + 1; i++) {
-            if (!allocationMap[i] && canAllocateAt(i, size)) {
-                allocateAt(i, size);
-                return &memory[i];
-            }
-        }
-        return nullptr;
-    }
+    // Delete copy and move constructors to enforce singleton behavior
+    FlatMemoryAllocator(const FlatMemoryAllocator&) = delete;
+    FlatMemoryAllocator& operator=(const FlatMemoryAllocator&) = delete;
 
-    void deallocate(void* ptr) override {
-        size_t index = static_cast<char*>(ptr) - &memory[0];
-        if (allocationMap[index]) {
-            deallocateAt(index, 5); // Ensure the size is correct
-        }
-    }
-        
-    std::string visualizeMemory() override {
-        return std::string(memory.begin(), memory.end());
-    }
+    ~FlatMemoryAllocator();
 
 private:
+    // Private Constructor
+    FlatMemoryAllocator(size_t maximumSize);
+
+    // Private Methods
+    void initializeMemory();
+    bool canAllocateAt(size_t index, size_t size) const;
+    void allocateAt(size_t index, size_t size);
+    void deallocateAt(size_t index, size_t size);
+    size_t findAllocationSize(size_t index) const;
+    void* createBackingStoreEntry(size_t size);
+    std::string pointerToString(void* ptr) const;
+
+    // Private Members
     size_t maximumSize;
     size_t allocatedSize;
-    std::vector<char> memory;
-    std::unordered_map<size_t, bool> allocationMap;
-
-    void initializeMemory() {
-        std::fill(memory.begin(), memory.end(), '.');
-        allocationMap.clear(); // Clear the map before use
-    }
-
-    bool canAllocateAt(size_t index, size_t size) const {
-        for (size_t i = index; i < index + size; ++i) {
-            if (allocationMap.find(i) != allocationMap.end() && allocationMap.at(i)) {
-                return false;
-            }
-        }
-        return (index + size <= maximumSize);
-    }
-
-    void allocateAt(size_t index, size_t size) {
-        for (size_t i = index; i < index + size; ++i) {
-            allocationMap[i] = true;
-        }
-        allocatedSize += size;
-    }
-
-    void deallocateAt(size_t index, size_t size) {
-        for (size_t i = index; i < index + size; ++i) {
-            allocationMap[i] = false;
-        }
-        allocatedSize -= size;
-    }
+    std::vector<char> memory; // Memory representation
+    std::vector<bool> allocationMap; // Allocation tracking
+    std::unordered_map<void*, size_t> backingStoreAllocations; // Backing store tracking
+    std::mutex allocatorMutex; // Ensures thread safety
 };
