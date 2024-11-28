@@ -78,21 +78,7 @@ void MainConsole::display() // Displays output
 
         if (outputMessage == "screenls")
         {
-            int coresTotal;
-            int coresAvail;
-
-            if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
-            {
-                coresTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
-                coresAvail = GlobalScheduler::getInstance()->availableCores();
-            } 
-            else
-            {
-                coresTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
-                coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
-            }
-
-            std::cout << this->displayCPUUtil(coresAvail, coresTotal);
+            std::cout << this->displayCPUUtil();
             std::cout << this->displayRunning();
             std::cout << this->displayFinished();
         }
@@ -111,24 +97,10 @@ void MainConsole::display() // Displays output
 		//puts displayCPUUtil, displayRunning, displayFinished into a txt file
         if (outputMessage == "report-util")
         {
-            int coreTotal;
-            int coresAvail;
-
-            if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
-            {
-                coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
-                coresAvail = GlobalScheduler::getInstance()->availableCores();
-            }
-            else
-            {
-                coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
-                coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
-            }
-
             std::ofstream outFile("csopesy-log.txt");
             if (outFile.is_open())
             {
-                outFile << this->displayCPUUtil(coresAvail, coreTotal);
+                outFile << this->displayCPUUtil();
                 outFile << this->displayRunning();
                 outFile << this->displayFinished();
                 outFile.close();
@@ -141,6 +113,12 @@ void MainConsole::display() // Displays output
             }
             outputMessage = "";
         }
+
+		if (outputMessage == "process-smi")
+		{
+            std::cout << this->displayProcessSMI();
+			outputMessage = "";
+		}
 
         if (outputMessage == "invalid")
         {
@@ -180,6 +158,9 @@ void MainConsole::process() // Takes in input and processes it
     else if (command == "report-util") {
         outputMessage = "report-util";
     }
+    else if (command == "process-smi") {
+        outputMessage = "process-smi";
+    }
     else if (command == "screen" && arg1 == "-r" && !arg2.empty()) {
         outputMessage = "screenr";
         outputArg2 = arg2;
@@ -213,30 +194,31 @@ void MainConsole::header() const {
     SetConsoleTextAttribute(hConsole, 15);
 }
 
-std::string MainConsole::displayCPUUtil(int coresAvail, int coresTotal) const
+String MainConsole::displayCPUUtil() const
 {
-    int coresUsed = coresTotal - coresAvail;
-
-
-    float cpuUtil = coresUsed  * 100  / coresTotal;
+    int coresUsed = this->computeCoresUsed();
+    float cpuUtil = this->computeCoreUtil();
 
     std::ostringstream oss;
     oss << "\nCPU Utilization: " << cpuUtil << "%\n";
     oss << "Cores used: " << coresUsed << "\n";
-    oss << "Cores available: " << coresAvail << "\n\n";
+    oss << "Cores available: " << this->computeCoresAvail() << "\n\n";
     return oss.str();
 }
 
-std::string MainConsole::displayRunning() const
+String MainConsole::displayRunning()
 {
+    String truncatedProcName;
     std::ostringstream oss;
     oss << "Running processes:\n";
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
         if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
+            truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
+            truncatedProcName = truncateRightLine(truncatedProcName, 10);
             oss << std::left
-                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName()
+                << std::setw(13) << truncatedProcName
                 << std::setw(4) << "Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID()
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";
@@ -246,16 +228,19 @@ std::string MainConsole::displayRunning() const
     return oss.str();
 }
 
-std::string MainConsole::displayFinished() const
+String MainConsole::displayFinished()
 {
+    String truncatedProcName;
     std::ostringstream oss;
     oss << "Finished processes:\n";
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
         if (GlobalScheduler::getInstance()->getProcess(i)->isFinished())
         {
+            truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
+            truncatedProcName = truncateRightLine(truncatedProcName, 10);
             oss << std::left
-                << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getName()
+                << std::setw(13) << truncatedProcName
                 << std::setw(4) << "FINISHED"
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";
@@ -265,7 +250,135 @@ std::string MainConsole::displayFinished() const
     return oss.str();
 }
 
+std::string MainConsole::displayProcessSMI()
+{
+    String truncatedProcName;
+
+    std::ostringstream oss;
+    oss << "-----------------------------------------\n";
+    oss << "| PROCESS-SMI V1.00 Driver Version 1.00 |\n";
+    oss << "-----------------------------------------\n";
+
+    oss << std::left
+    << std::setw(5) << "CPU-Util: " << this->computeCoreUtil() << "%\n"
+    << std::setw(5) << "Memory Usage: " << std::right
+    << std::setw(2)<< this->computeMemoryUsed() << "MiB" << " / " << this->computeMemoryAvail() << "MiB\n"
+	<< std::setw(5) << "Memory Util: " << this->computeMemoryUtil() << "%\n";
+
+    oss << "-----------------------------------------\n";
+    oss << " Running processes and memory usage:     \n";
+    oss << "-----------------------------------------\n";
+
+    for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
+    {
+        if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
+        {
+            truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
+            truncatedProcName = truncateRightLine(truncatedProcName, 10);
+            oss << std::left
+                << std::setw(12) << truncatedProcName
+                << GlobalScheduler::getInstance()->getProcess(i)->getMemoryRequired() << "MiB" << "\n";
+        }
+    }
+    
+    oss << "-----------------------------------------\n";
+
+    return oss.str();
+}
+
+float MainConsole::computeCoreUtil() const
+{
+    int coreTotal;
+    int coresAvail;
+
+    if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
+    {
+        coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+        coresAvail = GlobalScheduler::getInstance()->availableCores();
+    }
+    else
+    {
+        coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
+        coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
+    }
+
+    int coresUsed = coreTotal - coresAvail;
+    float cpuUtil = coresUsed * 100 / coreTotal;
+
+    return cpuUtil;
+}
+
+int MainConsole::computeCoresUsed() const
+{
+    int coreTotal;
+    int coresAvail;
+
+    if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
+    {
+        coreTotal = GlobalScheduler::getInstance()->getCPUWorkers().size();
+        coresAvail = GlobalScheduler::getInstance()->availableCores();
+    }
+    else
+    {
+        coreTotal = GlobalScheduler::getInstance()->getCPUWorkersRR().size();
+        coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
+    }
+
+    int coresUsed = coreTotal - coresAvail;
+
+    return coresUsed;
+}
+
+int MainConsole::computeCoresAvail() const
+{
+    int coresAvail;
+
+    if (GlobalScheduler::getInstance()->getScheduler()->getName() == "FCFS")
+    {
+        coresAvail = GlobalScheduler::getInstance()->availableCores();
+    }
+    else
+    {
+        coresAvail = GlobalScheduler::getInstance()->availableCoresRR();
+    }
+
+    return coresAvail;
+}
+
+
+float MainConsole::computeMemoryUtil() const
+{
+    return 0;
+}
+
+int MainConsole::computeMemoryUsed() const
+{
+    return 0;
+}
+
+int MainConsole::computeMemoryAvail() const
+{
+    return 0;
+}
+
 string MainConsole::getName() const 
 {
     return this->name;
+}
+
+
+string MainConsole::truncateLeftLine(String str, int maxLength)
+{
+    if (str.length() > maxLength) {
+        return "..." + str.substr(str.length() - (maxLength - 3));
+    }
+    return str;
+}
+
+string MainConsole::truncateRightLine(String str, int maxLength)
+{
+    if (str.length() > maxLength) {
+        return str.substr(0, maxLength - 3) + "...";
+    }
+    return str;
 }

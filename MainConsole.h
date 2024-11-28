@@ -23,10 +23,22 @@ public:
 	void header() const;
 	void asciiart() const;
 
-	std::string displayCPUUtil(int coresUsed, int cores) const;
-	std::string displayRunning() const;
-	std::string displayFinished() const;
+	String displayCPUUtil() const;
+	String displayRunning();
+	String displayFinished();
+	String displayProcessSMI();
 
+	float computeCoreUtil() const;
+	float computeMemoryUtil() const;
+
+	int computeCoresUsed() const;
+	int computeCoresAvail() const;
+
+	int computeMemoryUsed() const;
+	int computeMemoryAvail() const;
+
+	String truncateLeftLine(String str, int maxLength);
+	String truncateRightLine(String str, int maxLength);
 
 	Config config;
 	String fileName = "config.txt";

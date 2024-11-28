@@ -46,13 +46,13 @@ void SchedulerWorker::run()
 					this->process->setAssignedAt(memory);
 					this->process->setAllocationState(true);
 				}
-				else { std::cout<<"ERROR RRERERER" << std::endl; }
+				else { std::cout<<"\nERROR: Cannot allocate memory." << std::endl; }
 			}
 			else 
 			{
 				if (this->process->isFinished() && this->process->getAssignedAt() != nullptr)
 				{
-					std::cout << "address: " << this->process->getAssignedAt() << std::endl;
+					std::cout << "Address: " << this->process->getAssignedAt() << std::endl;
 					memoryAllocator.deallocate(this->process->getAssignedAt());
 					this->process->setAllocationState(false);
 					this->process->setAssignedAt(nullptr);	
@@ -67,7 +67,7 @@ void SchedulerWorker::run()
 					}
 					else
 					{
-						std::cout << "NOOOOO" << std::endl;
+						std::cout << "\nReady Queue is now empty." << std::endl;
 						this->stop();
 					}
 					

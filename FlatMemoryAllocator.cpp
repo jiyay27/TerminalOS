@@ -14,7 +14,7 @@ FlatMemoryAllocator::FlatMemoryAllocator(size_t maximumSize)
     initializeMemory();
 }
 
-// Destructor
+// Deconstructor
 FlatMemoryAllocator::~FlatMemoryAllocator() {
     for (auto& [ptr, size] : backingStoreAllocations) {
         delete[] static_cast<char*>(ptr);

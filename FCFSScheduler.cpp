@@ -29,7 +29,7 @@ void FCFSScheduler::assignProcess(std::shared_ptr<Process> process)
 	//std::lock_guard<std::mutex> lock(schedulerMutex);
 	if (process != nullptr)
 	{ 
-		std::cout << "KAKAKAKAKKA" << std::endl;
+		// std::cout << "KAKAKAKAKKA" << std::endl;
 		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->addProcess(process);
 		GlobalScheduler::getInstance()->getCPUWorker(process->getCPUCoreID())->isOccupied();
 	}
