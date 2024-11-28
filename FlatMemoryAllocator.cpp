@@ -1,7 +1,8 @@
 #include "FlatMemoryAllocator.h"
 
 // Singleton Instance Getter
-FlatMemoryAllocator& FlatMemoryAllocator::getInstance(size_t maximumSize) {
+FlatMemoryAllocator& FlatMemoryAllocator::getInstance(size_t maximumSize) 
+{
     static FlatMemoryAllocator instance(maximumSize);
     return instance;
 }

@@ -64,7 +64,10 @@ void SchedulerWorkerRR::run()
                 }
                 else
                 {
-                    this->stop();
+                    std::cout << "\nProcess Queue is now empty. CPU ID: " << this->coreNum << std::endl;
+                    std::cout << "root:\\>";
+                    //this->stop();
+                    this->process = nullptr;
                 }
             }
             else
@@ -89,6 +92,7 @@ void SchedulerWorkerRR::run()
         }
     }
 }
+
 
 void SchedulerWorkerRR::addProcess(std::shared_ptr<Process> process)
 {

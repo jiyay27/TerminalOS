@@ -39,7 +39,7 @@ public:
 	void setAllocationState(bool state);
 	bool getAllocationState();
 	void setAssignedAt(void* ptr);
-	void* getAssignedAt();
+	std::vector<void*> getAssignedAt();
 private:
 	int pid;
 	String name;
@@ -51,6 +51,7 @@ private:
 
 	//memory related
 	size_t memoryRequired;
+	int pagesRequired;
 	bool memoryAllocated = false;
-	void* assignedAt;
+	std::vector<void*> assignedAt;
 };

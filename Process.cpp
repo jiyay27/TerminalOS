@@ -7,16 +7,21 @@
 #include "Config.h"
 Process::Process(String name)
 {
-	//srand(time(0));
+	srand(time(0));
 	Config config;
 	config.setParamList("config.txt");
 	int min = config.getMinIns();
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
 
+	int min = 512;
+	int max = 1024;
+	int randomMem = min + rand() % (max - min + 1);
+
 	//TODO: Add memory randomizer
-	this->memoryRequired = 50; //garbage value
+	this->memoryRequired = randomMem;
 	this->memoryAllocated = false;
+	this->pagesRequired = NULL; // to be computed later
 
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
@@ -149,10 +154,10 @@ bool Process::getAllocationState()
 
 void Process::setAssignedAt(void* ptr)
 {
-	this->assignedAt = ptr;
+	this->assignedAt.push_back(ptr);
 }
 
-void* Process::getAssignedAt()
+std::vector<void*> Process::getAssignedAt()
 {
 	return this->assignedAt;
 }
