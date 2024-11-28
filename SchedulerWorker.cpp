@@ -26,14 +26,11 @@ void SchedulerWorker::updateA()
 void SchedulerWorker::run()
 {
 	this->update(true);
-	if (true) 
+	while (this->isRunning) 
 	{
-		auto& memoryAllocator = FlatMemoryAllocator::getInstance(maximumSize);
-		while (this->isRunning)
-		{
-			//cpuClock++;
-			//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
-			this->updateA();
+		cpuClock++;
+		//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
+		this->updateA();
 
 			if (this->process != nullptr)
 			{
