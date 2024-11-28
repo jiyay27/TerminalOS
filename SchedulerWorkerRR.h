@@ -4,6 +4,7 @@
 #include <thread>
 #include <queue>
 #include "Process.h"
+#include "FlatMemoryAllocator.h"
 
 class SchedulerWorkerRR : public IETThread
 {
@@ -26,7 +27,13 @@ private:
 	int coreNum;
 	int quantum;
 	int delay;
+	int cpuClock = 0;
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
+	
+
+	void handleMemoryPressure(FlatMemoryAllocator& memoryAllocator);
+	void finalizeProcess(FlatMemoryAllocator& memoryAllocator);
+	void executeProcess();
 };
 

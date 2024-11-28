@@ -33,28 +33,33 @@ void FlatMemoryAllocator::initializeMemory() {
 // Allocate Memory
 void* FlatMemoryAllocator::allocate(size_t size) {
     std::lock_guard<std::mutex> lock(allocatorMutex);
-    //debugger
-	//std::cout << "Allocating memory of size " << size << std::endl;
-    // Try to allocate in main memory
-    for (size_t i = 0; i <= maximumSize - size + 1; i++) {
-        if (!allocationMap[i] && canAllocateAt(i, size)) {
-            allocateAt(i, size);
-            return &memory[i];
+
+    while (true) {
+        // Try to find free space
+        for (size_t i = 0; i <= maximumSize - size; i++) {
+            if (!allocationMap[i] && canAllocateAt(i, size)) {
+                allocateAt(i, size);
+                void* allocatedPtr = &memory[i];
+                allocationOrder.push_back(allocatedPtr); // Track allocation in FIFO
+                return allocatedPtr;
+            }
+        }
+
+        // If no space is available, evict the oldest allocation
+        if (!allocationOrder.empty()) {
+            evictOldest();
+        }
+        else {
+            // Allocation failed, no memory to evict
+            return nullptr;
         }
     }
-
-    // Allocate in backing store if main memory fails
-    void* backingPtr = createBackingStoreEntry(size);
-    if (backingPtr != nullptr) {
-        return backingPtr;
-    }
-    return nullptr;
 }
+
+
 
 // Deallocate Memory
 void FlatMemoryAllocator::deallocate(void* ptr) {
-    //std::lock_guard<std::mutex> lock(allocatorMutex);
-
     if (ptr == nullptr) return;
 
     char* charPtr = static_cast<char*>(ptr);
@@ -62,10 +67,9 @@ void FlatMemoryAllocator::deallocate(void* ptr) {
     // Check if pointer belongs to main memory
     if (charPtr >= memory.data() && charPtr < memory.data() + memory.size()) {
         size_t index = charPtr - memory.data();
-        if (index < maximumSize && allocationMap[index]) {
+        if (allocationMap[index]) {
             size_t blockSize = findAllocationSize(index);
-            deallocateAt(index, blockSize);
-            //std::cout << "Deallocated memory in main memory at index " << index << " with size " << blockSize << std::endl;
+            deallocateAt(ptr, blockSize); // Pass pointer and block size
         }
         else {
             std::cerr << "Attempted to deallocate an unallocated or invalid pointer in main memory." << std::endl;
@@ -75,12 +79,12 @@ void FlatMemoryAllocator::deallocate(void* ptr) {
     else if (backingStoreAllocations.find(ptr) != backingStoreAllocations.end()) {
         delete[] static_cast<char*>(ptr);
         backingStoreAllocations.erase(ptr);
-        //std::cout << "Deallocated memory from backing store. Pointer: " << ptr << std::endl;
     }
     else {
         std::cerr << "Attempted to deallocate a pointer that is neither in main memory nor in backing store." << std::endl;
     }
 }
+
 
 // Visualize Memory
 std::string FlatMemoryAllocator::visualizeMemory() {
@@ -96,7 +100,7 @@ std::string FlatMemoryAllocator::visualizeMemory() {
 
 // Check if pointer is in backing store
 bool FlatMemoryAllocator::isInBackingStore(void* ptr) const {
-	return backingStoreAllocations.find(ptr) != backingStoreAllocations.end();
+    return backingStoreAllocations.find(ptr) != backingStoreAllocations.end();
 }
 
 // Try allocating memory from backing store to main memory
@@ -114,15 +118,12 @@ void* FlatMemoryAllocator::backingToMain(void* ptr) {
         for (size_t i = 0; i <= maximumSize - size; i++) {
             if (!allocationMap[i] && canAllocateAt(i, size)) {
                 allocateAt(i, size);
-                //std::cout << "Allocated memory from backing store to main memory. Pointer: " << ptr << std::endl;
 
                 // Remove from the backing store map
                 backingStoreAllocations.erase(it);
                 return &memory[i];
             }
         }
-
-        //std::cout << "Failed to allocate memory in main memory for pointer: " << ptr << std::endl;
     }
 
     return nullptr; // Return null if allocation fails or pointer is not in backing store
@@ -147,14 +148,31 @@ void FlatMemoryAllocator::allocateAt(size_t index, size_t size) {
     allocatedSize += size;
 }
 
-// Private: Deallocate memory at index
-void FlatMemoryAllocator::deallocateAt(size_t index, size_t size) {
-    for (size_t i = index; i < index + size; ++i) {
-        allocationMap[i] = false;
-        memory[i] = '.';
+// Private: Deallocate memory at a given pointer and size
+void FlatMemoryAllocator::deallocateAt(void* ptr, size_t size) {
+    char* charPtr = static_cast<char*>(ptr);
+
+    // Ensure the pointer belongs to main memory
+    if (charPtr >= memory.data() && charPtr < memory.data() + maximumSize) {
+        size_t index = charPtr - memory.data(); // Compute the index in the memory array
+
+        // Mark the memory block as deallocated
+        for (size_t i = index; i < index + size; ++i) {
+            if (allocationMap[i]) {
+                allocationMap[i] = false;
+                memory[i] = '.';
+            }
+            else {
+                std::cerr << "Warning: Attempted to deallocate unallocated memory at index " << i << std::endl;
+            }
+        }
+        allocatedSize -= size;
     }
-    allocatedSize -= size;
+    else {
+        std::cerr << "Error: Attempted to deallocate a pointer outside of main memory!" << std::endl;
+    }
 }
+
 
 // Private: Find allocation size
 size_t FlatMemoryAllocator::findAllocationSize(size_t index) const {
@@ -184,4 +202,42 @@ std::string FlatMemoryAllocator::pointerToString(void* ptr) const {
     std::ostringstream oss;
     oss << ptr;
     return oss.str();
+}
+
+// Evict the oldest allocation to the backing store
+void FlatMemoryAllocator::evictOldest() {
+    if (allocationOrder.empty()) {
+        std::cerr << "Error: No allocations to evict!" << std::endl;
+        return;
+    }
+
+    // Get the oldest allocation pointer
+    void* oldestPtr = allocationOrder.front();
+    allocationOrder.pop_front(); // Remove from the FIFO order
+
+    // Find the size of the allocated block in main memory
+    char* charPtr = static_cast<char*>(oldestPtr);
+    size_t index = charPtr - memory.data();
+    size_t size = findAllocationSize(index);
+
+    // Move data from main memory to backing store
+    void* backingStorePtr = createBackingStoreEntry(size);
+    if (!backingStorePtr) {
+        std::cerr << "Failed to create backing store entry. Eviction aborted." << std::endl;
+        return;
+    }
+    std::memcpy(backingStorePtr, oldestPtr, size);
+
+    // Update the backing store map
+    backingStoreAllocations[backingStorePtr] = size;
+
+    // Deallocate memory in the main memory
+    deallocateAt(oldestPtr, size);
+
+    std::cout << "Evicted allocation of size " << size << " to backing store.\n";
+}
+
+// Get the maximum size of the memory
+size_t FlatMemoryAllocator::getMaximumSize() const {
+	return maximumSize;
 }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <mutex>
+#include <deque>
 #include <sstream>
 
 // Singleton Memory Allocator Class
@@ -19,7 +20,9 @@ public:
     //Backing store checking
 	bool isInBackingStore(void* ptr) const;
 	void* backingToMain(void* ptr);
+    void evictOldest();
 
+	size_t getMaximumSize() const;
     // Delete copy and move constructors to enforce singleton behavior
     FlatMemoryAllocator(const FlatMemoryAllocator&) = delete;
     FlatMemoryAllocator& operator=(const FlatMemoryAllocator&) = delete;
@@ -34,7 +37,7 @@ private:
     void initializeMemory();
     bool canAllocateAt(size_t index, size_t size) const;
     void allocateAt(size_t index, size_t size);
-    void deallocateAt(size_t index, size_t size);
+    void deallocateAt(void* ptr, size_t size);
     size_t findAllocationSize(size_t index) const;
     void* createBackingStoreEntry(size_t size);
     std::string pointerToString(void* ptr) const;
@@ -45,5 +48,6 @@ private:
     std::vector<char> memory; // Memory representation
     std::vector<bool> allocationMap; // Allocation tracking
     std::unordered_map<void*, size_t> backingStoreAllocations; // Backing store tracking
+    std::deque<void*> allocationOrder;
     std::mutex allocatorMutex; // Ensures thread safety
 };

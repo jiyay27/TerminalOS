@@ -28,7 +28,7 @@ void SchedulerWorker::run()
 	this->update(true);
 	while (this->isRunning) 
 	{
-		//cpuClock++;
+		cpuClock++;
 		//std::lock_guard<std::mutex> lock(CPUWorkerMutex);
 		this->updateA();
 

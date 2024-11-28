@@ -1,5 +1,7 @@
 #include "SchedulerWorkerRR.h"
 #include "GlobalScheduler.h"
+#include "IMemoryAllocator.h"
+#include "FlatMemoryAllocator.h"
 
 SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
 {
@@ -24,71 +26,98 @@ void SchedulerWorkerRR::updateA()
 	this->available = true;
 }
 
-void SchedulerWorkerRR::run()
-{
-    while (this->isRunning)
-    {
+void SchedulerWorkerRR::run() {
+    auto& memoryAllocator = FlatMemoryAllocator::getInstance(100); // Singleton allocator
+    while (this->isRunning) {
+        cpuClock++;
         this->updateA();
-        if (this->process != nullptr)
-        {
-            if (this->process->isFinished())
-            {
-                this->available = true;
-                this->process->setState(Process::FINISHED);
-                this->processQueue.pop();
 
-                if (!this->processQueue.empty())
-                {
-                    // Sort the remaining processes in the queue based on burst time
-                    std::vector<std::shared_ptr<Process>> tempProcesses;
-                    while (!this->processQueue.empty())
-                    {
-                        tempProcesses.push_back(this->processQueue.front());
-                        this->processQueue.pop();
-                    }
+        if (this->process == nullptr && !this->processQueue.empty()) {
+            this->process = this->processQueue.front();
+        }
 
-                    // Sort the vector based on the burst time (command list count)
-                    std::sort(tempProcesses.begin(), tempProcesses.end(),
-                        [](const std::shared_ptr<Process>& a, const std::shared_ptr<Process>& b) {
-                            return a->getCommandListCount() < b->getCommandListCount();
-                        });
+        if (this->process != nullptr) {
+            // Memory allocation logic
+            if (!this->process->getAllocationState()) {
+                size_t memoryRequired = this->process->getMemoryRequired();
 
-                    // Push sorted processes back to the queue
-                    for (const auto& proc : tempProcesses)
-                    {
-                        this->processQueue.push(proc);
-                    }
-
-                    // Set the new process
-                    this->process = this->processQueue.front();
+                if (memoryRequired > memoryAllocator.getMaximumSize()) {
+                    std::cerr << "ERROR: Process " << this->process->getName()
+                        << " requires more memory than available. Skipping.\n";
+                    this->processQueue.pop(); // Remove process from queue
+                    this->process = nullptr;
+                    continue;
                 }
-                else
-                {
-                    this->stop();
+
+                void* memory = memoryAllocator.allocate(memoryRequired);
+                if (memory) {
+                    std::cout << "Memory allocated for process " << this->process->getName()
+                        << " on core " << this->coreNum << std::endl;
+                    this->process->setAssignedAt(memory);
+                    this->process->setAllocationState(true);
+                }
+                else {
+                    std::cerr << "ERROR: Memory allocation failed for process "
+                        << this->process->getName() << ". Retrying...\n";
+                    handleMemoryPressure(memoryAllocator);
+                    continue;
                 }
             }
-            else
-            {
-                // Execute for the duration of the quantum
-                for (int i = 0; i < this->quantum && !this->process->isFinished(); i++)
-                {
-                    this->isOccupied();
-                    this->sleep(delay);
-                    this->process->executeInstruction();
-                }
 
-                // Preempt the current process if it hasn't finished
-                if (!this->process->isFinished())
-                {
-                    std::shared_ptr<Process> front = this->processQueue.front();
-                    this->processQueue.pop();
-                    this->processQueue.push(front); // Reinsert the current process to the end of the queue
-                }
-                this->process = this->processQueue.front(); // Get the next process
+            // Process execution logic
+            if (this->process->isFinished()) {
+                finalizeProcess(memoryAllocator);
             }
+            else {
+                executeProcess();
+            }
+        }
+        else {
+            // Scheduler is idle
+            this->sleep(delay);
         }
     }
 }
+
+// Handles memory pressure by evicting or sleeping
+void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator& memoryAllocator) {
+    std::cout << "Resolving memory pressure...\n";
+    memoryAllocator.evictOldest(); // Evict the oldest process if possible
+    this->sleep(delay); // Avoid busy-waiting
+}
+
+// Finalize the process and release its resources
+void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator& memoryAllocator) {
+    if (this->process->getAssignedAt()) {
+        memoryAllocator.deallocate(this->process->getAssignedAt());
+        this->process->setAssignedAt(nullptr);
+        this->process->setAllocationState(false);
+    }
+
+    this->process->setState(Process::FINISHED);
+    this->processQueue.pop();
+    this->process = nullptr;
+    std::cout << "Process completed and resources freed.\n";
+}
+
+// Execute process for the time quantum
+void SchedulerWorkerRR::executeProcess() {
+    for (int i = 0; i < this->quantum && !this->process->isFinished(); i++) {
+        this->isOccupied();
+        this->sleep(delay);
+        this->process->executeInstruction();
+    }
+
+    if (!this->process->isFinished()) {
+        // Preempt unfinished process
+        this->processQueue.push(this->process);
+        this->processQueue.pop(); // Move it to the end of the queue
+        this->process = this->processQueue.front();
+    }
+}
+
+
+
 
 void SchedulerWorkerRR::addProcess(std::shared_ptr<Process> process)
 {
