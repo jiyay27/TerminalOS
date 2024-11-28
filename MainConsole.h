@@ -23,11 +23,13 @@ public:
 	void header() const;
 	void asciiart() const;
 
+	// display functions
 	String displayCPUUtil() const;
 	String displayRunning();
 	String displayFinished();
 	String displayProcessSMI();
 
+	// compute functions for display
 	float computeCoreUtil() const;
 	float computeMemoryUtil() const;
 
@@ -37,6 +39,7 @@ public:
 	int computeMemoryUsed() const;
 	int computeMemoryAvail() const;
 
+	// helper functions for printing
 	String truncateLeftLine(String str, int maxLength);
 	String truncateRightLine(String str, int maxLength);
 

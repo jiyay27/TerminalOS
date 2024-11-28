@@ -218,7 +218,7 @@ String MainConsole::displayRunning()
             truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
             truncatedProcName = truncateRightLine(truncatedProcName, 10);
             oss << std::left
-                << std::setw(13) << truncatedProcName
+                << std::setw(12) << truncatedProcName
                 << std::setw(4) << "Core: " << GlobalScheduler::getInstance()->getProcess(i)->getCPUCoreID()
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";
@@ -240,7 +240,7 @@ String MainConsole::displayFinished()
             truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
             truncatedProcName = truncateRightLine(truncatedProcName, 10);
             oss << std::left
-                << std::setw(13) << truncatedProcName
+                << std::setw(12) << truncatedProcName
                 << std::setw(4) << "FINISHED"
                 << std::right << std::setw(10) << GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter()
                 << "/" << GlobalScheduler::getInstance()->getProcess(i)->getCommandListCount() << "\n";

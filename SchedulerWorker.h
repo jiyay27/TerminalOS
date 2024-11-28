@@ -22,6 +22,7 @@ public:
 	void stop();
 	void isOccupied();
 	bool processExists() const;
+	int getCoreNum() const;
 private:
 	std::mutex CPUWorkerMutex;
 	int cpuClock = 0;

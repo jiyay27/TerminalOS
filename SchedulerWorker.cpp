@@ -25,6 +25,7 @@ void SchedulerWorker::updateA()
 void SchedulerWorker::run()
 {
 	auto& memoryAllocator = FlatMemoryAllocator::getInstance(maximumSize);
+	this->update(true);
 	while (this->isRunning) 
 	{
 		//cpuClock++;
@@ -41,7 +42,7 @@ void SchedulerWorker::run()
 			{
 				//allocate memory for the process and set its internal memory address so that it can be accessed
 				void* memory = memoryAllocator.allocate(this->process->getMemoryRequired());
-				std::cout << "Memory allocated for process " << this->process->getName() << " on core: " << this->coreNum << std::endl;
+				std::cout << "\nMemory allocated for process " << this->process->getName() << " on core: " << this->coreNum << std::endl;
 				if (memory) {
 					this->process->setAssignedAt(memory);
 					this->process->setAllocationState(true);
@@ -52,7 +53,7 @@ void SchedulerWorker::run()
 			{
 				if (this->process->isFinished() && this->process->getAssignedAt() != nullptr)
 				{
-					std::cout << "Address: " << this->process->getAssignedAt() << std::endl;
+					std::cout << "\nAddress: " << this->process->getAssignedAt() << std::endl;
 					memoryAllocator.deallocate(this->process->getAssignedAt());
 					this->process->setAllocationState(false);
 					this->process->setAssignedAt(nullptr);	
@@ -67,8 +68,10 @@ void SchedulerWorker::run()
 					}
 					else
 					{
-						std::cout << "\nReady Queue is now empty." << std::endl;
-						this->stop();
+						std::cout << "\nProcess Queue is now empty. CPU ID: " << getCoreNum() << std::endl;
+						std::cout << "root:\\>";
+						//this->stop();
+						this->process = nullptr;
 					}
 					
 				}
@@ -96,6 +99,14 @@ void SchedulerWorker::run()
 					}
 				}	
 			}
+		}
+		else if (!this->processQueue.empty())
+		{
+			this->process = this->processQueue.front();
+		}
+		else
+		{
+			this->sleep(delay);
 		}
 	}
 }
@@ -131,4 +142,9 @@ void SchedulerWorker::isOccupied() {
 bool SchedulerWorker::processExists() const
 {
 	return this->process != nullptr;
+}
+
+int SchedulerWorker::getCoreNum() const
+{
+	return this->coreNum;
 }
