@@ -122,6 +122,11 @@ void MainConsole::display() // Displays output
 			outputMessage = "";
 		}
 
+        if (outputMessage == "vmstat")
+        {
+            //display memory things
+			std::cout << this->displayVMStat();
+        }
         if (outputMessage == "invalid")
         {
 			outputMessage = "";
@@ -173,7 +178,10 @@ void MainConsole::process() // Takes in input and processes it
     }
     else if (command == "screen" && arg1 == "-ls") {
         outputMessage = "screenls";
-    }
+	}
+	else if (command == "vmstat") {
+		outputMessage = "vmstat";
+	}
     else {
         outputMessage = "invalid";
     }
@@ -464,4 +472,30 @@ string MainConsole::truncateRightLine(String str, int maxLength)
         return str.substr(0, maxLength - 3) + "...";
     }
     return str;
+}
+
+string MainConsole::displayVMStat() 
+{
+	int idle = 0, active = 0, total = 0;
+	std::stringstream oss;
+    oss << "-----------------------------------------\n";
+    oss << "                VMSTAT                   \n";
+    oss << "-----------------------------------------\n";
+    oss << std::left;
+	oss << std::setw(5) << "Total Memory: " << this->getMaxSize() << "KB\n";
+	oss << std::setw(5) << "Memory Used: " << this->computeMemoryUsed() << "KB\n";
+	oss << std::setw(5) << "Memory Available: " << this->computeMemoryAvail() << "KB\n";
+	for (int i = 0; i < GlobalScheduler::getInstance()->getCoreCount(); i++)
+	{
+		total += GlobalScheduler::getInstance()->getCPUWorkerRR(i)->getCPUClock();
+		idle += GlobalScheduler::getInstance()->getCPUWorkerRR(i)->getIdleClock();
+		active += total - idle;
+	}
+	oss << std::setw(5) << "Idle CPU Ticks: " << idle << "\n";
+	oss << std::setw(5) << "Active CPU Ticks: " << active << "\n";
+	oss << std::setw(5) << "Total CPU Ticks: " << total << "\n";
+    oss << std::endl;
+    //paging add 
+	return oss.str();
+
 }
