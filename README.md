@@ -7,12 +7,12 @@
 3. Audrin Matthew Javier – S12
 4. Kevin Paul Harder – S12
 
-##**MO2 Authors:**
+## **MO2 Authors:**
 
 1. John Joseph Donato - S11
 2. Audrin Matthew Javier - S12
 
-####Note*
+#### Note*
 
 1. Requires Visual Studio C++20
 2. Entry class file: `main.cpp`
