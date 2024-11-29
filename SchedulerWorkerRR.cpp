@@ -34,63 +34,15 @@ void SchedulerWorkerRR::run() {
     size_t frame = config.getMemFrame();
 
     auto memoryAllocator = FlatMemoryAllocator::getInstance();
-	auto pagingAllocator = PagingAllocator::getInstance();
+    auto pagingAllocator = PagingAllocator::getInstance();
 
     if (max == frame) // ! FLAT MEMORY ALLOCATOR
     {
-        while (this->isRunning) {
-            cpuClock++;
-            this->updateA();
 
-            if (this->process == nullptr && !this->processQueue.empty()) {
-                this->process = this->processQueue.front();
-            }
-
-            if (this->process != nullptr) {
-                // Memory allocation logic
-                if (!this->process->getAllocationState()) {
-                    size_t memoryRequired = this->process->getMemoryRequired();
-
-                    if (memoryRequired > memoryAllocator->getInstance()->getMaximumSize()) {
-                        std::cerr << "ERROR: Process " << this->process->getName()
-                            << " requires more memory than available. Skipping.\n";
-                        this->processQueue.pop(); // Remove process from queue
-                        this->process = nullptr;
-                        continue;
-                    }
-
-                    void* memory = memoryAllocator->getInstance()->allocate(memoryRequired);
-                    if (memory) {
-                        std::cout << "Memory allocated for process " << this->process->getName()
-                            << " on core " << this->coreNum << std::endl;
-                        this->process->setAssignedAt(memory);
-                        this->process->setAllocationState(true);
-                    }
-                    else {
-                        std::cerr << "ERROR: Memory allocation failed for process "
-                            << this->process->getName() << ". Retrying...\n";
-                        handleMemoryPressure(memoryAllocator->getInstance());
-                        continue;
-                    }
-                }
-
-                // Process execution logic
-                if (this->process->isFinished()) {
-                    finalizeProcess(memoryAllocator);
-                }
-                else {
-                    executeProcess();
-                }
-            }
-            else {
-                // Scheduler is idle
-				idleClock++;
-                this->sleep(delay);
-            }
-        }
     }
     else // ! PAGING ALLOCATOR
     {
+        this->updateA();
         while (this->isRunning)
         {
             cpuClock++;
@@ -110,34 +62,50 @@ void SchedulerWorkerRR::run() {
                         //    << " requires more memory than available. Skipping.\n";
                         this->processQueue.pop(); // Remove process from queue
                         this->process = nullptr;
+                        this->updateA();
                         continue;
                     }
 
-                    std::vector<int> memory = pagingAllocator->getInstance()->allocate(memoryRequired);
-                    if (!memory.empty()) {
-                        //std::cout << "\nMemory allocated for process " << this->process->getName()
-                        //    << " on core " << this->coreNum << std::endl;
-                        for (size_t i = 0; i < memory.size(); i++)
-                        {
-                            this->process->setAssignedAtVec(memory[i]);
+                    if (config.getMaxMemProc() < config.getMaxMem())
+                    {
+                        std::vector<int> memory = pagingAllocator->getInstance()->allocate(memoryRequired);
+                    
+                    
+                        if (!memory.empty()) {
+                            for (size_t i = 0; i < memory.size(); i++)
+                            {
+                                this->process->setAssignedAtVec(memory[i]);
+                            }
+                            this->process->setAllocationState(true);
                         }
-
-                        this->process->setAllocationState(true);
-                    }
-                    else {
-                        ////std::cerr << "ERROR: Memory allocation failed for process "
-                        //    //<< this->process->getName() << ". Retrying...\n";
-                        //handleMemoryPressurePaging(pagingAllocator->getInstance(), size);
-                        continue;
+                        else {
+                            //std::cerr << "ERROR: Memory allocation failed for process "
+                            //    << this->process->getName() << ". Retrying...\n";
+                            this->updateA();
+                            handleMemoryPressurePaging(pagingAllocator->getInstance());
+                            continue;
+                        }
                     }
                 }
-
+                else
+                {
+                    // Process execution logic
+                    if (!this->process->isFinished())
+                    {
+                        this->updateA();
+                        executeProcess();
+                    }
+                }
+                this->updateA();
                 // Process execution logic
                 if (this->process->isFinished()) {
                     finalizeProcessPaging(pagingAllocator);
+                    this->updateA();
                 }
                 else {
                     executeProcess();
+                    this->updateA();
+                    this->sleep(1000);
                 }
             }
             else {
@@ -146,8 +114,10 @@ void SchedulerWorkerRR::run() {
                 this->sleep(delay);
             }
         }
+        this->updateA();
     }
 }
+
 
 // Handles memory pressure by evicting or sleeping
 void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator* flatMemoryAllocator)
@@ -173,10 +143,13 @@ void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator* flatMemoryAllocator
 }
 
 // Handles memory pressure by evicting or sleeping
-void SchedulerWorkerRR::handleMemoryPressurePaging(PagingAllocator* pagingAllocator, size_t size)
+void SchedulerWorkerRR::handleMemoryPressurePaging(PagingAllocator* pagingAllocator)
 {
-    //std::cout << "Resolving memory pressure...\n";
-    pagingAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
+    // Calculate the number of frames required for the current process
+    if (this->process != nullptr) {
+        size_t memoryRequired = this->process->getMemoryRequired();
+        pagingAllocator->getInstance()->evictOldest(memoryRequired); // Evict enough frames to fit the process
+    }
     this->sleep(delay); // Avoid busy-waiting
 }
 
@@ -203,6 +176,9 @@ void SchedulerWorkerRR::executeProcess()
         this->sleep(delay);
         this->process->executeInstruction();
     }
+
+    this->sleep(delay*300);
+	this->updateA();
 
     if (!this->process->isFinished()) 
     {

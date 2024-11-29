@@ -21,7 +21,7 @@ public:
     //Backing store checking
     bool isInBackingStore(std::vector<void*> vecptr) const;
     void* backingToMain(std::vector<void*> vecptr);
-	void evictOldest();
+	void evictOldest(size_t sizeToEvict);
 
     int computeMemoryUtil() const;
     int computeMemoryUsed() const;
@@ -37,6 +37,10 @@ public:
     int getFrameSize() const { return frameSize; }
 
     static void initializeMemory();
+
+	int getPageIn() const { return pageIn; }
+    int getPageOut() const { return pageOut; }
+
 private:
     // Private Constructor
     PagingAllocator();
@@ -69,6 +73,9 @@ private:
 
     std::unordered_map<void*, size_t> backingStoreAllocations; // Backing store tracking
 	std::deque<int> allocationOrder;  // Order of allocations for backing store
+
+    int pageIn;
+    int pageOut;
 
     std::mutex allocatorMutex;          // Ensures thread safety
 };

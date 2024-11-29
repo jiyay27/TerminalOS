@@ -52,58 +52,36 @@ PagingAllocator::~PagingAllocator()
 
 
 
-std::vector<int> PagingAllocator::allocate(size_t size)
-{
-	//std::lock_guard<std::mutex> lock(allocatorMutex);
-
-	size_t numFrames = (size + 1) / this->frameSize;
-
+std::vector<int> PagingAllocator::allocate(size_t size) {
+	size_t numFrames = (size + this->frameSize - 1) / this->frameSize; // Round up
 	std::vector<int> allocatedPointers;
-	std::vector<int> framesUsed;
 
-	//if (this->checkPageFit(size))
-	//{
-	//	for (size_t i = 0; i < numFrames; i++)
-	//	{
-	//		int freeFrame = this->freeFrameList.front();
-	//		this->freeFrameList.pop_front();
-	//		this->allocationMap[freeFrame] = true;
-	//		framesUsed.push_back(freeFrame);
-	//		memory[freeFrame] = '#';
-	//		allocatedPointers.push_back(&memory[freeFrame]);
-	//	}
-	//	this->numFreeFrames -= framesUsed.size();
-	//	this->allocatedSize += size;
-	//	return allocatedPointers;
-	//}
+	if (!this->checkPageFit(size)) {
+		size_t requiredFreeSize = size - (this->numFreeFrames * this->frameSize);
+		evictOldest(requiredFreeSize); // Attempt to free enough memory
+	}
 
-	if (this->checkPageFit(size))
-	{
-		for (size_t i = 0; i < numFrames; i++)
-		{
-			int freeFrame = this->freeFrameList.front();
-			this->freeFrameList.pop_front();
-			this->allocationMap[freeFrame] = true;
-			framesUsed.push_back(freeFrame);
-			memory[freeFrame] = '#';
-			allocatedPointers.push_back(freeFrame);
-			allocationOrder.push_back(freeFrame);
-		}
-		this->numFreeFrames -= framesUsed.size();
-		this->allocatedSize += size;
-		return allocatedPointers;
+	if (!this->checkPageFit(size)) {
+		std::cerr << "Error: Insufficient memory after eviction!" << std::endl;
+		return {};
 	}
-	
-	// if pages DO NOT fit
-	if (!(this->checkPageFit(size)))
-	{
-		evictOldest();
+
+	// Allocate frames
+	for (size_t i = 0; i < numFrames; i++) {
+		int freeFrame = this->freeFrameList.front();
+		this->freeFrameList.pop_front();
+		this->allocationMap[freeFrame] = true;
+		allocatedPointers.push_back(freeFrame);
+		allocationOrder.push_back(freeFrame);
+		memory[freeFrame] = '#';
 	}
-	else // eviction failed
-	{
-		allocatedPointers.push_back(NULL);
-		return allocatedPointers;
-	}
+
+	this->numFreeFrames -= numFrames;
+	this->allocatedSize += size;
+
+	this->pageIn += numFrames;
+
+	return allocatedPointers;
 }
 
 void PagingAllocator::deallocate(std::vector<int> vecptr)
@@ -135,6 +113,7 @@ void PagingAllocator::deallocate(std::vector<int> vecptr)
 
 	this->numFreeFrames += vecptr.size();
 	this->allocatedSize -= size;
+	this->pageOut += vecptr.size();
 }
 
 std::string PagingAllocator::visualizeMemory()
@@ -179,23 +158,27 @@ void* PagingAllocator::backingToMain(std::vector<void*> vecptr)
 	return nullptr; // Return null if allocation fails or pointer is not in backing store
 }
 
-void PagingAllocator::evictOldest() {
-	if (allocationOrder.empty()) {
-		std::cerr << "Error: No frames to evict!" << std::endl;
-		return;
+void PagingAllocator::evictOldest(size_t requiredSize) {
+	size_t framesToEvict = (requiredSize + this->frameSize - 1) / this->frameSize; // Round up to frames
+	size_t evictedFrames = 0;
+
+	while (!allocationOrder.empty() && evictedFrames < framesToEvict) {
+		int oldestFrame = allocationOrder.front(); // Get the oldest frame
+		allocationOrder.pop_front();              // Remove it from tracking
+
+		// Deallocate the oldest frame
+		allocationMap[oldestFrame] = false;
+		memory[oldestFrame] = '.';
+		this->freeFrameList.push_back(oldestFrame);
+
+		evictedFrames++;
+		this->numFreeFrames++;
+		this->allocatedSize -= this->frameSize;
 	}
 
-	int oldestFrame = allocationOrder.front(); // Get the oldest frame
-	allocationOrder.pop_front();              // Remove it from tracking
-
-	// Deallocate the oldest frame
-	allocationMap[oldestFrame] = false;
-	memory[oldestFrame] = '.';
-	this->freeFrameList.push_back(oldestFrame);
-
-	// Adjust counters
-	this->numFreeFrames++;
-	this->allocatedSize -= this->frameSize;
+	if (evictedFrames < framesToEvict) {
+		std::cerr << "Warning: Could not evict enough frames to meet the required size.\n";
+	}
 }
 
 void* PagingAllocator::createBackingStoreEntry(size_t size) {
@@ -226,7 +209,14 @@ int PagingAllocator::computeMemoryUtil() const
 
 int PagingAllocator::computeMemoryUsed() const
 {
-	return this->allocatedSize;
+	if (this->allocatedSize < 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return this->allocatedSize;
+	}
 }
 
 int PagingAllocator::computeMemoryAvail() const

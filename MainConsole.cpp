@@ -272,7 +272,7 @@ std::string MainConsole::displayProcessSMI()
     oss << std::left
     << std::setw(5) << "CPU-Util: " << this->computeCoreUtil() << "%\n"
     << std::setw(5) << "Memory Usage: " << std::right
-    << std::setw(2)<< (float)convertKbToMb(this->computeMemoryUsed()) << "MiB" << " / " << (float)convertKbToMb(this->getMaxSize()) << "MiB\n"
+    << std::setw(2)<< convertKbToMb(this->computeMemoryUsed()) << "MiB" << " / " << convertKbToMb(this->getMaxSize()) << "MiB\n"
 	<< std::setw(5) << "Memory Util: " << this->computeMemoryUtil() << "%\n";
 
     oss << "-----------------------------------------\n";
@@ -450,7 +450,7 @@ size_t MainConsole::getMaxSize() const
 
 float MainConsole::convertKbToMb(size_t kb) const
 {
-	return (float)kb / 1024;
+	return kb / 8;
 }
 
 string MainConsole::getName() const 
@@ -495,6 +495,8 @@ string MainConsole::displayVMStat()
 	oss << std::setw(5) << "Idle CPU Ticks: " << idle << "\n";
 	oss << std::setw(5) << "Active CPU Ticks: " << active << "\n";
 	oss << std::setw(5) << "Total CPU Ticks: " << total << "\n";
+    oss << std::setw(5) << "Total Page IN: " << PagingAllocator::getInstance()->getPageIn() << "\n";
+    oss << std::setw(5) << "Total Page OUT: " << PagingAllocator::getInstance()->getPageOut() << "\n";
     oss << std::endl;
     //paging add 
 	return oss.str();

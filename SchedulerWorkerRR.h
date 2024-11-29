@@ -34,13 +34,14 @@ private:
 	int delay;
 	int cpuClock = 0;
 	int idleClock = 0;
+	std::mutex CPUmutex;
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 	
 	void handleMemoryPressure(FlatMemoryAllocator* flatMemoryAllocator);
 	void finalizeProcess(FlatMemoryAllocator* flatMemoryAllocator);
 
-	void handleMemoryPressurePaging(PagingAllocator* pagingAllocator, size_t size);
+	void handleMemoryPressurePaging(PagingAllocator* pagingAllocator);
 	void finalizeProcessPaging(PagingAllocator* pagingAllocator);
 	
 	void executeProcess();
