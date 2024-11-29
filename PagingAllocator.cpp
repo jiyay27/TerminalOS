@@ -215,6 +215,22 @@ std::string PagingAllocator::pointerToString(void* ptr) const {
 	return oss.str();
 }
 
+int PagingAllocator::computeMemoryUtil() const
+{
+	int memoryUtil = this->allocatedSize * 100 / this->maximumSize;
+	return memoryUtil;
+}
+
+int PagingAllocator::computeMemoryUsed() const
+{
+	return this->allocatedSize;
+}
+
+int PagingAllocator::computeMemoryAvail() const
+{
+	return this->maximumSize - this->allocatedSize;
+}
+
 size_t PagingAllocator::getMaximumSize() const {
 	return maximumSize;
 }

@@ -371,26 +371,72 @@ float MainConsole::computeMemoryUtil() const
 
 int MainConsole::computeMemoryUsed() const
 {
+    Config config;
+    config.setParamList("config.txt");
+
+    size_t memoryUtil;
     int memoryUsed;
-    auto allocator = FlatMemoryAllocator::getInstance();
-    memoryUsed = allocator->computeMemoryUsed();
-    return memoryUsed;
+
+    if (config.getMaxMem() == config.getMemFrame())
+    {
+        auto allocator = FlatMemoryAllocator::getInstance();
+        memoryUsed = allocator->computeMemoryUsed();
+        return memoryUsed;
+    }
+    else
+    {
+        auto allocator = PagingAllocator::getInstance();
+        memoryUsed = allocator->computeMemoryUsed();
+        return (float)memoryUsed;
+    }
 }
 
 int MainConsole::computeMemoryAvail() const
 {
+    Config config;
+    config.setParamList("config.txt");
+
+    size_t memoryUtil;
+    int memoryUsed;
     int memoryAvail;
-    auto allocator = FlatMemoryAllocator::getInstance();
-    memoryAvail = allocator->computeMemoryAvail();
-    return memoryAvail;
+
+    if (config.getMaxMem() == config.getMemFrame())
+    {
+        auto allocator = FlatMemoryAllocator::getInstance();
+        memoryAvail = allocator->computeMemoryAvail();
+        return memoryAvail;
+    }
+    else
+    {
+        auto allocator = PagingAllocator::getInstance();
+        memoryAvail = allocator->computeMemoryAvail();
+        return memoryAvail;
+    }
 }
 
 size_t MainConsole::getMaxSize() const
 {
-    size_t memoryAvail;
-    auto allocator = FlatMemoryAllocator::getInstance();
-    memoryAvail = allocator->getMaximumSize();
-    return memoryAvail;
+    Config config;
+    config.setParamList("config.txt");
+
+    size_t memoryUtil;
+    int memoryUsed;
+    int memoryAvail;
+
+    if (config.getMaxMem() == config.getMemFrame())
+    {
+        size_t maxMem;
+        auto allocator = FlatMemoryAllocator::getInstance();
+        maxMem = allocator->getMaximumSize();
+        return maxMem;
+    }
+    else
+    {
+        size_t maxMem;
+        auto allocator = PagingAllocator::getInstance();
+        maxMem = allocator->getMaximumSize();
+        return maxMem;
+    }
 }
 
 float MainConsole::convertKbToMb(size_t kb) const

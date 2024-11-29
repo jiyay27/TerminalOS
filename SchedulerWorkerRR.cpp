@@ -1,8 +1,6 @@
 #include "SchedulerWorkerRR.h"
 #include "GlobalScheduler.h"
 #include "IMemoryAllocator.h"
-#include "FlatMemoryAllocator.h"
-#include "PagingAllocator.h"
 #include "Config.h"
 
 SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
@@ -106,7 +104,7 @@ void SchedulerWorkerRR::run() {
                 if (!this->process->getAllocationState()) {
                     size_t memoryRequired = this->process->getMemoryRequired();
 
-                    if (memoryRequired > memoryAllocator->getInstance()->getMaximumSize()) {
+                    if (memoryRequired > pagingAllocator->getInstance()->getMaximumSize()) {
                         std::cerr << "ERROR: Process " << this->process->getName()
                             << " requires more memory than available. Skipping.\n";
                         this->processQueue.pop(); // Remove process from queue
@@ -114,24 +112,29 @@ void SchedulerWorkerRR::run() {
                         continue;
                     }
 
-                    void* memory = memoryAllocator->getInstance()->allocate(memoryRequired);
-                    if (memory) {
+                    std::vector<void*> memory = pagingAllocator->getInstance()->allocate(memoryRequired);
+                    if (memory[0] != nullptr) {
                         std::cout << "Memory allocated for process " << this->process->getName()
                             << " on core " << this->coreNum << std::endl;
-                        this->process->setAssignedAt(memory);
+                        
+                        for (size_t i = 0; i < memory.size(); i++)
+                        {
+                            this->process->setAssignedAtVec(memory[i]);
+                        }
+
                         this->process->setAllocationState(true);
                     }
                     else {
                         std::cerr << "ERROR: Memory allocation failed for process "
                             << this->process->getName() << ". Retrying...\n";
-                        handleMemoryPressure(memoryAllocator->getInstance());
+                        handleMemoryPressurePaging(pagingAllocator->getInstance());
                         continue;
                     }
                 }
 
                 // Process execution logic
                 if (this->process->isFinished()) {
-                    finalizeProcess(memoryAllocator);
+                    finalizeProcessPaging(pagingAllocator);
                 }
                 else {
                     executeProcess();
@@ -146,16 +149,41 @@ void SchedulerWorkerRR::run() {
 }
 
 // Handles memory pressure by evicting or sleeping
-void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator* memoryAllocator) {
+void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator* pagingAllocator)
+{
     std::cout << "Resolving memory pressure...\n";
-    memoryAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
+    pagingAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
     this->sleep(delay); // Avoid busy-waiting
 }
 
 // Finalize the process and release its resources
-void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator* memoryAllocator) {
+void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator* pagingAllocator)
+{
     if (this->process->getAssignedAt()) {
-        memoryAllocator->getInstance()->deallocate(this->process->getAssignedAt());
+        pagingAllocator->getInstance()->deallocate(this->process->getAssignedAt());
+        this->process->setAssignedAt(nullptr);
+        this->process->setAllocationState(false);
+    }
+
+    this->process->setState(Process::FINISHED);
+    this->processQueue.pop();
+    this->process = nullptr;
+    std::cout << "Process completed and resources freed.\n";
+}
+
+// Handles memory pressure by evicting or sleeping
+void SchedulerWorkerRR::handleMemoryPressurePaging(PagingAllocator* pagingAllocator)
+{
+    std::cout << "Resolving memory pressure...\n";
+    pagingAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
+    this->sleep(delay); // Avoid busy-waiting
+}
+
+// Finalize the process and release its resources
+void SchedulerWorkerRR::finalizeProcessPaging(PagingAllocator* pagingAllocator)
+{
+    if (this->process->getAssignedAt()) {
+        pagingAllocator->getInstance()->deallocate(this->process->getAssignedAtVec());
         this->process->setAssignedAt(nullptr);
         this->process->setAllocationState(false);
     }

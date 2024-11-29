@@ -5,6 +5,7 @@
 #include <queue>
 #include "Process.h"
 #include "FlatMemoryAllocator.h"
+#include "PagingAllocator.h"
 
 class SchedulerWorkerRR : public IETThread
 {
@@ -31,9 +32,12 @@ private:
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 	
+	void handleMemoryPressure(FlatMemoryAllocator* pagingAllocator);
+	void finalizeProcess(FlatMemoryAllocator* pagingAllocator);
 
-	void handleMemoryPressure(FlatMemoryAllocator* memoryAllocator);
-	void finalizeProcess(FlatMemoryAllocator* memoryAllocator);
+	void handleMemoryPressurePaging(PagingAllocator* pagingAllocator);
+	void finalizeProcessPaging(PagingAllocator* pagingAllocator);
+	
 	void executeProcess();
 };
 

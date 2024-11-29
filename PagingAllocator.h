@@ -23,6 +23,10 @@ public:
     void* backingToMain(std::vector<void*> vecptr);
 	void evictOldest();
 
+    int computeMemoryUtil() const;
+    int computeMemoryUsed() const;
+    int computeMemoryAvail() const;
+
     size_t getMaximumSize() const;
     // Delete copy and move constructors to enforce singleton behavior
     PagingAllocator(const PagingAllocator&) = delete;
