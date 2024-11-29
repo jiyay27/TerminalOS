@@ -4,8 +4,9 @@
 #include <vector>
 #include <unordered_map>
 #include <mutex>
-#include <sstream>
 #include <deque>
+#include <sstream>
+#include "Config.h"
 
 // Singleton Memory Allocator Class
 class PagingAllocator {
@@ -18,9 +19,11 @@ public:
     std::string visualizeMemory();
 
     //Backing store checking
-    bool isInBackingStore(void* ptr) const;
-    void* backingToMain(void* ptr);
+    bool isInBackingStore(std::vector<void*> vecptr) const;
+    void* backingToMain(std::vector<void*> vecptr);
+	void evictOldest();
 
+    size_t getMaximumSize() const;
     // Delete copy and move constructors to enforce singleton behavior
     PagingAllocator(const PagingAllocator&) = delete;
     PagingAllocator& operator=(const PagingAllocator&) = delete;
@@ -58,5 +61,7 @@ private:
     // min-mem-per-proc and max-mem-per-proc. P can be computed as M / mem-per-frame.
 
     std::unordered_map<void*, size_t> backingStoreAllocations; // Backing store tracking
+	std::deque<void*> allocationOrder;  // Order of allocations for backing store
+
     std::mutex allocatorMutex;          // Ensures thread safety
 };

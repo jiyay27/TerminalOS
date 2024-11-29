@@ -6,6 +6,7 @@
 #include <mutex>
 #include <deque>
 #include <sstream>
+#include "Config.h"
 
 // Singleton Memory Allocator Class
 class FlatMemoryAllocator {

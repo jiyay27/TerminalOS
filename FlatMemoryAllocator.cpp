@@ -72,7 +72,7 @@ void FlatMemoryAllocator::deallocate(void* ptr) {
             deallocateAt(ptr, blockSize); // Pass pointer and block size
         }
         else {
-            std::cerr << "Attempted to deallocate an unallocated or invalid pointer in main memory." << std::endl;
+            //std::cerr << "Attempted to deallocate an unallocated or invalid pointer in main memory." << std::endl;
         }
     }
     // Check if pointer belongs to backing store
