@@ -28,6 +28,7 @@ public:
 	String displayRunning();
 	String displayFinished();
 	String displayProcessSMI();
+	String displayVMStat();
 
 	// compute functions for display
 	float computeCoreUtil() const;

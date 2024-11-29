@@ -84,6 +84,7 @@ void SchedulerWorkerRR::run() {
             }
             else {
                 // Scheduler is idle
+				idleClock++;
                 this->sleep(delay);
             }
         }
@@ -141,6 +142,7 @@ void SchedulerWorkerRR::run() {
             }
             else {
                 // Scheduler is idle
+                idleClock++;
                 this->sleep(delay);
             }
         }
@@ -235,4 +237,17 @@ void SchedulerWorkerRR::isOccupied() {
 bool SchedulerWorkerRR::processExists() const
 {
 	return this->process != nullptr;
+}
+
+int SchedulerWorkerRR::getCPUClock()
+{
+    std::lock_guard<std::mutex> lock(CPUmutex);
+	return this->cpuClock;
+}
+
+
+int SchedulerWorkerRR::getIdleClock()
+{
+	std::lock_guard<std::mutex> lock(CPUmutex);
+	return this->idleClock;
 }
