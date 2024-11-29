@@ -2,6 +2,7 @@
 #include "GlobalScheduler.h"
 #include "IMemoryAllocator.h"
 #include "FlatMemoryAllocator.h"
+#include "PagingAllocator.h"
 #include "Config.h"
 
 SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
@@ -35,6 +36,7 @@ void SchedulerWorkerRR::run() {
     size_t frame = config.getMemFrame();
 
     auto memoryAllocator = FlatMemoryAllocator::getInstance();
+	auto pagingAllocator = PagingAllocator::getInstance();
 
     if (max == frame) // ! FLAT MEMORY ALLOCATOR
     {
@@ -90,7 +92,56 @@ void SchedulerWorkerRR::run() {
     }
     else // ! PAGING ALLOCATOR
     {
+        while (this->isRunning)
+        {
+            cpuClock++;
+            this->updateA();
 
+            if (this->process == nullptr && !this->processQueue.empty()) {
+                this->process = this->processQueue.front();
+            }
+
+            if (this->process != nullptr) {
+                // Memory allocation logic
+                if (!this->process->getAllocationState()) {
+                    size_t memoryRequired = this->process->getMemoryRequired();
+
+                    if (memoryRequired > memoryAllocator->getInstance()->getMaximumSize()) {
+                        std::cerr << "ERROR: Process " << this->process->getName()
+                            << " requires more memory than available. Skipping.\n";
+                        this->processQueue.pop(); // Remove process from queue
+                        this->process = nullptr;
+                        continue;
+                    }
+
+                    void* memory = memoryAllocator->getInstance()->allocate(memoryRequired);
+                    if (memory) {
+                        std::cout << "Memory allocated for process " << this->process->getName()
+                            << " on core " << this->coreNum << std::endl;
+                        this->process->setAssignedAt(memory);
+                        this->process->setAllocationState(true);
+                    }
+                    else {
+                        std::cerr << "ERROR: Memory allocation failed for process "
+                            << this->process->getName() << ". Retrying...\n";
+                        handleMemoryPressure(memoryAllocator->getInstance());
+                        continue;
+                    }
+                }
+
+                // Process execution logic
+                if (this->process->isFinished()) {
+                    finalizeProcess(memoryAllocator);
+                }
+                else {
+                    executeProcess();
+                }
+            }
+            else {
+                // Scheduler is idle
+                this->sleep(delay);
+            }
+        }
     }
 }
 

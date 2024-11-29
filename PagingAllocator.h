@@ -11,7 +11,7 @@
 // Singleton Memory Allocator Class
 class PagingAllocator {
 public:
-    static PagingAllocator& getInstance(size_t maximumSize = 1024, size_t frameSize = 256);
+    static PagingAllocator* getInstance();
 
     // Public Interface
     std::vector<void*> allocate(size_t size);
@@ -32,18 +32,21 @@ public:
 
     int getFrameSize() const { return frameSize; }
 
+    static void initializeMemory();
 private:
     // Private Constructor
-    PagingAllocator(size_t maximumSize, size_t frameSize);
+    PagingAllocator();
 
     // Private Methods
-    void initializeMemory();
+    
     bool checkPageFit(size_t size) const;
     void allocateAt(size_t index, size_t size);
     void deallocateAt(size_t index, size_t size);
     size_t findAllocationSize(size_t index) const;
     void* createBackingStoreEntry(size_t size);
     std::string pointerToString(void* ptr) const;
+
+    static PagingAllocator* instance;
 
     // Private Members
     size_t maximumSize;                 // Maximum size of main memory

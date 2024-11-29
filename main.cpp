@@ -22,6 +22,7 @@ int main() {
     ConsoleManager::initialize();
     GlobalScheduler::initialize();
     FlatMemoryAllocator::initializeMemory();
+    PagingAllocator::initializeMemory();
 
     Config config;
 	config.setParamList("config.txt");

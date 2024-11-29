@@ -1,13 +1,17 @@
 #include "PagingAllocator.h"
 
-PagingAllocator& PagingAllocator::getInstance(size_t maximumSize, size_t frameSize)
+PagingAllocator* PagingAllocator::instance = nullptr;
+PagingAllocator* PagingAllocator::getInstance()
 {
-	static PagingAllocator instance(maximumSize, frameSize);
-	instance.numFrames = maximumSize / frameSize;
 	return instance;
 }
 
-PagingAllocator::PagingAllocator(size_t maximumSize, size_t frameSize)
+void PagingAllocator::initializeMemory()
+{
+	instance = new PagingAllocator();
+}
+
+PagingAllocator::PagingAllocator()
 {
 	// Let P be the number of pages required by a process and M is the rolled value between 
 	// min-mem-per-proc and max-mem-per-proc. P can be computed as M / mem-per-frame.
@@ -17,9 +21,22 @@ PagingAllocator::PagingAllocator(size_t maximumSize, size_t frameSize)
 	this->maximumSize = config.getMaxMem(); // 1024 is 1KB -> 1024KB is 1MB
 	this->frameSize = config.getMemFrame();
 	this->allocatedSize = 0;
+
+	this->numFrames = config.getMaxMem() / config.getMemFrame();
+	this->numFreeFrames = this->numFrames;
+	
+
 	memory.resize(config.getMaxMem() , '.');
 	allocationMap.resize(config.getMaxMem() , false);
-	initializeMemory();
+
+	std::fill(memory.begin(), memory.end(), '.');
+	std::fill(allocationMap.begin(), allocationMap.end(), false);
+
+	for (int i = 0; i < numFrames; i++)
+	{
+		freeFrameList.push_back(i);
+	}
+	
 }
 
 PagingAllocator::~PagingAllocator()
@@ -33,16 +50,7 @@ PagingAllocator::~PagingAllocator()
 	allocationMap.clear();
 }
 
-void PagingAllocator::initializeMemory()
-{
-	std::fill(memory.begin(), memory.end(), '.');
-	std::fill(allocationMap.begin(), allocationMap.end(), false);
-	for (int i = 0; i < numFrames; i++)
-	{
-		freeFrameList.push_back(i);
-	}
-	this->numFreeFrames = this->numFrames;
-}
+
 
 std::vector<void*> PagingAllocator::allocate(size_t size)
 {

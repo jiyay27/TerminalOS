@@ -3,6 +3,7 @@
 #include "IMemoryAllocator.h"
 #include "FlatMemoryAllocator.h"
 #include "PagingAllocator.h"
+#include "PagingAllocator.h"
 
 int maximumSize = 100;
 
@@ -32,7 +33,8 @@ void SchedulerWorker::run()
 	size_t frame = config.getMemFrame();
 
 	auto memoryAllocator = FlatMemoryAllocator::getInstance();
-	
+	auto pagingAllocator = PagingAllocator::getInstance();
+
 	this->update(true);
 	
 	if (max == frame) // ! FLAT MEMORY ALLOCATOR

@@ -98,6 +98,5 @@ void BaseScreen::printProcessInfo() const
 		std::cout << "Current instruction line: " << this->attachedProcess->getCommandCounter() << std::endl;
 		std::cout << "Lines of code: " << this->attachedProcess->getCommandListCount() << std::endl;
 		std::cout << "" << std::endl;
-		std::cout << "Memory required: " << this->attachedProcess->getMemoryRequired() << std::endl;
 	}
 }
