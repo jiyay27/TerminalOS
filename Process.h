@@ -41,8 +41,8 @@ public:
 	void setAssignedAt(void* ptr);
 	void* getAssignedAt();
 
-	void setAssignedAtVec(void* ptr);
-	std::vector<void*> getAssignedAtVec();
+	void setAssignedAtVec(int ptr);
+	std::vector<int> getAssignedAtVec();
 
 private:
 	int pid;
@@ -55,7 +55,8 @@ private:
 
 	//memory related
 	size_t memoryRequired;
+	int pagesRequired;
 	bool memoryAllocated = false;
 	void* assignedAt;
-	std::vector<void*> assignedAtVec;
+	std::vector<int> assignedAtVec;
 };

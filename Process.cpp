@@ -31,7 +31,15 @@ Process::Process(String name)
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
 
-	std::cout << this->memoryRequired << std::endl;
+
+	if (config.getMaxMem() == config.getMemFrame())
+	{
+		this->pagesRequired = 0;
+	}
+	else
+	{
+		this->pagesRequired = this->memoryRequired / config.getMemFrame();
+	}
 }
 
 Process::Process(int pid, String name, int remainingInstructions)
@@ -163,12 +171,12 @@ void* Process::getAssignedAt()
 	return this->assignedAt;
 }
 
-void Process::setAssignedAtVec(void* ptr)
+void Process::setAssignedAtVec(int ptr)
 {
 	this->assignedAtVec.push_back(ptr);
 }
 
-std::vector<void*> Process::getAssignedAtVec()
+std::vector<int> Process::getAssignedAtVec()
 {
 	return this->assignedAtVec;
 }

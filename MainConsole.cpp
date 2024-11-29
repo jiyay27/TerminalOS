@@ -257,7 +257,7 @@ std::string MainConsole::displayProcessSMI()
     String truncatedProcName;
 
     std::ostringstream oss;
-    oss << "-----------------------------------------\n";
+    oss << "\n-----------------------------------------\n";
     oss << "| PROCESS-SMI V1.00 Driver Version 1.00 |\n";
     oss << "-----------------------------------------\n";
 
@@ -273,7 +273,7 @@ std::string MainConsole::displayProcessSMI()
 
     for (int i = 0; i < GlobalScheduler::getInstance()->getProcessCount(); i++)
     {
-        if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished())
+        if (!GlobalScheduler::getInstance()->getProcess(i)->isFinished() && GlobalScheduler::getInstance()->getProcess(i)->getCommandCounter() > 0)
         {
             truncatedProcName = GlobalScheduler::getInstance()->getProcess(i)->getName();
             truncatedProcName = truncateRightLine(truncatedProcName, 10);
@@ -283,7 +283,7 @@ std::string MainConsole::displayProcessSMI()
         }
     }
     
-    oss << "-----------------------------------------\n";
+    oss << "-----------------------------------------\n" << std::endl;
 
     return oss.str();
 }
@@ -364,7 +364,8 @@ float MainConsole::computeMemoryUtil() const
     else
     { // calculate for paging
         //auto allocator = FlatMemoryAllocator::getInstance();
-        memoryUtil = 0;
+        auto allocator = PagingAllocator::getInstance();
+        memoryUtil = allocator->computeMemoryUtil();
         return (float)memoryUtil;
     }
 }

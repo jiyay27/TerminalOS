@@ -32,9 +32,9 @@ PagingAllocator::PagingAllocator()
 	std::fill(memory.begin(), memory.end(), '.');
 	std::fill(allocationMap.begin(), allocationMap.end(), false);
 
-	for (int i = 0; i < numFrames; i++)
+	for (int i = 0; i < this->numFrames; i++)
 	{
-		freeFrameList.push_back(i);
+		this->freeFrameList.push_back(i);
 	}
 	
 }
@@ -52,25 +52,42 @@ PagingAllocator::~PagingAllocator()
 
 
 
-std::vector<void*> PagingAllocator::allocate(size_t size)
+std::vector<int> PagingAllocator::allocate(size_t size)
 {
-	std::lock_guard<std::mutex> lock(allocatorMutex);
+	//std::lock_guard<std::mutex> lock(allocatorMutex);
 
 	size_t numFrames = (size + 1) / this->frameSize;
 
-	std::vector<void*> allocatedPointers;
+	std::vector<int> allocatedPointers;
 	std::vector<int> framesUsed;
+
+	//if (this->checkPageFit(size))
+	//{
+	//	for (size_t i = 0; i < numFrames; i++)
+	//	{
+	//		int freeFrame = this->freeFrameList.front();
+	//		this->freeFrameList.pop_front();
+	//		this->allocationMap[freeFrame] = true;
+	//		framesUsed.push_back(freeFrame);
+	//		memory[freeFrame] = '#';
+	//		allocatedPointers.push_back(&memory[freeFrame]);
+	//	}
+	//	this->numFreeFrames -= framesUsed.size();
+	//	this->allocatedSize += size;
+	//	return allocatedPointers;
+	//}
 
 	if (this->checkPageFit(size))
 	{
-		while (this->checkPageFit(size))
+		for (size_t i = 0; i < numFrames; i++)
 		{
 			int freeFrame = this->freeFrameList.front();
 			this->freeFrameList.pop_front();
 			this->allocationMap[freeFrame] = true;
 			framesUsed.push_back(freeFrame);
 			memory[freeFrame] = '#';
-			allocatedPointers.push_back(&memory[freeFrame]);
+			allocatedPointers.push_back(freeFrame);
+			allocationOrder.push_back(freeFrame);
 		}
 		this->numFreeFrames -= framesUsed.size();
 		this->allocatedSize += size;
@@ -89,34 +106,35 @@ std::vector<void*> PagingAllocator::allocate(size_t size)
 	}
 }
 
-void PagingAllocator::deallocate(std::vector<void*> vecptr)
+void PagingAllocator::deallocate(std::vector<int> vecptr)
 {
-	if (vecptr[0] == nullptr) return;
-
-	std::vector<int> framesUsed;
-
-	for (int i = 0; i < memory.size(); i++)
+	if (vecptr.empty())
 	{
-		for (int j = 0; j < vecptr.size(); i++)
-		{
-			if (&memory[i] == vecptr[j])
-			{
-				framesUsed.push_back(i);
-			}
-		}
-
+		//std::cerr << "Error: Deallocate failed. Vector is NULL." << std::endl;
+		return;
 	}
 
-	for (int i = 0; i < vecptr.size(); i++)
+	std::vector<int> framesUsed = vecptr;
+
+	for (int frameIndex : framesUsed) {
+		this->freeFrameList.push_back(frameIndex);
+
+		auto it = std::find(allocationOrder.begin(), allocationOrder.end(), frameIndex);
+		if (it != allocationOrder.end()) {
+			allocationOrder.erase(it);
+		}
+	}
+
+	for (int i = 0; i < framesUsed.size(); i++)
 	{
 		allocationMap[framesUsed[i]] = false;
 		memory[framesUsed[i]] = '.';
 	}
 
-	size_t size = this->frameSize * framesUsed.size();
+	size_t size = this->frameSize * (size_t)framesUsed.size();
 
 	this->numFreeFrames += vecptr.size();
-	this->allocatedSize += size;
+	this->allocatedSize -= size;
 }
 
 std::string PagingAllocator::visualizeMemory()
@@ -133,8 +151,8 @@ std::string PagingAllocator::visualizeMemory()
 
 bool PagingAllocator::checkPageFit(size_t size) const
 {
-	int freeFrames = size / this->frameSize;
-	if (this->numFreeFrames >= freeFrames)
+	int numFrames = size / this->frameSize;
+	if (this->numFreeFrames >= numFrames)
 	{
 		return true;
 	}
@@ -163,36 +181,21 @@ void* PagingAllocator::backingToMain(std::vector<void*> vecptr)
 
 void PagingAllocator::evictOldest() {
 	if (allocationOrder.empty()) {
-		std::cerr << "Error: No allocations to evict!" << std::endl;
+		std::cerr << "Error: No frames to evict!" << std::endl;
 		return;
 	}
 
-	// Get the oldest allocation pointer
-	void* oldestPtr = allocationOrder.front();
-	allocationOrder.pop_front(); // Remove from the FIFO order
+	int oldestFrame = allocationOrder.front(); // Get the oldest frame
+	allocationOrder.pop_front();              // Remove it from tracking
 
-	// Find the size of the allocated block in main memory
-	char* charPtr = static_cast<char*>(oldestPtr);
-	size_t index = charPtr - memory.data();
-	size_t size = findAllocationSize(index);
+	// Deallocate the oldest frame
+	allocationMap[oldestFrame] = false;
+	memory[oldestFrame] = '.';
+	this->freeFrameList.push_back(oldestFrame);
 
-	// Move data from main memory to backing store
-	void* backingStorePtr = createBackingStoreEntry(size);
-	if (!backingStorePtr) {
-		std::cerr << "Failed to create backing store entry. Eviction aborted." << std::endl;
-		return;
-	}
-	std::memcpy(backingStorePtr, oldestPtr, size);
-
-	// Update the backing store map
-	backingStoreAllocations[backingStorePtr] = size;
-
-	// Deallocate memory in the main memory
-	std::vector<void*> oldestVec;
-	oldestVec.push_back(oldestPtr);
-	deallocate(oldestVec);
-
-	std::cout << "Evicted allocation of size " << size << " to backing store.\n";
+	// Adjust counters
+	this->numFreeFrames++;
+	this->allocatedSize -= this->frameSize;
 }
 
 void* PagingAllocator::createBackingStoreEntry(size_t size) {

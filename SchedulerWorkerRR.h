@@ -32,10 +32,10 @@ private:
 	std::shared_ptr<Process> process;
 	std::queue<std::shared_ptr<Process>> processQueue;
 	
-	void handleMemoryPressure(FlatMemoryAllocator* pagingAllocator);
-	void finalizeProcess(FlatMemoryAllocator* pagingAllocator);
+	void handleMemoryPressure(FlatMemoryAllocator* flatMemoryAllocator);
+	void finalizeProcess(FlatMemoryAllocator* flatMemoryAllocator);
 
-	void handleMemoryPressurePaging(PagingAllocator* pagingAllocator);
+	void handleMemoryPressurePaging(PagingAllocator* pagingAllocator, size_t size);
 	void finalizeProcessPaging(PagingAllocator* pagingAllocator);
 	
 	void executeProcess();

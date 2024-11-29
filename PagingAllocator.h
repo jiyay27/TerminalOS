@@ -14,8 +14,8 @@ public:
     static PagingAllocator* getInstance();
 
     // Public Interface
-    std::vector<void*> allocate(size_t size);
-    void deallocate(std::vector<void*> ptr);
+    std::vector<int> allocate(size_t size);
+    void deallocate(std::vector<int> ptr);
     std::string visualizeMemory();
 
     //Backing store checking
@@ -68,7 +68,7 @@ private:
     // min-mem-per-proc and max-mem-per-proc. P can be computed as M / mem-per-frame.
 
     std::unordered_map<void*, size_t> backingStoreAllocations; // Backing store tracking
-	std::deque<void*> allocationOrder;  // Order of allocations for backing store
+	std::deque<int> allocationOrder;  // Order of allocations for backing store
 
     std::mutex allocatorMutex;          // Ensures thread safety
 };
