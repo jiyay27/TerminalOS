@@ -39,6 +39,9 @@ public:
 	int computeMemoryUsed() const;
 	int computeMemoryAvail() const;
 
+	size_t getMaxSize() const;
+	float convertKbToMb(size_t kb) const;
+
 	// helper functions for printing
 	String truncateLeftLine(String str, int maxLength);
 	String truncateRightLine(String str, int maxLength);

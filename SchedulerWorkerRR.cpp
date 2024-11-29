@@ -2,6 +2,7 @@
 #include "GlobalScheduler.h"
 #include "IMemoryAllocator.h"
 #include "FlatMemoryAllocator.h"
+#include "Config.h"
 
 SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
 {
@@ -27,69 +28,83 @@ void SchedulerWorkerRR::updateA()
 }
 
 void SchedulerWorkerRR::run() {
-    auto& memoryAllocator = FlatMemoryAllocator::getInstance(100); // Singleton allocator
-    while (this->isRunning) {
-        cpuClock++;
-        this->updateA();
+    Config config;
+    config.setParamList("config.txt");
 
-        if (this->process == nullptr && !this->processQueue.empty()) {
-            this->process = this->processQueue.front();
-        }
+    size_t max = config.getMaxMem();
+    size_t frame = config.getMemFrame();
 
-        if (this->process != nullptr) {
-            // Memory allocation logic
-            if (!this->process->getAllocationState()) {
-                size_t memoryRequired = this->process->getMemoryRequired();
+    auto memoryAllocator = FlatMemoryAllocator::getInstance();
 
-                if (memoryRequired > memoryAllocator.getMaximumSize()) {
-                    std::cerr << "ERROR: Process " << this->process->getName()
-                        << " requires more memory than available. Skipping.\n";
-                    this->processQueue.pop(); // Remove process from queue
-                    this->process = nullptr;
-                    continue;
+    if (max == frame) // ! FLAT MEMORY ALLOCATOR
+    {
+        while (this->isRunning) {
+            cpuClock++;
+            this->updateA();
+
+            if (this->process == nullptr && !this->processQueue.empty()) {
+                this->process = this->processQueue.front();
+            }
+
+            if (this->process != nullptr) {
+                // Memory allocation logic
+                if (!this->process->getAllocationState()) {
+                    size_t memoryRequired = this->process->getMemoryRequired();
+
+                    if (memoryRequired > memoryAllocator->getInstance()->getMaximumSize()) {
+                        std::cerr << "ERROR: Process " << this->process->getName()
+                            << " requires more memory than available. Skipping.\n";
+                        this->processQueue.pop(); // Remove process from queue
+                        this->process = nullptr;
+                        continue;
+                    }
+
+                    void* memory = memoryAllocator->getInstance()->allocate(memoryRequired);
+                    if (memory) {
+                        std::cout << "Memory allocated for process " << this->process->getName()
+                            << " on core " << this->coreNum << std::endl;
+                        this->process->setAssignedAt(memory);
+                        this->process->setAllocationState(true);
+                    }
+                    else {
+                        std::cerr << "ERROR: Memory allocation failed for process "
+                            << this->process->getName() << ". Retrying...\n";
+                        handleMemoryPressure(memoryAllocator->getInstance());
+                        continue;
+                    }
                 }
 
-                void* memory = memoryAllocator.allocate(memoryRequired);
-                if (memory) {
-                    std::cout << "Memory allocated for process " << this->process->getName()
-                        << " on core " << this->coreNum << std::endl;
-                    this->process->setAssignedAt(memory);
-                    this->process->setAllocationState(true);
+                // Process execution logic
+                if (this->process->isFinished()) {
+                    finalizeProcess(memoryAllocator);
                 }
                 else {
-                    std::cerr << "ERROR: Memory allocation failed for process "
-                        << this->process->getName() << ". Retrying...\n";
-                    handleMemoryPressure(memoryAllocator);
-                    continue;
+                    executeProcess();
                 }
             }
-
-            // Process execution logic
-            if (this->process->isFinished()) {
-                finalizeProcess(memoryAllocator);
-            }
             else {
-                executeProcess();
+                // Scheduler is idle
+                this->sleep(delay);
             }
         }
-        else {
-            // Scheduler is idle
-            this->sleep(delay);
-        }
+    }
+    else // ! PAGING ALLOCATOR
+    {
+
     }
 }
 
 // Handles memory pressure by evicting or sleeping
-void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator& memoryAllocator) {
+void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator* memoryAllocator) {
     std::cout << "Resolving memory pressure...\n";
-    memoryAllocator.evictOldest(); // Evict the oldest process if possible
+    memoryAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
     this->sleep(delay); // Avoid busy-waiting
 }
 
 // Finalize the process and release its resources
-void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator& memoryAllocator) {
+void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator* memoryAllocator) {
     if (this->process->getAssignedAt()) {
-        memoryAllocator.deallocate(this->process->getAssignedAt());
+        memoryAllocator->getInstance()->deallocate(this->process->getAssignedAt());
         this->process->setAssignedAt(nullptr);
         this->process->setAllocationState(false);
     }

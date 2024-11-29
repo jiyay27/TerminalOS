@@ -7,6 +7,8 @@
 #include "ConsoleManager.h"
 #include "GlobalScheduler.h"
 #include "FCFSScheduler.h"
+#include "FlatMemoryAllocator.h"
+#include "PagingAllocator.h"
 #include "Config.h"
 
 using std::cout;
@@ -19,6 +21,8 @@ using std::string;
 int main() {
     ConsoleManager::initialize();
     GlobalScheduler::initialize();
+    FlatMemoryAllocator::initializeMemory();
+
     Config config;
 	config.setParamList("config.txt");
 	GlobalScheduler::getInstance()->selectScheduler(config.getSchedulerAlg());

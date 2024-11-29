@@ -1,17 +1,31 @@
 #include "FlatMemoryAllocator.h"
 
 // Singleton Instance Getter
-FlatMemoryAllocator& FlatMemoryAllocator::getInstance(size_t maximumSize) {
-    static FlatMemoryAllocator instance(maximumSize);
+FlatMemoryAllocator* FlatMemoryAllocator::instance = nullptr;
+FlatMemoryAllocator* FlatMemoryAllocator::getInstance() 
+{
     return instance;
 }
 
+void FlatMemoryAllocator::initializeMemory()
+{
+    instance = new FlatMemoryAllocator();
+}
+
 // Constructor
-FlatMemoryAllocator::FlatMemoryAllocator(size_t maximumSize)
-    : maximumSize(maximumSize), allocatedSize(0) {
-    memory.resize(maximumSize, '.');
-    allocationMap.resize(maximumSize, false);
-    initializeMemory();
+FlatMemoryAllocator::FlatMemoryAllocator()
+{
+    Config config;
+    config.setParamList("config.txt");
+
+    this->maximumSize = config.getMaxMem();
+    this->allocatedSize = 0;
+
+    memory.resize(config.getMaxMem(), '.');
+    allocationMap.resize(config.getMaxMem(), false);
+    
+    std::fill(memory.begin(), memory.end(), '.');
+    std::fill(allocationMap.begin(), allocationMap.end(), false);
 }
 
 // Deconstructor
@@ -22,12 +36,6 @@ FlatMemoryAllocator::~FlatMemoryAllocator() {
     backingStoreAllocations.clear();
     memory.clear();
     allocationMap.clear();
-}
-
-// Initialize Memory
-void FlatMemoryAllocator::initializeMemory() {
-    std::fill(memory.begin(), memory.end(), '.');
-    std::fill(allocationMap.begin(), allocationMap.end(), false);
 }
 
 // Allocate Memory
@@ -237,7 +245,23 @@ void FlatMemoryAllocator::evictOldest() {
     std::cout << "Evicted allocation of size " << size << " to backing store.\n";
 }
 
+int FlatMemoryAllocator::computeMemoryUtil() const
+{
+	int memoryUtil = this->allocatedSize * 100 / this->maximumSize;
+    return memoryUtil;
+}
+
+int FlatMemoryAllocator::computeMemoryUsed() const
+{
+	return this->allocatedSize;
+}
+
+int FlatMemoryAllocator::computeMemoryAvail() const
+{
+    return this->maximumSize - this->allocatedSize;
+}
+
 // Get the maximum size of the memory
 size_t FlatMemoryAllocator::getMaximumSize() const {
-	return maximumSize;
+	return this->maximumSize;
 }

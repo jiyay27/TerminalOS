@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <fstream>
 #include <filesystem>
+#include "FlatMemoryAllocator.h"
+#include "PagingAllocator.h"
 
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -262,7 +264,7 @@ std::string MainConsole::displayProcessSMI()
     oss << std::left
     << std::setw(5) << "CPU-Util: " << this->computeCoreUtil() << "%\n"
     << std::setw(5) << "Memory Usage: " << std::right
-    << std::setw(2)<< this->computeMemoryUsed() << "MiB" << " / " << this->computeMemoryAvail() << "MiB\n"
+    << std::setw(2)<< (float)convertKbToMb(this->computeMemoryUsed()) << "MiB" << " / " << (float)convertKbToMb(this->getMaxSize()) << "MiB\n"
 	<< std::setw(5) << "Memory Util: " << this->computeMemoryUtil() << "%\n";
 
     oss << "-----------------------------------------\n";
@@ -277,7 +279,7 @@ std::string MainConsole::displayProcessSMI()
             truncatedProcName = truncateRightLine(truncatedProcName, 10);
             oss << std::left
                 << std::setw(12) << truncatedProcName
-                << GlobalScheduler::getInstance()->getProcess(i)->getMemoryRequired() << "MiB" << "\n";
+                << (float)convertKbToMb(GlobalScheduler::getInstance()->getProcess(i)->getMemoryRequired()) << "MiB" << "\n";
         }
     }
     
@@ -348,17 +350,52 @@ int MainConsole::computeCoresAvail() const
 
 float MainConsole::computeMemoryUtil() const
 {
-    return 0;
+    Config config;
+    config.setParamList("config.txt");
+
+    size_t memoryUtil;
+
+    if (config.getMaxMem() == config.getMemFrame())
+    { // calculate for flat
+		auto allocator = FlatMemoryAllocator::getInstance();
+        memoryUtil = allocator->computeMemoryUtil();
+        return (float)memoryUtil;
+    }
+    else
+    { // calculate for paging
+        //auto allocator = FlatMemoryAllocator::getInstance();
+        memoryUtil = 0;
+        return (float)memoryUtil;
+    }
 }
 
 int MainConsole::computeMemoryUsed() const
 {
-    return 0;
+    int memoryUsed;
+    auto allocator = FlatMemoryAllocator::getInstance();
+    memoryUsed = allocator->computeMemoryUsed();
+    return memoryUsed;
 }
 
 int MainConsole::computeMemoryAvail() const
 {
-    return 0;
+    int memoryAvail;
+    auto allocator = FlatMemoryAllocator::getInstance();
+    memoryAvail = allocator->computeMemoryAvail();
+    return memoryAvail;
+}
+
+size_t MainConsole::getMaxSize() const
+{
+    size_t memoryAvail;
+    auto allocator = FlatMemoryAllocator::getInstance();
+    memoryAvail = allocator->getMaximumSize();
+    return memoryAvail;
+}
+
+float MainConsole::convertKbToMb(size_t kb) const
+{
+	return (float)kb / 1024;
 }
 
 string MainConsole::getName() const 

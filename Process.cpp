@@ -7,25 +7,31 @@
 #include "Config.h"
 Process::Process(String name)
 {
-	//srand(time(0));
+	srand(time(0));
 	Config config;
 	config.setParamList("config.txt");
 	int min = config.getMinIns();
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
 
-	//TODO: Add memory randomizer
-	this->memoryRequired = 50; //garbage value
+	for (int i = 0; i < randomNum; i++)
+	{
+		this->addCommand(ICommand::CommandType::PRINT);
+	}
+
+	int memMin = config.getMinMemProc();
+	int memMax = config.getMaxMemProc();
+	int randomMem = memMin + rand() % (memMax - memMin + 1);
+
+	this->memoryRequired = randomMem;
 	this->memoryAllocated = false;
 
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
-	for (int i = 0; i < randomNum; i++)
-	{
-		this->addCommand(ICommand::CommandType::PRINT);
-	}
+
+	std::cout << this->memoryRequired << std::endl;
 }
 
 Process::Process(int pid, String name, int remainingInstructions)

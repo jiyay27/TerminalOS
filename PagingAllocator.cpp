@@ -11,13 +11,14 @@ PagingAllocator::PagingAllocator(size_t maximumSize, size_t frameSize)
 {
 	// Let P be the number of pages required by a process and M is the rolled value between 
 	// min-mem-per-proc and max-mem-per-proc. P can be computed as M / mem-per-frame.
+	Config config;
+	config.setParamList("config.txt");
 
-
-	this->maximumSize = maximumSize; // 1024 is 1KB -> 1024KB is 1MB
-	this->frameSize = frameSize;
+	this->maximumSize = config.getMaxMem(); // 1024 is 1KB -> 1024KB is 1MB
+	this->frameSize = config.getMemFrame();
 	this->allocatedSize = 0;
-	memory.resize(maximumSize, '.');
-	allocationMap.resize(maximumSize, false);
+	memory.resize(config.getMaxMem() , '.');
+	allocationMap.resize(config.getMaxMem() , false);
 	initializeMemory();
 }
 

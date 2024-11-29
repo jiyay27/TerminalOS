@@ -148,9 +148,9 @@ private:
 	int delays; // 6
 
 	// ! MO2 PARAMS
-	int maxMem; // 7
-	int memFrame; // 8
-	int minMemProc; // 9
-	int maxMemProc; // 10
+	size_t maxMem; // 7
+    size_t memFrame; // 8
+    size_t minMemProc; // 9
+    size_t maxMemProc; // 10
 
 };

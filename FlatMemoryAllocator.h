@@ -11,7 +11,7 @@
 // Singleton Memory Allocator Class
 class FlatMemoryAllocator {
 public:
-    static FlatMemoryAllocator& getInstance(size_t maximumSize = 1024);
+    static FlatMemoryAllocator* getInstance();
 
     // Public Interface
     void* allocate(size_t size);
@@ -23,6 +23,10 @@ public:
 	void* backingToMain(void* ptr);
     void evictOldest();
 
+    int computeMemoryUtil() const;
+    int computeMemoryUsed() const;
+    int computeMemoryAvail() const;
+
 	size_t getMaximumSize() const;
     // Delete copy and move constructors to enforce singleton behavior
     FlatMemoryAllocator(const FlatMemoryAllocator&) = delete;
@@ -30,12 +34,14 @@ public:
 
     ~FlatMemoryAllocator();
 
+    static void initializeMemory();
+
 private:
     // Private Constructor
-    FlatMemoryAllocator(size_t maximumSize);
+    FlatMemoryAllocator();
 
     // Private Methods
-    void initializeMemory();
+    
     bool canAllocateAt(size_t index, size_t size) const;
     void allocateAt(size_t index, size_t size);
     void deallocateAt(void* ptr, size_t size);
@@ -43,6 +49,7 @@ private:
     void* createBackingStoreEntry(size_t size);
     std::string pointerToString(void* ptr) const;
 
+    static FlatMemoryAllocator* instance;
     // Private Members
     size_t maximumSize;
     size_t allocatedSize;

@@ -32,8 +32,8 @@ private:
 	std::queue<std::shared_ptr<Process>> processQueue;
 	
 
-	void handleMemoryPressure(FlatMemoryAllocator& memoryAllocator);
-	void finalizeProcess(FlatMemoryAllocator& memoryAllocator);
+	void handleMemoryPressure(FlatMemoryAllocator* memoryAllocator);
+	void finalizeProcess(FlatMemoryAllocator* memoryAllocator);
 	void executeProcess();
 };
 
