@@ -141,6 +141,7 @@
     <ClCompile Include="MainConsole.cpp" />
     <ClCompile Include="MarqueeConsole.cpp" />
     <ClCompile Include="BaseScreen.cpp" />
+    <ClCompile Include="PagingAllocator.cpp" />
     <ClCompile Include="PrintCommand.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="RRScheduler.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="MainConsole.h" />
     <ClInclude Include="MarqueeConsole.h" />
     <ClInclude Include="BaseScreen.h" />
+    <ClInclude Include="PagingAllocator.h" />
     <ClInclude Include="PrintCommand.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="RRScheduler.h" />

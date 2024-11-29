@@ -8,14 +8,14 @@
 #include <sstream>
 
 // Singleton Memory Allocator Class
-class FlatMemoryAllocator : public IMemoryAllocator {
+class FlatMemoryAllocator {
 public:
     static FlatMemoryAllocator& getInstance(size_t maximumSize = 1024);
 
     // Public Interface
-    void* allocate(size_t size) override;
-    void deallocate(void* ptr) override;
-    std::string visualizeMemory() override;
+    void* allocate(size_t size);
+    void deallocate(void* ptr);
+    std::string visualizeMemory();
 
     //Backing store checking
 	bool isInBackingStore(void* ptr) const;

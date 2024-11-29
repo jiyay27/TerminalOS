@@ -156,3 +156,13 @@ void* Process::getAssignedAt()
 {
 	return this->assignedAt;
 }
+
+void Process::setAssignedAtVec(void* ptr)
+{
+	this->assignedAtVec.push_back(ptr);
+}
+
+std::vector<void*> Process::getAssignedAtVec()
+{
+	return this->assignedAtVec;
+}

@@ -40,6 +40,10 @@ public:
 	bool getAllocationState();
 	void setAssignedAt(void* ptr);
 	void* getAssignedAt();
+
+	void setAssignedAtVec(void* ptr);
+	std::vector<void*> getAssignedAtVec();
+
 private:
 	int pid;
 	String name;
@@ -53,4 +57,5 @@ private:
 	size_t memoryRequired;
 	bool memoryAllocated = false;
 	void* assignedAt;
+	std::vector<void*> assignedAtVec;
 };
