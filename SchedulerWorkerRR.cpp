@@ -1,5 +1,7 @@
 #include "SchedulerWorkerRR.h"
 #include "GlobalScheduler.h"
+#include "IMemoryAllocator.h"
+#include "Config.h"
 
 SchedulerWorkerRR::SchedulerWorkerRR(int numCore)
 {
@@ -24,69 +26,166 @@ void SchedulerWorkerRR::updateA()
 	this->available = true;
 }
 
-void SchedulerWorkerRR::run()
-{
-    while (this->isRunning)
+void SchedulerWorkerRR::run() {
+    Config config;
+    config.setParamList("config.txt");
+
+    size_t max = config.getMaxMem();
+    size_t frame = config.getMemFrame();
+
+    auto memoryAllocator = FlatMemoryAllocator::getInstance();
+    auto pagingAllocator = PagingAllocator::getInstance();
+
+    if (max == frame) // ! FLAT MEMORY ALLOCATOR
+    {
+
+    }
+    else // ! PAGING ALLOCATOR
     {
         this->updateA();
-        if (this->process != nullptr)
+        while (this->isRunning)
         {
-            if (this->process->isFinished())
-            {
-                this->available = true;
-                this->process->setState(Process::FINISHED);
-                this->processQueue.pop();
+            cpuClock++;
+            this->updateA();
 
-                if (!this->processQueue.empty())
-                {
-                    // Sort the remaining processes in the queue based on burst time
-                    std::vector<std::shared_ptr<Process>> tempProcesses;
-                    while (!this->processQueue.empty())
-                    {
-                        tempProcesses.push_back(this->processQueue.front());
-                        this->processQueue.pop();
+            if (this->process == nullptr && !this->processQueue.empty()) {
+                this->process = this->processQueue.front();
+            }
+
+            if (this->process != nullptr) {
+                // Memory allocation logic
+                if (!this->process->getAllocationState()) {
+                    size_t memoryRequired = this->process->getMemoryRequired();
+
+                    if (memoryRequired > pagingAllocator->getInstance()->getMaximumSize()) {
+                        //std::cerr << "ERROR: Process " << this->process->getName()
+                        //    << " requires more memory than available. Skipping.\n";
+                        this->processQueue.pop(); // Remove process from queue
+                        this->process = nullptr;
+                        this->updateA();
+                        continue;
                     }
 
-                    // Sort the vector based on the burst time (command list count)
-                    std::sort(tempProcesses.begin(), tempProcesses.end(),
-                        [](const std::shared_ptr<Process>& a, const std::shared_ptr<Process>& b) {
-                            return a->getCommandListCount() < b->getCommandListCount();
-                        });
-
-                    // Push sorted processes back to the queue
-                    for (const auto& proc : tempProcesses)
+                    if (config.getMaxMemProc() < config.getMaxMem())
                     {
-                        this->processQueue.push(proc);
+                        std::vector<int> memory = pagingAllocator->getInstance()->allocate(memoryRequired);
+                    
+                    
+                        if (!memory.empty()) {
+                            for (size_t i = 0; i < memory.size(); i++)
+                            {
+                                this->process->setAssignedAtVec(memory[i]);
+                            }
+                            this->process->setAllocationState(true);
+                        }
+                        else {
+                            //std::cerr << "ERROR: Memory allocation failed for process "
+                            //    << this->process->getName() << ". Retrying...\n";
+                            this->updateA();
+                            handleMemoryPressurePaging(pagingAllocator->getInstance());
+                            continue;
+                        }
                     }
-
-                    // Set the new process
-                    this->process = this->processQueue.front();
                 }
                 else
                 {
-                    this->stop();
+                    // Process execution logic
+                    if (!this->process->isFinished())
+                    {
+                        this->updateA();
+                        executeProcess();
+                    }
+                }
+                this->updateA();
+                // Process execution logic
+                if (this->process->isFinished()) {
+                    finalizeProcessPaging(pagingAllocator);
+                    this->updateA();
+                }
+                else {
+                    executeProcess();
+                    this->updateA();
+                    this->sleep(1000);
                 }
             }
-            else
-            {
-                // Execute for the duration of the quantum
-                for (int i = 0; i < this->quantum && !this->process->isFinished(); i++)
-                {
-                    this->isOccupied();
-                    this->sleep(delay);
-                    this->process->executeInstruction();
-                }
-
-                // Preempt the current process if it hasn't finished
-                if (!this->process->isFinished())
-                {
-                    std::shared_ptr<Process> front = this->processQueue.front();
-                    this->processQueue.pop();
-                    this->processQueue.push(front); // Reinsert the current process to the end of the queue
-                }
-                this->process = this->processQueue.front(); // Get the next process
+            else {
+                // Scheduler is idle
+                idleClock++;
+                this->sleep(delay);
             }
         }
+        this->updateA();
+    }
+}
+
+
+// Handles memory pressure by evicting or sleeping
+void SchedulerWorkerRR::handleMemoryPressure(FlatMemoryAllocator* flatMemoryAllocator)
+{
+    //std::cout << "Resolving memory pressure...\n";
+    flatMemoryAllocator->getInstance()->evictOldest(); // Evict the oldest process if possible
+    this->sleep(delay); // Avoid busy-waiting
+}
+
+// Finalize the process and release its resources
+void SchedulerWorkerRR::finalizeProcess(FlatMemoryAllocator* flatMemoryAllocator)
+{
+    if (this->process->getAssignedAt()) {
+        flatMemoryAllocator->getInstance()->deallocate(this->process->getAssignedAt());
+        this->process->setAssignedAt(nullptr);
+        this->process->setAllocationState(false);
+    }
+
+    this->process->setState(Process::FINISHED);
+    this->processQueue.pop();
+    this->process = nullptr;
+    //std::cout << "Process completed and resources freed.\n";
+}
+
+// Handles memory pressure by evicting or sleeping
+void SchedulerWorkerRR::handleMemoryPressurePaging(PagingAllocator* pagingAllocator)
+{
+    // Calculate the number of frames required for the current process
+    if (this->process != nullptr) {
+        size_t memoryRequired = this->process->getMemoryRequired();
+        pagingAllocator->getInstance()->evictOldest(memoryRequired); // Evict enough frames to fit the process
+    }
+    this->sleep(delay); // Avoid busy-waiting
+}
+
+// Finalize the process and release its resources
+void SchedulerWorkerRR::finalizeProcessPaging(PagingAllocator* pagingAllocator)
+{
+    if (!this->process->getAssignedAtVec().empty()) {
+        pagingAllocator->getInstance()->deallocate(this->process->getAssignedAtVec());
+        this->process->setAssignedAtVec(NULL);
+        this->process->setAllocationState(false);
+    }
+
+    this->process->setState(Process::FINISHED);
+    this->processQueue.pop();
+    this->process = nullptr;
+    //std::cout << "Process completed and resources freed.\n";
+}
+
+// Execute process for the time quantum
+void SchedulerWorkerRR::executeProcess() 
+{
+    for (int i = 0; i < this->quantum && !this->process->isFinished(); i++) {
+        this->isOccupied();
+        this->sleep(delay);
+        this->process->executeInstruction();
+    }
+
+    this->sleep(delay*300);
+	this->updateA();
+
+    if (!this->process->isFinished()) 
+    {
+        // Preempt unfinished process
+        this->processQueue.push(this->process);
+        this->processQueue.pop(); // Move it to the end of the queue
+        this->process = this->processQueue.front();
     }
 }
 
@@ -114,4 +213,17 @@ void SchedulerWorkerRR::isOccupied() {
 bool SchedulerWorkerRR::processExists() const
 {
 	return this->process != nullptr;
+}
+
+int SchedulerWorkerRR::getCPUClock()
+{
+    std::lock_guard<std::mutex> lock(CPUmutex);
+	return this->cpuClock;
+}
+
+
+int SchedulerWorkerRR::getIdleClock()
+{
+	std::lock_guard<std::mutex> lock(CPUmutex);
+	return this->idleClock;
 }

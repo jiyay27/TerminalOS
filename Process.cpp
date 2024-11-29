@@ -7,20 +7,38 @@
 #include "Config.h"
 Process::Process(String name)
 {
-	//srand(time(0));
+	srand(time(0));
 	Config config;
 	config.setParamList("config.txt");
 	int min = config.getMinIns();
 	int max = config.getMaxIns();
 	int randomNum = min + rand() % (max - min + 1);
 
+	for (int i = 0; i < randomNum; i++)
+	{
+		this->addCommand(ICommand::CommandType::PRINT);
+	}
+
+	int memMin = config.getMinMemProc();
+	int memMax = config.getMaxMemProc();
+	int randomMem = memMin + rand() % (memMax - memMin + 1);
+
+	this->memoryRequired = randomMem;
+	this->memoryAllocated = false;
+
 	this->pid = GlobalScheduler::getInstance()->getProcessCount();
 	this->name = name;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
-	for (int i = 0; i < randomNum; i++)
+
+
+	if (config.getMaxMem() == config.getMemFrame())
 	{
-		this->addCommand(ICommand::CommandType::PRINT);
+		this->pagesRequired = 0;
+	}
+	else
+	{
+		this->pagesRequired = this->memoryRequired / config.getMemFrame();
 	}
 }
 
@@ -28,6 +46,7 @@ Process::Process(int pid, String name, int remainingInstructions)
 {
 	this->pid = pid;
 	this->name = name;
+	this->memoryRequired = 50;
 	this->commandCounter = 0;
 	this->currentState = ProcessState::READY;
 	for (int i = 0; i < remainingInstructions; i++)
@@ -127,3 +146,37 @@ void Process::setState(ProcessState state)
 	this->currentState = state;
 }
 
+size_t Process::getMemoryRequired()
+{
+	return this->memoryRequired;
+}
+
+void Process::setAllocationState(bool state)
+{
+	this->memoryAllocated = state;
+}
+
+bool Process::getAllocationState()
+{
+	return this->memoryAllocated;
+}
+
+void Process::setAssignedAt(void* ptr)
+{
+	this->assignedAt = ptr;
+}
+
+void* Process::getAssignedAt()
+{
+	return this->assignedAt;
+}
+
+void Process::setAssignedAtVec(int ptr)
+{
+	this->assignedAtVec.push_back(ptr);
+}
+
+std::vector<int> Process::getAssignedAtVec()
+{
+	return this->assignedAtVec;
+}

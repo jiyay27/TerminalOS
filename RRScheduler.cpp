@@ -112,7 +112,7 @@ void RRScheduler::run()
         ConsoleManager::getInstance()->createBaseScreen2(procName);
         int newCore = GlobalScheduler::getInstance()->getScheduler()->checkCoreQueue();
         GlobalScheduler::getInstance()->getScheduler()->assignCore(GlobalScheduler::getInstance()->getMostRecentProcess(), newCore);
-        this->sleep(batch);
+        this->sleep(batch*10);
     }
 }
 

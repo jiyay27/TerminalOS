@@ -3,7 +3,10 @@
 #include <string>
 #include <thread>
 #include <queue>
+#include <mutex>
+#include "IMemoryAllocator.h"
 #include "Process.h"
+#include "IETThread.h"
 
 class SchedulerWorker : public IETThread
 {
@@ -19,7 +22,10 @@ public:
 	void stop();
 	void isOccupied();
 	bool processExists() const;
+	int getCoreNum() const;
 private:
+	std::mutex CPUWorkerMutex;
+	int cpuClock = 0;
 	bool isRunning = true;
 	bool available = true;
 	int coreNum;

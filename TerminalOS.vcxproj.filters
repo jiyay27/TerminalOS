@@ -75,6 +75,9 @@
     <ClCompile Include="SchedulerWorkerRR.cpp">
       <Filter>Scheduler</Filter>
     </ClCompile>
+    <ClCompile Include="FlatMemoryAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleManager.h">
@@ -127,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Keyboard\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatMemoryAllocator.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="IMemoryAllocator.h">
+      <Filter>Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

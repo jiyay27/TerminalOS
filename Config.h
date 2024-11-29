@@ -43,7 +43,7 @@ public:
     void assignParameter(int index) {
         try {
             if (index == 1) { // no need conversion
-                this->schedulerAlg =paramList[1];
+                this->schedulerAlg = paramList[1];
             }
             else if (index == 0) {
                 this->numCPU = std::stoi(paramList[0]);
@@ -62,6 +62,18 @@ public:
             }
             else if (index == 6) {
                 this->delays = std::stoi(paramList[index]);
+            }
+            else if (index == 7) {
+                this->maxMem = std::stoi(paramList[index]);
+            }
+            else if (index == 8) {
+                this->memFrame = std::stoi(paramList[index]);
+            }
+            else if (index == 9) {
+                this->maxMemProc = std::stoi(paramList[index]);
+            }
+            else if (index == 10) {
+                this->minMemProc = std::stoi(paramList[index]);
             }
         }
         catch (const std::invalid_argument& e) {
@@ -100,6 +112,23 @@ public:
 		return this->delays;
 	}
 
+    // ! MO2 PARAMS
+    int getMaxMem() {
+        return this->maxMem;
+    }
+
+    int getMemFrame() {
+        return this->memFrame;
+    }
+
+    int getMinMemProc() {
+        return this->minMemProc;
+    }
+
+    int getMaxMemProc() {
+        return this->maxMemProc;
+    }
+
     std::string removeQuotes(const std::string& str) {
         if (str.size() >= 2 && str.front() == '"' && str.back() == '"') {
             return str.substr(1, str.size() - 2);
@@ -108,6 +137,8 @@ public:
     }
 private:
     std::vector<std::string> paramList;
+
+	// ! MO1 PARAMS
 	int numCPU; // 0
     String schedulerAlg; // 1
 	int quantum; // 2
@@ -115,5 +146,11 @@ private:
 	int minIns; // 4
 	int maxIns; // 5
 	int delays; // 6
+
+	// ! MO2 PARAMS
+	size_t maxMem; // 7
+    size_t memFrame; // 8
+    size_t minMemProc; // 9
+    size_t maxMemProc; // 10
 
 };
