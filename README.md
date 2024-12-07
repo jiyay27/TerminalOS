@@ -9,8 +9,10 @@
 
 ## **MO2 Authors:**
 
-1. John Joseph Donato - S11
-2. Audrin Matthew Javier - S12
+1. Nicolas Miguel T. Ching – S12
+2. John Joseph Donato – S11
+3. Audrin Matthew Javier – S12
+4. Kevin Paul Harder – S12
 
 #### Note*
 
